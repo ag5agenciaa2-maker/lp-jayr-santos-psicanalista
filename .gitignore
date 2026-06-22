@@ -1,0 +1,29 @@
+# Padrão de exclusão Git da AG5
+
+# Pastas de IDE e Editores
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Pastas de dependências e build
+node_modules/
+dist/
+build/
+out/
+
+# Arquivos locais e temporários
+tmp/
+*.log
+.DS_Store
+Thumbs.db
+
+# Configurações sensíveis (chaves e credenciais)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
