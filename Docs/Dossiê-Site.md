@@ -11,13 +11,13 @@ Nicho: Psicanálise (saúde mental)
 
 Categoria principal Google: Psicanalista, Terapeuta de análise comportamental aplicada, Terapeuta de casal, Serviço de saúde mental, Terapeuta psicossocial, Terapeuta
 
-Descrição institucional: Atendimento a indivíduos e/ou casais oferecendo acolhimento, sigilo, ética e escuta analítica, possibilitando ao analisando a compreensão de seu inconsciente e o manejo de seus conflitos internos.
+Descrição institucional: Atendimento a indivíduos e/ou casais oferecendo acolhimento, sigilo, ética e escuta analítica, possibilitando ao analisando a compreensão de seu inconsciente e o manejo de seus conflitos internos. (A maioria dos atendimentos é online e algumas vezes são presenciais).
 
 Proposta de valor: Escuta atenta, acolhedora e ética, gerando cura através da fala.
 
 Público-alvo: Adultos e casais que buscam compreensão de conflitos internos, relacionamentos e questões emocionais.
 
-Modalidade: Presencial e online.
+Modalidade: Online (maioria) e presencial.
 Principais serviços:
 
 Sessões psicanalíticas individuais

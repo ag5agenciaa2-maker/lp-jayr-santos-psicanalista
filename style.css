@@ -307,104 +307,834 @@ a { color: inherit; }
    ============================================================ */
 .impacto { background: var(--noturno); color: var(--offwhite); padding: var(--pad-y) var(--pad-x); }
 .impacto .wrap { max-width: 1100px; }
-.impacto__title {
-  font-family: var(--ff-title); font-weight: 500;
-  font-size: clamp(30px, 4.6vw, 58px); line-height: 1.18;
-  margin: 22px 0 0; max-width: 18ch; color: #fff;
-}
-.impacto__title em { font-style: italic; color: #9CB6CB; }
-.impacto__cols {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: clamp(24px, 3vw, 48px); margin-top: clamp(48px, 6vw, 80px);
-}
-.impacto__item { border-top: 1px solid rgba(255,255,255,.18); padding-top: 22px; }
-.impacto__item p { font-size: 16px; line-height: 1.7; color: #D8E1E9; margin: 0; }
-.impacto__quote {
-  margin: clamp(48px, 6vw, 72px) 0 0; max-width: 680px;
-  font-family: var(--ff-title); font-style: italic;
-  font-size: clamp(20px, 2.4vw, 28px); line-height: 1.5; color: var(--offwhite);
+/* ============================================================
+   IMPACTO — DIAGRAMAÇÃO EDITORIAL PREMIUM
+   Layout de alto padrão: cabeçalho dividido em grid e grid inferior
+   com colunas niveladas e insights clínicos revelados interativamente no hover.
+   ============================================================ */
+.impacto {
+  background: var(--noturno);
+  color: var(--offwhite);
+  padding: var(--pad-y) var(--pad-x);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ============================================================
-   SERVIÇOS
-   ============================================================ */
-.servicos { padding: var(--pad-y) var(--pad-x); }
-.serv {
-  display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 56px);
-  align-items: start; padding: clamp(28px, 4vw, 46px) 0;
-  border-top: 1px solid rgba(27,58,92,.14);
-  transition: border-color .4s var(--ease);
+/* Marca d'água de fundo */
+.impacto__bg-text {
+  position: absolute;
+  top: 50%;
+  left: -5%;
+  transform: translateY(-50%);
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(220px, 32vw, 480px);
+  color: var(--azul);
+  opacity: 0.02;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: -0.02em;
 }
-.serv:hover {
-  border-color: rgba(44, 94, 147, 0.4);
+
+.impacto .wrap {
+  max-width: 1200px;
+  position: relative;
+  z-index: 1;
 }
-.serv--bottom { border-bottom: 1px solid rgba(27,58,92,.14); }
-.serv:hover.serv--bottom { border-bottom-color: rgba(44, 94, 147, 0.4); }
-.serv__num {
-  font-family: var(--ff-title); font-weight: 400; font-size: clamp(54px, 8vw, 118px); line-height: .85;
-  color: var(--areia);
+
+/* Cabeçalho Editorial com grade de colunas assimétrica */
+.impacto__header {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: clamp(40px, 5vw, 90px);
+  align-items: end;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 48px;
+  margin-bottom: 72px;
+}
+
+.impacto__label {
   display: inline-block;
-  transition: color .4s var(--ease), transform .4s var(--ease);
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--salvia);
+  margin-bottom: 24px;
+  position: relative;
+  padding-left: 56px;
 }
-.serv:hover .serv__num {
-  color: var(--azul);
-  transform: translateY(-2px) scale(1.02);
+
+.impacto__label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 1px;
+  background: var(--salvia);
+  opacity: 0.4;
 }
-.serv__body h3 {
-  font-family: var(--ff-title); font-weight: 600; font-size: clamp(24px, 2.8vw, 34px);
-  color: var(--noturno); margin: 0 0 14px;
-  transition: color .4s var(--ease);
+
+.impacto__title {
+  font-family: var(--ff-title);
+  font-weight: 400;
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1.2;
+  margin: 0;
+  max-width: 18ch;
+  color: #fff;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
 }
-.serv:hover .serv__body h3 {
-  color: var(--azul);
+
+.impacto__title em {
+  font-style: italic;
+  color: var(--areia);
+  font-weight: 400;
 }
-.serv__body p { font-size: 17px; line-height: 1.75; margin: 0 0 18px; max-width: 60ch; }
-.tags { display: flex; flex-wrap: wrap; gap: 10px; }
-.tags span { font-size: 13px; color: var(--noturno); background: var(--offwhite); border: 1px solid var(--areia); padding: 7px 14px; border-radius: 30px; }
+
+.impacto__quote {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.impacto__quote p {
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(17px, 1.4vw, 20px);
+  line-height: 1.65;
+  color: #A8B5C4;
+  margin: 0;
+  position: relative;
+}
+
+/* Grid de Tessitura Editorial Assimétrica (Mosaico de Dores) */
+.impacto__tessitura {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  position: relative;
+}
+
+/* Wrapper do Grid para suportar a animação reveal do JS */
+.impacto__card-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards Premium com deslocamento vertical customizado (stagger) */
+.impacto__card-premium {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 48px 36px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  transition: transform 0.6s var(--ease), background-color 0.6s var(--ease), border-color 0.6s var(--ease), box-shadow 0.6s var(--ease);
+  overflow: hidden;
+}
+
+.impacto__card-premium:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(143, 166, 142, 0.3);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+  transform: translateY(-12px);
+}
+
+/* Número Romano gigante de fundo */
+.card-premium__num {
+  font-family: var(--ff-title);
+  font-size: 80px;
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.03);
+  position: absolute;
+  top: -10px;
+  right: 24px;
+  z-index: 1;
+  transition: color 0.5s var(--ease), transform 0.5s var(--ease);
+  pointer-events: none;
+}
+
+.impacto__card-premium:hover .card-premium__num {
+  color: rgba(143, 166, 142, 0.18);
+  transform: translateY(-4px);
+}
+
+.card-premium__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Tag de Catalogação Clínica */
+.card-premium__tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--salvia);
+  margin-bottom: 24px;
+  transition: color 0.4s var(--ease);
+}
+
+.impacto__card-premium:hover .card-premium__tag {
+  color: var(--areia);
+}
+
+/* Texto descritivo da dor */
+.card-premium__text {
+  font-family: var(--ff-body);
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--offwhite);
+  opacity: 0.85;
+  margin: 0 0 24px;
+  transition: opacity 0.4s var(--ease);
+}
+
+.impacto__card-premium:hover .card-premium__text {
+  opacity: 1;
+}
+
+/* Insight Psicanalítico Complementar */
+.card-premium__insight {
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--areia);
+  opacity: 0.35;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 20px;
+  margin-top: auto;
+  transition: opacity 0.5s var(--ease), border-color 0.5s var(--ease);
+}
+
+.impacto__card-premium:hover .card-premium__insight {
+  opacity: 0.85;
+  border-color: rgba(143, 166, 142, 0.25);
+}
+
+@media (max-width: 1024px) {
+  .impacto__tessitura {
+    gap: 24px;
+  }
+  
+  .impacto__card-premium {
+    padding: 40px 28px;
+  }
+}
+
+@media (max-width: 900px) {
+  .impacto__header {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 36px;
+    margin-bottom: 48px;
+  }
+  
+  .impacto__tessitura {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .impacto__card-premium:hover {
+    transform: translateY(-8px) !important;
+  }
+  
+  .card-premium__num {
+    font-size: 70px;
+    right: 18px;
+    top: -5px;
+  }
+}
 
 /* ============================================================
-   ACOLHIMENTO
+   SERVIÇOS (ATENDIMENTO DINÂMICO FLEX)
    ============================================================ */
-.acolhe { background: var(--areia); padding: var(--pad-y) var(--pad-x); }
-.acolhe__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
-.acolhe .section-title { margin-bottom: 22px; max-width: 16ch; }
-.acolhe__lead { font-size: 17px; line-height: 1.75; margin: 0 0 30px; max-width: 50ch; }
-.values { list-style: none; margin: 0; padding: 0; }
-.values li {
-  display: flex; align-items: center; gap: 16px; padding: 16px 0;
-  border-top: 1px solid rgba(27,58,92,.16);
-}
-.values li:last-child { border-bottom: 1px solid rgba(27,58,92,.16); }
-.values .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--salvia); flex: none; }
-.values strong { font-size: 16px; color: var(--noturno); font-weight: 500; }
-.values em { font-style: normal; font-size: 14px; color: #5a6b78; margin-left: auto; text-align: right; }
-
-.acolhe__media { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.ph {
-  margin: 0; width: 100%; aspect-ratio: 4/3; border-radius: 16px;
+.servicos { 
+  padding: var(--pad-y) var(--pad-x); 
   background: var(--offwhite);
-  border: 1px solid rgba(27,58,92,.08);
-  position: relative; overflow: hidden;
-  box-shadow: 0 10px 24px rgba(27,58,92,.06);
+  position: relative;
 }
-.ph--tall { aspect-ratio: 3/4; grid-row: span 2; }
-.ph img {
+
+.servicos__header {
+  margin-bottom: clamp(48px, 6vw, 72px);
+}
+
+.servicos__header .section-title {
+  margin-bottom: 0;
+  max-width: 22ch;
+}
+
+.servicos__header .section-title em {
+  font-style: italic;
+  color: var(--azul);
+}
+
+/* Flex Container que abriga as colunas expansíveis */
+.servicos__flex-container {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* Base da Coluna Editorial */
+.servico-col {
+  position: relative;
+  border-radius: 2px;
+  transition: flex 0.7s var(--ease), background-color 0.7s var(--ease), border-color 0.7s var(--ease), box-shadow 0.7s var(--ease);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(27, 58, 92, 0.08);
+}
+
+/* Proporções iniciais (Tensão Visual Assimétrica) */
+.col-individual {
+  flex: 5.7;
+  background: #ffffff;
+}
+
+.col-casal {
+  flex: 4.3;
+  background: rgba(232, 223, 210, 0.22); /* Areia sutil de fundo */
+}
+
+/* Comportamento elástico no hover */
+.servicos__flex-container:hover .col-individual:hover {
+  flex: 6.5;
+  box-shadow: 0 25px 55px rgba(27, 58, 92, 0.06);
+}
+
+.servicos__flex-container:hover .col-casal:hover {
+  flex: 5.7;
+  background: rgba(232, 223, 210, 0.35);
+  box-shadow: 0 25px 55px rgba(27, 58, 92, 0.06);
+}
+
+/* Afeta a coluna não-focada ao focar em uma */
+.servicos__flex-container:hover .servico-col:not(:hover) {
+  opacity: 0.85;
+}
+
+/* Preenchimento interno */
+.servico-col__inner {
+  padding: clamp(40px, 5vw, 64px) clamp(30px, 4vw, 56px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+/* Efeito Passe-partout elegante apenas na coluna individual */
+.col-individual .servico-col__inner::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(143, 166, 142, 0.15); /* Sálvia fina interna */
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ordinal gigante em marca d'água no fundo */
+.servico-col__num {
+  font-family: var(--ff-title);
+  font-size: clamp(80px, 8vw, 120px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--areia);
+  line-height: 0.8;
+  position: absolute;
+  bottom: 40px;
+  right: 48px;
+  opacity: 0.3;
+  transition: color 0.5s var(--ease), transform 0.5s var(--ease);
+  user-select: none;
+  z-index: 1;
+}
+
+.servico-col:hover .servico-col__num {
+  color: var(--salvia);
+  transform: scale(1.05) translateY(-4px);
+  opacity: 0.45;
+}
+
+/* Rótulo superior */
+.servico-col__label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--salvia);
+  margin-bottom: 24px;
+}
+
+/* Títulos */
+.servico-col h3 {
+  font-family: var(--ff-title);
+  font-weight: 500;
+  font-size: clamp(26px, 2.6vw, 38px);
+  line-height: 1.15;
+  color: var(--noturno);
+  margin: 0 0 20px;
+  max-width: 14ch;
+  transition: color 0.4s var(--ease);
+  position: relative;
+  z-index: 2;
+}
+
+.servico-col h3 em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.servico-col:hover h3 {
+  color: var(--azul);
+}
+
+/* Insight Psicanalítico no topo */
+.servico-col__concept {
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #556270;
+  margin: 0 0 28px;
+  max-width: 38ch;
+  position: relative;
+  z-index: 2;
+}
+
+/* Descritivo do serviço */
+.servico-col__desc {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--grafite);
+  margin: 0 0 32px;
+  max-width: 44ch;
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+}
+
+/* Tags de catalogação tipo arquivo */
+.servico-col__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+  margin-top: auto; /* Garante alinhamento na base */
+  border-top: 1px solid rgba(27, 58, 92, 0.06);
+  padding-top: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.servico-col__tags span {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--noturno);
+  background: var(--offwhite);
+  border: 1px solid var(--areia);
+  padding: 6px 12px;
+  border-radius: 1px;
+  transition: all 0.3s var(--ease);
+}
+
+.servico-col:hover .servico-col__tags span {
+  background: #fff;
+  border-color: rgba(44, 94, 147, 0.2);
+  color: var(--azul);
+}
+
+/* Link de Conversa WhatsApp */
+.servico-col__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--azul);
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+  width: fit-content;
+  position: relative;
+  z-index: 2;
+}
+
+.servico-col__link span {
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.servico-col__link span::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: var(--azul);
+  transition: width 0.35s var(--ease);
+}
+
+.servico-col__link svg {
+  transition: transform 0.35s var(--ease);
+}
+
+.servico-col__link:hover {
+  color: var(--noturno);
+}
+
+.servico-col__link:hover span::after {
+  width: 100%;
+  background-color: var(--noturno);
+}
+
+.servico-col__link:hover svg {
+  transform: translateX(6px);
+  color: var(--noturno);
+}
+
+/* Ajustes de responsividade para telas menores */
+@media (max-width: 900px) {
+  .servicos__flex-container {
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .servico-col {
+    flex: none !important; /* Desativa a mecânica elástica no mobile */
+    opacity: 1 !important;
+  }
+
+  .col-individual .servico-col__inner::before {
+    inset: 12px;
+  }
+  
+  .servico-col__num {
+    bottom: auto;
+    top: 40px;
+    right: 32px;
+  }
+  
+  .servico-col__inner {
+    padding: 40px 28px;
+  }
+}
+
+/* ============================================================
+   ACOLHIMENTO (ESPAÇO SEGURO) — EDITORIAL MONUMENTAL
+   Direção: Diagramação de revista suíça com assimetria controlada,
+   marca d'água tipográfica e imagem única como peça central.
+   ============================================================ */
+.acolhe {
+  background: var(--areia);
+  padding: var(--pad-y) var(--pad-x);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Marca d'água tipográfica de fundo */
+.acolhe__watermark {
+  position: absolute;
+  bottom: -8%;
+  right: -4%;
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(200px, 28vw, 520px);
+  color: var(--noturno);
+  opacity: 0.025;
+  line-height: 0.85;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: -0.03em;
+}
+
+/* Grid principal assimétrico */
+.acolhe__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Coluna Esquerda: Conteúdo ---- */
+.acolhe__content {
+  position: relative;
+}
+
+/* Label com filete decorativo */
+.acolhe__label {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--azul);
+  margin-bottom: 28px;
+  position: relative;
+  padding-left: 56px;
+}
+
+.acolhe__label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 1px;
+  background: var(--azul);
+  opacity: 0.5;
+}
+
+/* Título editorial com destaque */
+.acolhe__heading {
+  font-family: var(--ff-title);
+  font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 48px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--noturno);
+  margin: 0 0 28px;
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+.acolhe__heading em {
+  font-style: italic;
+  color: var(--salvia);
+  font-weight: 400;
+}
+
+/* Lead text */
+.acolhe__lead {
+  font-size: 17px;
+  line-height: 1.78;
+  margin: 0 0 40px;
+  max-width: 48ch;
+  color: #4A5660;
+}
+
+/* ---- Valores: Lista editorial limpa com linhas horizontais ---- */
+.acolhe__values {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 36px;
+}
+
+.acolhe__value-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(27, 58, 92, 0.12);
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease);
+}
+
+.acolhe__value-item:last-of-type {
+  border-bottom: 1px solid rgba(27, 58, 92, 0.12);
+}
+
+.acolhe__value-item:hover {
+  transform: translateX(8px);
+  border-color: rgba(27, 58, 92, 0.25);
+}
+
+/* Numeral romano */
+.acolhe__value-num {
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--azul);
+  opacity: 0.45;
+  min-width: 30px;
+  text-align: left;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 2px;
+  transition: opacity 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.acolhe__value-item:hover .acolhe__value-num {
+  opacity: 1;
+  color: var(--noturno);
+}
+
+/* Corpo do valor */
+.acolhe__value-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.acolhe__value-body strong {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--noturno);
+  letter-spacing: 0.01em;
+}
+
+.acolhe__value-body em {
+  font-style: normal;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #556270;
+  transition: color 0.4s var(--ease);
+}
+
+.acolhe__value-item:hover .acolhe__value-body em {
+  color: var(--grafite);
+}
+
+/* ---- Coluna Direita: Imagem monumental ---- */
+.acolhe__visual {
+  position: relative;
+}
+
+/* Frame com passe-partout duplo */
+.acolhe__frame {
+  position: relative;
+  padding: 14px;
+  background: #fff;
+  box-shadow: 0 30px 70px rgba(27, 58, 92, 0.1),
+              0 12px 28px rgba(27, 58, 92, 0.06);
+}
+
+.acolhe__img-wrapper {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  background: var(--offwhite);
+}
+
+.acolhe__img-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform .6s var(--ease);
+  transition: transform 0.8s var(--ease), filter 0.8s var(--ease);
 }
-.ph:hover img {
+
+.acolhe__frame:hover .acolhe__img-wrapper img {
   transform: scale(1.04);
 }
-.ph::after {
-  content: attr(data-ph);
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  padding: 16px; text-align: center;
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11px; letter-spacing: .04em;
-  color: #7e8a96;
-  pointer-events: none;
+
+/* Accent deslocado em sálvia — moldura decorativa */
+.acolhe__frame-accent {
+  position: absolute;
+  top: 28px;
+  right: -18px;
+  bottom: -18px;
+  left: 28px;
+  border: 1px solid var(--salvia);
+  opacity: 0.3;
+  z-index: -1;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.acolhe__frame:hover .acolhe__frame-accent {
+  opacity: 0.55;
+  transform: translate(4px, 4px);
+}
+
+.acolhe__caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  justify-content: center;
+}
+
+.acolhe__caption span {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #7A8B96;
+  font-weight: 500;
+}
+
+.acolhe__caption-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--salvia);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+@media (max-width: 980px) {
+  .acolhe__grid {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+
+  .acolhe__visual {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 680px) {
+  .acolhe__heading {
+    font-size: clamp(26px, 6.5vw, 34px);
+    max-width: none;
+  }
+
+  .acolhe__value-item {
+    padding: 20px 0;
+  }
+
+  .acolhe__value-item:hover {
+    transform: translateX(4px);
+  }
+
+  .acolhe__frame {
+    padding: 10px;
+  }
+
+  .acolhe__frame-accent {
+    top: 20px;
+    right: -12px;
+    bottom: -12px;
+    left: 20px;
+  }
+
+  .acolhe__watermark {
+    font-size: clamp(120px, 30vw, 240px);
+    bottom: -4%;
+    right: -8%;
+  }
 }
 
 /* ============================================================
@@ -414,8 +1144,122 @@ a { color: inherit; }
 .sobre__grid { display: grid; grid-template-columns: .85fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; }
 .sobre__photo { position: relative; }
 .sobre__plate { position: absolute; inset: 24px -24px -24px 24px; background: var(--areia); border-radius: 18px; }
-.sobre__img { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 30px 60px rgba(27,58,92,.2); }
-.sobre__img img { width: 100%; height: 100%; object-fit: cover; }
+.sobre__carousel {
+  position: relative;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(27, 58, 92, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sobre__carousel-track {
+  position: relative;
+  aspect-ratio: 3.2 / 3.8;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--areia);
+}
+.sobre__carousel-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.8s var(--ease);
+}
+.sobre__carousel-slide.is-active {
+  opacity: 1;
+  z-index: 2;
+  pointer-events: auto;
+}
+.sobre__carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sobre__carousel-num {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  font-family: var(--ff-title);
+  font-size: 72px;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.28);
+  z-index: 3;
+  pointer-events: none;
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+/* Barra de tempo */
+.sobre__carousel-progress {
+  width: 100%;
+  height: 2px;
+  background: rgba(27, 58, 92, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.sobre__carousel-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--salvia);
+  transition: width 6s linear;
+}
+/* Rodapé da Galeria */
+.sobre__carousel-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-top: 4px;
+}
+.sobre__carousel-caption {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: #556270;
+  margin: 0;
+  font-weight: 500;
+  flex: 1;
+  transition: opacity 0.3s var(--ease);
+}
+.sobre__carousel-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.sobre__carousel-arrow {
+  background: none;
+  border: none;
+  color: var(--azul);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(44, 94, 147, 0.15);
+  transition: all 0.3s var(--ease);
+}
+.sobre__carousel-arrow:hover {
+  background: var(--azul);
+  color: #fff;
+  border-color: var(--azul);
+  transform: translateY(-1px);
+}
+.sobre__carousel-counter {
+  font-family: var(--ff-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--noturno);
+  letter-spacing: 0.05em;
+  user-select: none;
+  min-width: 48px;
+  text-align: center;
+}
 .sobre__quote {
   position: absolute; right: -18px; bottom: 18px; max-width: 180px;
   background: var(--azul); color: #fff; padding: 16px 20px; border-radius: 14px;

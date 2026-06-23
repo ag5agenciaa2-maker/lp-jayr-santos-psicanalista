@@ -313,7 +313,85 @@
       }
     }
 
+    /* ---------- Carrossel Sobre o Profissional (Galeria Premium) ---------- */
+    function initSobreCarousel() {
+      var sobrePrev = document.getElementById('sobrePrev');
+      var sobreNext = document.getElementById('sobreNext');
+      var sobreCounter = document.getElementById('sobreCounter');
+      var sobreTrack = document.getElementById('sobreTrack');
+      var sobreCaption = document.getElementById('sobreCaption');
+      var sobreProgress = document.getElementById('sobreProgress');
+      if (!sobreTrack || !sobrePrev || !sobreNext || !sobreCounter || !sobreCaption || !sobreProgress) return;
+
+      var sobreSlides = sobreTrack.querySelectorAll('.sobre__carousel-slide');
+      var sobreCurrent = 0;
+      var sobreTimer = null;
+      var slideDuration = 6000;
+
+      var resetProgressBar = function () {
+        sobreProgress.style.transition = 'none';
+        sobreProgress.style.width = '0%';
+        void sobreProgress.offsetWidth; // Força reflow
+        sobreProgress.style.transition = 'width ' + slideDuration + 'ms linear';
+        sobreProgress.style.width = '100%';
+      };
+
+      var updateSobreCarousel = function (index) {
+        sobreCurrent = (index + sobreSlides.length) % sobreSlides.length;
+        
+        // Efeito fade na legenda
+        sobreCaption.style.opacity = '0';
+        
+        setTimeout(function () {
+          sobreSlides.forEach(function (slide, i) {
+            var isActive = i === sobreCurrent;
+            slide.classList.toggle('is-active', isActive);
+            if (isActive) {
+              var cap = slide.getAttribute('data-caption');
+              sobreCaption.textContent = cap;
+              sobreCaption.style.opacity = '1';
+            }
+          });
+          sobreCounter.textContent = '0' + (sobreCurrent + 1) + ' / 0' + sobreSlides.length;
+        }, 150);
+
+        if (sobreTimer) {
+          resetProgressBar();
+        }
+      };
+
+      var startSobreAuto = function () {
+        stopSobreAuto();
+        resetProgressBar();
+        sobreTimer = setInterval(function () {
+          updateSobreCarousel(sobreCurrent + 1);
+        }, slideDuration);
+      };
+
+      var stopSobreAuto = function () {
+        if (sobreTimer) {
+          clearInterval(sobreTimer);
+          sobreTimer = null;
+        }
+        sobreProgress.style.transition = 'none';
+        sobreProgress.style.width = '0%';
+      };
+
+      sobrePrev.addEventListener('click', function () {
+        stopSobreAuto();
+        updateSobreCarousel(sobreCurrent - 1);
+      });
+
+      sobreNext.addEventListener('click', function () {
+        stopSobreAuto();
+        updateSobreCarousel(sobreCurrent + 1);
+      });
+
+      startSobreAuto();
+    }
+
     initWaPremium();
+    initSobreCarousel();
 
   });
 })();

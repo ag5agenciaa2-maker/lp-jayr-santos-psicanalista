@@ -43,7 +43,7 @@ Sessões psicanalíticas individuais; Sessões de casais
 Sessões psicanalíticas individuais; Sessões de casais
 🟥 Descreva o seu negócio:
 1 resposta
-Atendo indivíduos e/ou casais oferecendo acolhimento, sigilo, ética e escuta analítica, possibilitando a compreensão, por parte do analisando, de seu inconsciente, permitindo a compreensão e o manejo de seus conflitos internos.
+Atendo indivíduos e/ou casais oferecendo acolhimento, sigilo, ética e escuta analítica, possibilitando a compreensão, por parte do analisando, de seu inconsciente, permitindo a compreensão e o manejo de seus conflitos internos. (A maioria dos atendimentos é online e algumas vezes são presenciais).
 🟨 Conte a História do seu negócio:  
 Caso preferir pode nos enviar um audio por whatsapp.
 1 resposta
@@ -67,7 +67,7 @@ Jayr Santos
 1.078 seguidores
 702 seguindo
 Mental health service
-Psicanálise presencial e online - adulto/ casal.
+Psicanálise online (maioria) e presencial - adulto/ casal.
 Escuta atenta, acolhedora e ética, gerando cura através da fala.
 
 🟦 Caso tenha rede social, autoriza o uso das imagens para inclusão no Google?
