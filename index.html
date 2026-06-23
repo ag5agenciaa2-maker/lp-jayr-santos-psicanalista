@@ -236,18 +236,33 @@
       <div class="sobre__photo reveal" data-sobre-photo>
         <span class="sobre__plate"></span>
         <div class="sobre__carousel">
-          <div class="sobre__carousel-track" id="sobreTrack">
-            <div class="sobre__carousel-slide is-active" data-caption="Jayr Santos, Psicanalista clínico de adultos e casais.">
-              <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos de pé com camisa azul em seu consultório" />
-              <div class="sobre__carousel-num">I</div>
+          <div class="sobre__carousel-container">
+            <div class="sobre__carousel-main">
+              <div class="sobre__carousel-track" id="sobreTrack">
+                <div class="sobre__carousel-slide is-active" data-caption="Jayr Santos, Psicanalista clínico de adultos e casais.">
+                  <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos de pé com camisa azul em seu consultório" />
+                  <div class="sobre__carousel-num">I</div>
+                </div>
+                <div class="sobre__carousel-slide" data-caption="Consultório West Offices — Espaço reservado, acolhedor e silencioso em Campo Grande.">
+                  <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório preparado para atendimento psicanalítico em Campo Grande" />
+                  <div class="sobre__carousel-num">II</div>
+                </div>
+                <div class="sobre__carousel-slide" data-caption="Escuta analítica de alto padrão pautada na ética e absoluto sigilo.">
+                  <img src="assets/jayr-santos-sessao-casal-escuta.webp" alt="Psicanalista Jayr Santos em escuta clínica atenta durante atendimento" />
+                  <div class="sobre__carousel-num">III</div>
+                </div>
+              </div>
             </div>
-            <div class="sobre__carousel-slide" data-caption="Consultório West Offices — Espaço reservado, acolhedor e silencioso em Campo Grande.">
-              <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório preparado para atendimento psicanalítico em Campo Grande" />
-              <div class="sobre__carousel-num">II</div>
-            </div>
-            <div class="sobre__carousel-slide" data-caption="Escuta analítica de alto padrão pautada na ética e absoluto sigilo.">
-              <img src="assets/jayr-santos-sessao-casal-escuta.webp" alt="Psicanalista Jayr Santos em escuta clínica atenta durante atendimento" />
-              <div class="sobre__carousel-num">III</div>
+            <div class="sobre__carousel-thumbs" id="sobreThumbs">
+              <button class="sobre__thumb-item is-active" data-slide-to="0" aria-label="Ver imagem 1" type="button">
+                <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos" />
+              </button>
+              <button class="sobre__thumb-item" data-slide-to="1" aria-label="Ver imagem 2" type="button">
+                <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório West Offices" />
+              </button>
+              <button class="sobre__thumb-item" data-slide-to="2" aria-label="Ver imagem 3" type="button">
+                <img src="assets/jayr-santos-sessao-casal-escuta.webp" alt="Atendimento clínico" />
+              </button>
             </div>
           </div>
           <div class="sobre__carousel-progress">
@@ -255,15 +270,7 @@
           </div>
           <div class="sobre__carousel-footer">
             <p class="sobre__carousel-caption" id="sobreCaption">Jayr Santos, Psicanalista clínico de adultos e casais.</p>
-            <div class="sobre__carousel-actions">
-              <button class="sobre__carousel-arrow prev" id="sobrePrev" aria-label="Foto anterior" type="button">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              </button>
-              <span class="sobre__carousel-counter" id="sobreCounter">01 / 03</span>
-              <button class="sobre__carousel-arrow next" id="sobreNext" aria-label="Próxima foto" type="button">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
+            <span class="sobre__carousel-counter" id="sobreCounter">01 / 03</span>
           </div>
         </div>
         <div class="sobre__quote">"A escuta é o início de toda cura."</div>

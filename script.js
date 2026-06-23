@@ -312,18 +312,17 @@
         });
       }
     }
-
-    /* ---------- Carrossel Sobre o Profissional (Galeria Premium) ---------- */
+    /* ---------- Carrossel Sobre o Profissional (Galeria Premium com Miniaturas) ---------- */
     function initSobreCarousel() {
-      var sobrePrev = document.getElementById('sobrePrev');
-      var sobreNext = document.getElementById('sobreNext');
       var sobreCounter = document.getElementById('sobreCounter');
       var sobreTrack = document.getElementById('sobreTrack');
       var sobreCaption = document.getElementById('sobreCaption');
       var sobreProgress = document.getElementById('sobreProgress');
-      if (!sobreTrack || !sobrePrev || !sobreNext || !sobreCounter || !sobreCaption || !sobreProgress) return;
+      var sobreThumbsWrap = document.getElementById('sobreThumbs');
+      if (!sobreTrack || !sobreCounter || !sobreCaption || !sobreProgress || !sobreThumbsWrap) return;
 
       var sobreSlides = sobreTrack.querySelectorAll('.sobre__carousel-slide');
+      var sobreThumbs = sobreThumbsWrap.querySelectorAll('.sobre__thumb-item');
       var sobreCurrent = 0;
       var sobreTimer = null;
       var slideDuration = 6000;
@@ -343,6 +342,7 @@
         sobreCaption.style.opacity = '0';
         
         setTimeout(function () {
+          // Atualiza slides
           sobreSlides.forEach(function (slide, i) {
             var isActive = i === sobreCurrent;
             slide.classList.toggle('is-active', isActive);
@@ -352,6 +352,12 @@
               sobreCaption.style.opacity = '1';
             }
           });
+          
+          // Atualiza miniaturas
+          sobreThumbs.forEach(function (thumb, i) {
+            thumb.classList.toggle('is-active', i === sobreCurrent);
+          });
+
           sobreCounter.textContent = '0' + (sobreCurrent + 1) + ' / 0' + sobreSlides.length;
         }, 150);
 
@@ -377,14 +383,12 @@
         sobreProgress.style.width = '0%';
       };
 
-      sobrePrev.addEventListener('click', function () {
-        stopSobreAuto();
-        updateSobreCarousel(sobreCurrent - 1);
-      });
-
-      sobreNext.addEventListener('click', function () {
-        stopSobreAuto();
-        updateSobreCarousel(sobreCurrent + 1);
+      // Adiciona cliques nas miniaturas
+      sobreThumbs.forEach(function (thumb, idx) {
+        thumb.addEventListener('click', function () {
+          stopSobreAuto();
+          updateSobreCarousel(idx);
+        });
       });
 
       startSobreAuto();

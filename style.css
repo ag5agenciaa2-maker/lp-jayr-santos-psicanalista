@@ -1156,6 +1156,16 @@ a { color: inherit; }
   flex-direction: column;
   gap: 14px;
 }
+.sobre__carousel-container {
+  display: grid;
+  grid-template-columns: 1fr 88px;
+  gap: 16px;
+  width: 100%;
+}
+.sobre__carousel-main {
+  position: relative;
+  width: 100%;
+}
 .sobre__carousel-track {
   position: relative;
   aspect-ratio: 3.2 / 3.8;
@@ -1195,6 +1205,37 @@ a { color: inherit; }
   line-height: 1;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
+/* Miniaturas Navegadoras */
+.sobre__carousel-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sobre__thumb-item {
+  flex: 1;
+  border: 1.5px solid transparent;
+  background: var(--areia);
+  border-radius: 2px;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: all 0.3s var(--ease);
+  aspect-ratio: 3.2 / 3.8;
+}
+.sobre__thumb-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sobre__thumb-item:hover {
+  opacity: 0.85;
+}
+.sobre__thumb-item.is-active {
+  opacity: 1;
+  border-color: var(--azul);
+  box-shadow: 0 4px 12px rgba(27, 58, 92, 0.15);
+}
 /* Barra de tempo */
 .sobre__carousel-progress {
   width: 100%;
@@ -1227,31 +1268,6 @@ a { color: inherit; }
   flex: 1;
   transition: opacity 0.3s var(--ease);
 }
-.sobre__carousel-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.sobre__carousel-arrow {
-  background: none;
-  border: none;
-  color: var(--azul);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  border-radius: 50%;
-  border: 1px solid rgba(44, 94, 147, 0.15);
-  transition: all 0.3s var(--ease);
-}
-.sobre__carousel-arrow:hover {
-  background: var(--azul);
-  color: #fff;
-  border-color: var(--azul);
-  transform: translateY(-1px);
-}
 .sobre__carousel-counter {
   font-family: var(--ff-body);
   font-size: 13px;
@@ -1261,6 +1277,21 @@ a { color: inherit; }
   user-select: none;
   min-width: 48px;
   text-align: center;
+}
+/* Responsividade das miniaturas no mobile */
+@media (max-width: 980px) {
+  .sobre__carousel-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .sobre__carousel-thumbs {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .sobre__thumb-item {
+    flex: 0 0 68px;
+    aspect-ratio: 3.2 / 3.8;
+  }
 }
 .sobre__quote {
   position: absolute; right: -18px; bottom: 18px; max-width: 180px;
