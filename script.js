@@ -319,7 +319,7 @@
       var sobreCaption = document.getElementById('sobreCaption');
       var sobreProgress = document.getElementById('sobreProgress');
       var sobreThumbsWrap = document.getElementById('sobreThumbs');
-      if (!sobreTrack || !sobreCounter || !sobreCaption || !sobreProgress || !sobreThumbsWrap) return;
+      if (!sobreTrack || !sobreThumbsWrap) return;
 
       var sobreSlides = sobreTrack.querySelectorAll('.sobre__carousel-slide');
       var sobreThumbs = sobreThumbsWrap.querySelectorAll('.sobre__thumb-item');
@@ -328,39 +328,32 @@
       var slideDuration = 6000;
 
       var resetProgressBar = function () {
+        if (!sobreProgress) return;
         sobreProgress.style.transition = 'none';
         sobreProgress.style.width = '0%';
-        void sobreProgress.offsetWidth; // Força reflow
+        void sobreProgress.offsetWidth;
         sobreProgress.style.transition = 'width ' + slideDuration + 'ms linear';
         sobreProgress.style.width = '100%';
       };
 
       var updateSobreCarousel = function (index) {
         sobreCurrent = (index + sobreSlides.length) % sobreSlides.length;
-        
-        // Efeito fade na legenda
-        sobreCaption.style.opacity = '0';
-        
+        if (sobreCaption) sobreCaption.style.opacity = '0';
         setTimeout(function () {
-          // Atualiza slides
           sobreSlides.forEach(function (slide, i) {
             var isActive = i === sobreCurrent;
             slide.classList.toggle('is-active', isActive);
-            if (isActive) {
+            if (isActive && sobreCaption) {
               var cap = slide.getAttribute('data-caption');
               sobreCaption.textContent = cap;
               sobreCaption.style.opacity = '1';
             }
           });
-          
-          // Atualiza miniaturas
           sobreThumbs.forEach(function (thumb, i) {
             thumb.classList.toggle('is-active', i === sobreCurrent);
           });
-
-          sobreCounter.textContent = '0' + (sobreCurrent + 1) + ' / 0' + sobreSlides.length;
+          if (sobreCounter) sobreCounter.textContent = '0' + (sobreCurrent + 1) + ' / 0' + sobreSlides.length;
         }, 150);
-
         if (sobreTimer) {
           resetProgressBar();
         }
@@ -379,11 +372,12 @@
           clearInterval(sobreTimer);
           sobreTimer = null;
         }
-        sobreProgress.style.transition = 'none';
-        sobreProgress.style.width = '0%';
+        if (sobreProgress) {
+          sobreProgress.style.transition = 'none';
+          sobreProgress.style.width = '0%';
+        }
       };
 
-      // Adiciona cliques nas miniaturas
       sobreThumbs.forEach(function (thumb, idx) {
         thumb.addEventListener('click', function () {
           stopSobreAuto();
