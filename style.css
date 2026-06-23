@@ -1145,7 +1145,15 @@ a { color: inherit; }
 .sobre { padding: var(--pad-y) var(--pad-x); }
 .sobre__grid { display: grid; grid-template-columns: .85fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; }
 .sobre__photo { position: relative; }
-.sobre__plate { position: absolute; inset: 24px -24px -24px 24px; background: var(--areia); border-radius: 18px; }
+.sobre__plate {
+  position: absolute;
+  inset: 16px -16px -16px 16px;
+  background: linear-gradient(135deg, rgba(232, 223, 210, 0.35) 0%, rgba(247, 245, 240, 0.05) 100%);
+  border: 1px solid rgba(232, 223, 210, 0.6);
+  border-radius: 8px;
+  box-shadow: 0 15px 35px rgba(27, 58, 92, 0.02);
+  z-index: 0;
+}
 .sobre__carousel {
   position: relative;
   background: #ffffff;
