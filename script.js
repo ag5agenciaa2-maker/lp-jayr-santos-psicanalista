@@ -79,98 +79,106 @@
       Array.prototype.forEach.call(revealEls, function (el) { el.classList.add('is-visible'); });
     }
 
-    /* ---------- Depoimentos (carrossel fade) ---------- */
-    var testimonials = [
-      { name: 'Rosiléa Chaves', when: 'há 1 mês', text: 'Excelente profissional! Tem feito um trabalho maravilhoso com casais! Super indico!' },
-      { name: 'Gerson Dione', when: 'há 1 mês', text: 'Muito bom, profissional dedicado e muito bem capacitado.' },
-      { name: 'Rosilene Barbosa', when: 'há 1 mês', text: 'Um excelente profissional, comprometido e ético.' },
-      { name: 'Thiago Ferreira Mendes', when: 'há 1 mês', text: 'Excelente profissional, me ajudou muito.' },
-      { name: 'Rosane Chaves', when: 'há 1 mês', text: 'Excelente profissional, super indico!!' },
-      { name: 'Celene Rodrigues', when: 'há 1 mês', text: 'Excelente profissional!' },
-      { name: 'Franklin Augusto', when: 'há 1 mês', text: 'Ótimo profissional, super indico.' },
-      { name: 'Roseli Chaves', when: 'há 1 mês', text: 'Ótimo profissional!' },
-      { name: 'Leticia Chaves', when: 'há 1 mês', text: 'Excelente profissional.' },
-      { name: 'Juliana Chaves Barbosa', when: 'há 1 mês', text: 'Ótimo profissional. Recomendo!' }
-    ];
+    /* ---------- Depoimentos (carrossel minimalista) ---------- */
     var stage = document.getElementById('depoStage');
-    var dotsWrap = document.getElementById('depoDots');
-    var current = 0, timer = null;
+    var counter = document.getElementById('depoCounter');
+    var prevBtn = document.getElementById('depoPrev');
+    var nextBtn = document.getElementById('depoNext');
 
-    if (stage && dotsWrap) {
-      testimonials.forEach(function (t, i) {
-        var slide = document.createElement('div');
-        slide.className = 't-slide' + (i === 0 ? ' is-active' : '');
-        slide.innerHTML =
-          '<span class="stars">★★★★★</span>' +
-          '<blockquote>“' + t.text + '”</blockquote>' +
-          '<cite><strong>' + t.name + '</strong><span>' + t.when + '</span></cite>';
-        stage.appendChild(slide);
-
-        var dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = i === 0 ? 'is-active' : '';
-        dot.setAttribute('aria-label', 'Ver depoimento ' + (i + 1));
-        dot.addEventListener('click', function () { go(i); });
-        dotsWrap.appendChild(dot);
-      });
-
+    if (stage) {
       var slides = stage.querySelectorAll('.t-slide');
-      var dots = dotsWrap.querySelectorAll('button');
+      var total = slides.length;
+      var current = 0;
+      var timer = null;
 
-      var go = function (n) {
-        current = (n + testimonials.length) % testimonials.length;
-        slides.forEach(function (s, i) { s.classList.toggle('is-active', i === current); });
-        dots.forEach(function (d, i) { d.classList.toggle('is-active', i === current); });
+      var updateCounter = function (index) {
+        if (counter) {
+          var currentNum = (index + 1).toString().padStart(2, '0');
+          var totalNum = total.toString().padStart(2, '0');
+          counter.innerHTML = 
+            '<span class="depo__counter-current">' + currentNum + '</span>' +
+            '<span class="depo__counter-sep">/</span>' +
+            '<span class="depo__counter-total">' + totalNum + '</span>';
+        }
       };
+
+      var go = function (index) {
+        current = (index + total) % total;
+        
+        slides.forEach(function (s, i) {
+          s.classList.toggle('is-active', i === current);
+        });
+        
+        updateCounter(current);
+      };
+
       var next = function () { go(current + 1); };
       var prev = function () { go(current - 1); };
 
-      var start = function () { stop(); timer = setInterval(next, 5500); };
+      var start = function () { stop(); timer = setInterval(next, 6000); };
       var stop = function () { if (timer) clearInterval(timer); };
 
-      var nextBtn = document.getElementById('depoNext');
-      var prevBtn = document.getElementById('depoPrev');
       if (nextBtn) nextBtn.addEventListener('click', function () { next(); start(); });
       if (prevBtn) prevBtn.addEventListener('click', function () { prev(); start(); });
 
+      // Suporte a swipe de toque (mobile)
+      var touchStartX = 0;
+      var touchEndX = 0;
+
+      stage.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+        stop();
+      }, { passive: true });
+
+      stage.addEventListener('touchend', function (e) {
+        touchEndX = e.changedTouches[0].screenX;
+        var diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) {
+            next();
+          } else {
+            prev();
+          }
+        }
+        start();
+      }, { passive: true });
+
       var depo = document.getElementById('depoimentos');
-      depo.addEventListener('mouseenter', stop);
-      depo.addEventListener('mouseleave', start);
+      if (depo) {
+        depo.addEventListener('mouseenter', stop);
+        depo.addEventListener('mouseleave', start);
+      }
+      
+      // Inicializa o contador e inicia a rolagem
+      updateCounter(0);
       start();
     }
 
     /* ---------- FAQ accordion ---------- */
-    var faqs = [
-      { q: 'Qual a diferença entre psicanálise e terapia?', a: 'A psicanálise é um método que investiga o inconsciente a partir da fala livre. Diferente de abordagens focadas apenas no comportamento ou em soluções rápidas, ela busca a raiz dos conflitos — o que se repete, o que angustia e o que ainda não foi posto em palavras — promovendo uma transformação mais profunda e duradoura.' },
-      { q: 'Como funciona uma sessão?', a: 'Você fala livremente sobre o que vier à mente — pensamentos, sentimentos, memórias, sonhos — enquanto eu escuto de forma atenta e sem julgamentos. A partir dessa escuta, construímos juntos sentidos para aquilo que incomoda. As sessões costumam ter frequência semanal.' },
-      { q: 'O atendimento é presencial ou online?', a: 'Ambos. Atendo presencialmente no West Offices, em Campo Grande – RJ, e também online por vídeo, com o mesmo cuidado e sigilo. Você escolhe o formato que for mais confortável e viável para a sua rotina.' },
-      { q: 'Tudo o que eu falar é sigiloso?', a: 'Sim, integralmente. O sigilo é um pilar ético do trabalho psicanalítico: tudo o que é dito em sessão permanece estritamente entre nós. É essa garantia que torna possível falar com liberdade.' },
-      { q: 'Como é a primeira sessão?', a: 'A primeira conversa é um encontro sem compromisso de continuidade. É o momento de você me contar o que o traz, esclarecer dúvidas e sentir se há sintonia. A partir daí, combinamos juntos como seguir.' }
-    ];
     var faqList = document.getElementById('faqList');
     if (faqList) {
-      faqs.forEach(function (f, i) {
-        var item = document.createElement('div');
-        item.className = 'faq__item' + (i === 0 ? ' is-open' : '');
-        item.innerHTML =
-          '<button class="faq__q" type="button" aria-expanded="' + (i === 0) + '">' +
-            '<span>' + f.q + '</span><span class="faq__icon">+</span>' +
-          '</button>' +
-          '<div class="faq__a"><p>' + f.a + '</p></div>';
-        faqList.appendChild(item);
+      var items = faqList.querySelectorAll('.faq__item');
+      
+      // Ajusta o max-height inicial do item aberto
+      var firstOpenAns = faqList.querySelector('.faq__item.is-open .faq__a');
+      if (firstOpenAns) {
+        firstOpenAns.style.maxHeight = firstOpenAns.scrollHeight + 'px';
+      }
 
+      Array.prototype.forEach.call(items, function (item) {
         var btn = item.querySelector('.faq__q');
         var ans = item.querySelector('.faq__a');
-        if (i === 0) ans.style.maxHeight = ans.scrollHeight + 'px';
 
         btn.addEventListener('click', function () {
           var isOpen = item.classList.contains('is-open');
+          
           // fecha todos
-          Array.prototype.forEach.call(faqList.querySelectorAll('.faq__item'), function (it) {
+          Array.prototype.forEach.call(items, function (it) {
             it.classList.remove('is-open');
             it.querySelector('.faq__a').style.maxHeight = '0px';
             it.querySelector('.faq__q').setAttribute('aria-expanded', 'false');
           });
+
           if (!isOpen) {
             item.classList.add('is-open');
             ans.style.maxHeight = ans.scrollHeight + 'px';
@@ -269,50 +277,40 @@
       });
     }
 
-    /* ---------- WhatsApp Premium (Balão + Notificação) ---------- */
-    function initWaPremium() {
-      var bubble = document.getElementById('wa-message-bubble');
-      var typing = document.getElementById('wa-typing');
-      var realMessage = document.getElementById('wa-real-message');
-      var badge = document.getElementById('wa-notification');
+    /* ---------- WhatsApp (balão simples) ---------- */
+    function initWaBubble() {
+      var bubble = document.getElementById('wa-bubble');
       var closeBtn = document.getElementById('wa-close-btn');
       var mainBtn = document.getElementById('wa-main-btn');
+      var shown = false;
 
       if (!bubble) return;
 
-      // 1. Mostrar o balão após 6 segundos
+      // Mostrar o balão após 8 segundos, apenas uma vez
       setTimeout(function () {
-        bubble.classList.add('show');
-        
-        // 2. Simular digitação por 2.5 segundos antes de mostrar a mensagem
-        setTimeout(function () {
-          if (typing) typing.style.display = 'none';
-          if (realMessage) realMessage.style.display = 'block';
-        }, 2500);
-
-      }, 6000);
+        if (!shown) {
+          bubble.classList.add('show');
+          shown = true;
+        }
+      }, 8000);
 
       // Fechar balão
       if (closeBtn) {
         closeBtn.addEventListener('click', function (e) {
           e.preventDefault();
           bubble.classList.remove('show');
-          // Mostrar notificação com delay de 2 segundos após fechar
-          setTimeout(function () {
-            if (badge) badge.classList.add('show');
-          }, 2000);
         });
       }
 
-      // Ao clicar no botão flutuante principal
+      // Ao clicar no botão, esconder balão
       if (mainBtn) {
         mainBtn.addEventListener('click', function () {
           bubble.classList.remove('show');
-          if (badge) badge.classList.remove('show');
         });
       }
     }
-    /* ---------- Carrossel Sobre o Profissional (Galeria Premium com Miniaturas) ---------- */
+
+    /* ---------- Carrossel Sobre o Profissional (Galeria com Miniaturas) ---------- */
     function initSobreCarousel() {
       var sobreCounter = document.getElementById('sobreCounter');
       var sobreTrack = document.getElementById('sobreTrack');
@@ -388,8 +386,63 @@
       startSobreAuto();
     }
 
-    initWaPremium();
+    /* ---------- Scroll Parallax na Hero (Estilo Capa de Revista) ---------- */
+    function initHeroParallax() {
+      var heroImg = document.querySelector('.hero__portrait img');
+      if (!heroImg) return;
+
+      var ticking = false;
+
+      window.addEventListener('scroll', function () {
+        if (window.innerWidth < 980) return;
+
+        if (!ticking) {
+          window.requestAnimationFrame(function () {
+            var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            var translateVal = scrollY * 0.22; // 22% de velocidade de scroll
+            if (scrollY < window.innerHeight) {
+              heroImg.style.setProperty('--hero-translate', translateVal + 'px');
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+
+    /* ---------- Navbar Dinâmica no Scroll (Ilha Flutuante Premium) ---------- */
+    function initNavbarScroll() {
+      var nav = document.querySelector('.nav');
+      if (!nav) return;
+
+      var ticking = false;
+
+      var updateNavbar = function () {
+        var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollY > 50) {
+          nav.classList.add('is-scrolled');
+        } else {
+          nav.classList.remove('is-scrolled');
+        }
+      };
+
+      window.addEventListener('scroll', function () {
+        if (!ticking) {
+          window.requestAnimationFrame(function () {
+            updateNavbar();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      updateNavbar();
+    }
+
+    initWaBubble();
     initSobreCarousel();
+    initHeroParallax();
+    initNavbarScroll();
 
   });
 })();
