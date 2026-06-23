@@ -605,25 +605,23 @@ a { color: inherit; }
   border: 1px solid rgba(27, 58, 92, 0.08);
 }
 
-/* Proporções iniciais (Tensão Visual Assimétrica) */
+/* Proporções iniciais (Tamanho Simétrico) */
 .col-individual {
-  flex: 5.7;
+  flex: 1;
   background: #ffffff;
 }
 
 .col-casal {
-  flex: 4.3;
+  flex: 1;
   background: rgba(232, 223, 210, 0.22); /* Areia sutil de fundo */
 }
 
-/* Comportamento elástico no hover */
+/* Comportamento no hover (Sem alterar proporções) */
 .servicos__flex-container:hover .col-individual:hover {
-  flex: 6.5;
   box-shadow: 0 25px 55px rgba(27, 58, 92, 0.06);
 }
 
 .servicos__flex-container:hover .col-casal:hover {
-  flex: 5.7;
   background: rgba(232, 223, 210, 0.35);
   box-shadow: 0 25px 55px rgba(27, 58, 92, 0.06);
 }
@@ -766,53 +764,57 @@ a { color: inherit; }
   color: var(--azul);
 }
 
-/* Link de Conversa WhatsApp */
+/* Botão Premium de Conversa WhatsApp */
 .servico-col__link {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-size: 14.5px;
+  gap: 10px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--azul);
   text-decoration: none;
-  transition: color 0.3s var(--ease);
+  padding: 12px 24px;
+  border-radius: 44px;
+  transition: all 0.3s var(--ease);
   width: fit-content;
   position: relative;
   z-index: 2;
+  background: transparent;
 }
 
 .servico-col__link span {
   position: relative;
-  padding-bottom: 2px;
-}
-
-.servico-col__link span::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1.5px;
-  background-color: var(--azul);
-  transition: width 0.35s var(--ease);
 }
 
 .servico-col__link svg {
-  transition: transform 0.35s var(--ease);
+  transition: transform 0.3s var(--ease);
+  stroke: currentColor;
+  flex-shrink: 0;
 }
 
-.servico-col__link:hover {
-  color: var(--noturno);
+/* Individual (Azul) */
+.col-individual .servico-col__link {
+  border: 1.5px solid var(--azul);
+  color: var(--azul);
 }
 
-.servico-col__link:hover span::after {
-  width: 100%;
-  background-color: var(--noturno);
+.col-individual .servico-col__link:hover {
+  background: var(--azul);
+  color: #ffffff;
+}
+
+/* Casal (Verde Sálvia) */
+.col-casal .servico-col__link {
+  border: 1.5px solid var(--salvia);
+  color: var(--salvia);
+}
+
+.col-casal .servico-col__link:hover {
+  background: var(--salvia);
+  color: #ffffff;
 }
 
 .servico-col__link:hover svg {
-  transform: translateX(6px);
-  color: var(--noturno);
+  transform: translateX(4px);
 }
 
 /* Ajustes de responsividade para telas menores */
