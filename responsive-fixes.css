@@ -1,0 +1,840 @@
+/* ============================================================
+   CORREÇÕES DE RESPONSIVIDADE - Jayr Santos Psicanalista
+   Breakpoints padronizados: 480px | 768px | 1024px
+   ============================================================ */
+
+/* ============================================================
+   1. HERO - Ajustes Mobile
+   ============================================================ */
+
+/* Ajuste da hero em tablets pequenos e mobile */
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding-top: 80px;
+    position: relative;
+    background: var(--offwhite);
+  }
+  
+  /* Esconde o portrait original em mobile */
+  .hero__portrait {
+    display: none;
+  }
+  
+  /* Background image para mobile */
+  .hero__bg-mobile {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.png');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero__copy {
+    padding: 18vh var(--pad-x) 40px var(--pad-x);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero__title {
+    font-size: clamp(32px, 8vw, 48px);
+  }
+  
+  .hero__title-line-mask {
+    overflow: visible;
+  }
+  
+  .hero__title-line-text {
+    transform: none;
+    animation: none;
+  }
+  
+  .hero__lead {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .hero__cta {
+    justify-content: center;
+  }
+  
+  .hero__line-h,
+  .hero__line-v {
+    display: none;
+  }
+}
+
+/* Ajuste de fontes da hero em telas pequenas */
+@media (max-width: 480px) {
+  .hero__title {
+    font-size: clamp(28px, 10vw, 42px);
+    line-height: 1.05;
+  }
+  
+  .hero__lead {
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 100%;
+  }
+  
+  .hero__cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .hero__cta .btn--solid,
+  .hero__cta .btn--link {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 14.5px;
+  }
+  
+  /* Esconder marcas d'água em mobile muito pequeno */
+  .hero__psi-watermark,
+  .hero__word {
+    display: none;
+  }
+  
+  /* Ajuste do background em telas muito pequenas */
+  .hero__bg-mobile {
+    opacity: 0.12;
+    background-position: center top;
+  }
+  
+  .hero__copy {
+    padding: 14vh var(--pad-x) 30px var(--pad-x);
+  }
+}
+
+/* Esconde o background mobile em desktop */
+@media (min-width: 769px) {
+  .hero__bg-mobile {
+    display: none;
+  }
+}
+
+/* ============================================================
+   2. NAVBAR - Ajustes Mobile
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .nav {
+    top: 12px;
+    width: calc(100% - 24px);
+    padding: 12px 16px;
+    gap: 12px;
+  }
+  
+  .nav__name strong {
+    font-size: 15px;
+  }
+  
+  .nav__name em {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+  }
+  
+  .nav__mark {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .nav__mark img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Ajuste do menu hamburger para aparecer em 768px */
+@media (max-width: 768px) {
+  .nav__links[data-desktop-nav] {
+    display: none;
+  }
+  
+  .nav__burger {
+    display: flex;
+  }
+}
+
+/* Drawer mobile ajustes */
+@media (max-width: 480px) {
+  .drawer {
+    max-width: 100%;
+  }
+  
+  .drawer__nav > a:not(.btn) {
+    font-size: 20px;
+  }
+}
+
+/* ============================================================
+   3. IMPACTO - Grid responsivo
+   ============================================================ */
+
+/* 2 colunas em tablet */
+@media (max-width: 1024px) {
+  .impacto__header {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 36px;
+    margin-bottom: 48px;
+  }
+  
+  .impacto__title {
+    max-width: 100%;
+  }
+  
+  .impacto__tessitura {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  .impacto__card-premium {
+    padding: 36px 28px;
+  }
+  
+  .card-premium__num {
+    font-size: 64px;
+  }
+}
+
+/* 1 coluna em mobile */
+@media (max-width: 768px) {
+  .impacto__tessitura {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .impacto__card-premium {
+    padding: 32px 24px;
+  }
+  
+  .impacto__card-premium:hover {
+    transform: translateY(-6px);
+  }
+  
+  .card-premium__num {
+    font-size: 56px;
+  }
+  
+  .impacto__bg-text {
+    display: none;
+  }
+}
+
+/* ============================================================
+   4. SERVIÇOS - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .servicos__flex-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .servico-col {
+    flex: none !important;
+    opacity: 1 !important;
+  }
+  
+  .servico-col__inner {
+    padding: 32px 24px;
+  }
+  
+  .servico-col__inner::before {
+    inset: 10px;
+  }
+  
+  .servico-col h3 {
+    font-size: 24px;
+    max-width: 100%;
+  }
+  
+  .servico-col__concept,
+  .servico-col__desc {
+    max-width: 100%;
+  }
+  
+  .servico-col__num {
+    font-size: 64px;
+    bottom: auto;
+    top: 24px;
+    right: 24px;
+  }
+  
+  .servico-col__link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================================
+   5. ACOLHIMENTO - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .acolhe__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .acolhe__visual {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  
+  .acolhe__heading {
+    max-width: 100%;
+  }
+  
+  .acolhe__lead {
+    max-width: 100%;
+  }
+  
+  .acolhe__watermark {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .acolhe__value-item {
+    padding: 18px 0;
+    gap: 16px;
+  }
+  
+  .acolhe__value-item:hover {
+    transform: translateX(4px);
+  }
+  
+  .acolhe__value-num {
+    font-size: 22px;
+  }
+  
+  .acolhe__value-body strong {
+    font-size: 16px;
+  }
+  
+  .acolhe__value-body em {
+    font-size: 14px;
+  }
+  
+  .acolhe__frame {
+    padding: 10px;
+  }
+  
+  .acolhe__frame-accent {
+    top: 18px;
+    right: -10px;
+    bottom: -10px;
+    left: 18px;
+  }
+}
+
+/* ============================================================
+   6. SOBRE - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .sobre__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .sobre__photo {
+    max-width: 480px;
+    margin: 0 auto 40px;
+  }
+  
+  .sobre__carousel-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .sobre__carousel-thumbs {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .sobre__thumb-item {
+    flex: 0 0 60px;
+    aspect-ratio: 1;
+  }
+  
+  .sobre__carousel-num {
+    font-size: 48px;
+  }
+  
+  .sobre__quote {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    max-width: 100%;
+    margin-top: 20px;
+  }
+  
+  .sobre__text {
+    max-width: 100%;
+  }
+  
+  .facts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Carrossel mobile - só aparece em telas pequenas */
+.sobre__carousel-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Esconde o carrossel original em mobile */
+  .sobre__photo {
+    display: none;
+  }
+  
+  /* Mostra o carrossel mobile abaixo do título */
+  .sobre__carousel-mobile {
+    display: block;
+    margin: 24px auto 32px;
+    max-width: 320px;
+  }
+  
+  /* Moldura branca estilo Polaroid */
+  .sobre__carousel-mobile-frame {
+    background: #fff;
+    padding: 12px 12px 16px;
+    border-radius: 4px;
+    box-shadow: 0 8px 30px rgba(27, 58, 92, 0.12);
+  }
+  
+  /* Imagem principal */
+  .sobre__carousel-mobile-main {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--areia);
+    margin-bottom: 12px;
+  }
+  
+  .sobre__carousel-mobile-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s var(--ease);
+  }
+  
+  .sobre__carousel-mobile-slide.is-active {
+    opacity: 1;
+  }
+  
+  .sobre__carousel-mobile-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Miniaturas embaixo */
+  .sobre__carousel-mobile-thumbs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .sobre__carousel-mobile-thumb {
+    width: 80px;
+    height: 80px;
+    border-radius: 2px;
+    border: 2px solid transparent;
+    background: var(--areia);
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s var(--ease);
+  }
+  
+  .sobre__carousel-mobile-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .sobre__carousel-mobile-thumb:hover {
+    opacity: 0.9;
+  }
+  
+  .sobre__carousel-mobile-thumb.is-active {
+    opacity: 1;
+    border-color: var(--azul);
+    box-shadow: 0 0 0 2px rgba(44, 94, 147, 0.2);
+  }
+}
+
+@media (max-width: 768px) {
+  .sobre__plate {
+    inset: 10px -10px -10px 10px;
+  }
+  
+  .sobre__carousel {
+    padding: 12px;
+  }
+  
+  .facts {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  
+  .facts > div {
+    padding-left: 12px;
+  }
+  
+  .facts strong {
+    font-size: 18px;
+  }
+}
+
+/* ============================================================
+   7. DEPOIMENTOS - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .depo__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .depo__intro {
+    position: relative;
+    top: auto;
+    text-align: center;
+  }
+  
+  .depo__intro .section-title {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .depo__intro .eyebrow {
+    justify-content: center;
+  }
+  
+  .depo__note {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .depo__google-link {
+    margin: 0 auto;
+  }
+  
+  .depo__nav-container {
+    padding-left: 0;
+  }
+  
+  .t-slide {
+    padding-left: 0;
+    text-align: center;
+  }
+  
+  .t-slide blockquote {
+    font-size: clamp(18px, 4vw, 24px);
+  }
+}
+
+@media (max-width: 768px) {
+  .t-slide blockquote {
+    font-size: 18px;
+  }
+  
+  .depo__arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .depo__counter {
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   8. FAQ - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .faq__q {
+    padding: 18px 20px;
+    font-size: 16px;
+    gap: 14px;
+  }
+  
+  .faq__a p {
+    padding: 0 20px 20px 20px;
+    font-size: 14.5px;
+  }
+  
+  .faq__icon {
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
+  }
+  
+  .faq__footer p {
+    font-size: 16px;
+  }
+}
+
+/* ============================================================
+   9. CONTATO - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .contato__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .contato__lead {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .contato__title {
+    font-size: clamp(28px, 8vw, 42px);
+  }
+  
+  .card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  
+  .field label {
+    font-size: 12.5px;
+  }
+  
+  .field input,
+  .field textarea,
+  .field select {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  
+  .card__ok h3 {
+    font-size: 20px;
+  }
+  
+  .card__ok p {
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   10. LOCALIZAÇÃO - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .local__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .local__map-frame {
+    min-height: 240px;
+  }
+  
+  .local__map-frame iframe {
+    min-height: 240px;
+  }
+  
+  .local__info {
+    max-width: 100%;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .local__header {
+    text-align: center;
+  }
+  
+  .local__header .eyebrow {
+    justify-content: center;
+  }
+  
+  .local__row p {
+    font-size: 14px;
+  }
+  
+  .local__cta {
+    margin-top: 20px;
+  }
+}
+
+/* ============================================================
+   11. RODAPÉ - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 20px 30px;
+  }
+  
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .footer-brand__desc {
+    max-width: 100%;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .footer-credits-left {
+    align-items: flex-start;
+  }
+  
+  .footer-legal-links {
+    justify-content: flex-start;
+  }
+}
+
+/* ============================================================
+   12. WHATSAPP - Ajustes responsivos
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .wa-container {
+    bottom: 16px;
+    right: 16px;
+  }
+  
+  .wa-bubble {
+    width: 260px;
+    bottom: 68px;
+    right: -4px;
+  }
+  
+  .wa-float-btn {
+    width: 52px;
+    height: 52px;
+  }
+  
+  .wa-float-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .wa-bubble {
+    width: 230px;
+    padding: 14px;
+  }
+  
+  .wa-message-text p {
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   13. UTILITÁRIOS - Correções gerais
+   ============================================================ */
+
+/* Garantir que nada estoure a viewport */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: clamp(26px, 7vw, 36px);
+    max-width: 100%;
+  }
+  
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  
+  .eyebrow__line {
+    width: 24px;
+  }
+  
+  .btn--lg {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+  
+  .btn--solid,
+  .btn--white {
+    padding: 14px 24px;
+  }
+}
+
+/* Ajuste de padding global em mobile */
+@media (max-width: 480px) {
+  :root {
+    --pad-x: 16px;
+  }
+  
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Correção para tabelas/elementos largos */
+img, video, iframe, embed, object {
+  max-width: 100%;
+}
+
+/* Garantir que textos longos quebrem corretamente */
+body {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ajuste de touch targets em mobile */
+@media (max-width: 768px) {
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .faq__q {
+    min-height: 48px;
+  }
+  
+  .sobre__thumb-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Psicanalista em Campo Grande RJ | Jayr Santos Psicanalista</title>
   <meta name="description" content="Psicanálise para adultos e casais em Campo Grande, Rio de Janeiro. Escuta atenta, acolhedora e ética. Atendimento presencial e online com sigilo absoluto." />
-  <link rel="canonical" href="https://jayrsantospsicanalista.com/" />
+  <link rel="canonical" href="http://www.jayrsantospsicalista.ag5agencia.site/" />
   <link rel="icon" href="assets/favicon-jayr-santos-psicanalista.ico" />
 
   <!-- Local SEO (Geo Tags) -->
@@ -15,23 +15,41 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://jayrsantospsicanalista.com/" />
+  <meta property="og:url" content="http://www.jayrsantospsicalista.ag5agencia.site/" />
   <meta property="og:title" content="Psicanalista em Campo Grande RJ | Jayr Santos Psicanalista" />
   <meta property="og:description" content="Psicanálise para adultos e casais em Campo Grande, Rio de Janeiro. Atendimento presencial e online com sigilo absoluto." />
-  <meta property="og:image" content="https://jayrsantospsicanalista.com/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
+  <meta property="og:image" content="http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://jayrsantospsicanalista.com/" />
+  <meta property="twitter:url" content="http://www.jayrsantospsicalista.ag5agencia.site/" />
   <meta property="twitter:title" content="Psicanalista em Campo Grande RJ | Jayr Santos Psicanalista" />
-  <meta property="twitter:description" content="Psicanálise para adultos e casais em Campo Grande, Rio de Janeiro. Atendimento presencial e online com sigilo absoluto." />
-  <meta property="twitter:image" content="https://jayrsantospsicanalista.com/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
+  <meta property="twitter:description" content="Psicanálise para adults e casais em Campo Grande, Rio de Janeiro. Atendimento presencial e online com sigilo absoluto." />
+  <meta property="twitter:image" content="http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
 
+  <!-- PageSpeed optimization: Preload da imagem LCP (Hero) -->
+  <link rel="preload" href="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.webp" as="image" fetchpriority="high" />
+
+  <!-- PageSpeed optimization: Preload de CSS principal -->
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="preload" href="responsive-fixes.css" as="style" />
+
+  <!-- Conectividade para Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Google Fonts: Async-load -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="cookie-banner.css" />
+  <link rel="stylesheet" href="responsive-fixes.css" />
+
+  <!-- CSS não crítico (cookie banner): Async-load -->
+  <link rel="preload" href="cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="cookie-banner.css" /></noscript>
+</head>
 
   <!-- JSON-LD Structured Data (SEO / GEO / Rich Snippets) -->
   <script type="application/ld+json">
@@ -40,45 +58,146 @@
     "@graph": [
       {
         "@type": "MedicalBusiness",
-        "@id": "https://jayrsantospsicanalista.com/#business",
+        "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#business",
         "name": "Jayr Santos Psicanalista",
-        "image": "https://jayrsantospsicanalista.com/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp",
-        "url": "https://jayrsantospsicanalista.com/",
-        "telephone": "+5521991028333",
+        "alternateName": "Jayr Santos Psicanalista | Psicanálise Online e Presencial em Campo Grande RJ | Sessões de Casal e Individual",
+        "url": "http://www.jayrsantospsicalista.ag5agencia.site/",
+        "logo": "http://www.jayrsantospsicalista.ag5agencia.site/assets/logo-jayr-santos-psicanalista.webp",
+        "image": [
+          "http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp",
+          "http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-atendimento-sobre.webp",
+          "http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-consultorio.webp"
+        ],
+        "description": "Psicanálise para adultos e casais em Campo Grande, Rio de Janeiro. Escuta atenta, acolhedora e ética. Atendimento presencial e online com sigilo absoluto.",
+        "telephone": "+55-21-99102-8333",
+        "email": "jayrfilho100@gmail.com",
         "priceRange": "$$",
+        "currenciesAccepted": "BRL",
+        "foundingDate": "2025-06",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Estrada do Mendanha, 789",
-          "addressLocality": "Campo Grande",
+          "streetAddress": "West Offices - Estrada do Mendanha, 789",
+          "addressLocality": "Rio de Janeiro",
           "addressRegion": "RJ",
           "postalCode": "23087-283",
           "addressCountry": "BR"
         },
         "geo": {
           "@type": "GeoCoordinates",
-          "latitude": -22.8845,
-          "longitude": -43.5578
+          "latitude": -22.88260840,
+          "longitude": -43.55677710
         },
-        "openingHoursSpecification": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday"
-          ],
-          "opens": "08:00",
-          "closes": "21:00"
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "opens": "08:00",
+            "closes": "18:00"
+          }
+        ],
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Rio de Janeiro",
+            "containedInPlace": {
+              "@type": "State",
+              "name": "Rio de Janeiro"
+            }
+          },
+          { "@type": "Place", "name": "Campo Grande" },
+          { "@type": "Place", "name": "Santa Cruz" },
+          { "@type": "Place", "name": "Paciência" },
+          { "@type": "Place", "name": "Cosmos" },
+          { "@type": "Place", "name": "Inhoaíba" },
+          { "@type": "Place", "name": "Senador Vasconcelos" },
+          { "@type": "Place", "name": "Santíssimo" },
+          { "@type": "Place", "name": "Bangu" }
+        ],
+        "founder": {
+          "@type": "Person",
+          "name": "Jayr Santos",
+          "jobTitle": "Psicanalista Clínico",
+          "description": "Psicanalista dedicado ao atendimento de adultos e casais, oferecendo um espaço de acolhimento, sigilo e ética.",
+          "image": "http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-atendimento-sobre.webp",
+          "sameAs": [
+            "https://www.instagram.com/jayrsantospsicanalista/"
+          ]
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Serviços de Jayr Santos Psicanalista",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Sessões psicanalíticas individuais para adultos",
+                "description": "Atendimento clínico individual para adultos, focado na escuta qualificada e investigação do inconsciente para manejo de conflitos, angústias e repetições.",
+                "areaServed": "Rio de Janeiro – RJ",
+                "provider": {
+                  "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#business"
+                }
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Sessões de escuta e terapia para casais",
+                "description": "Atendimento terapêutico para casais, oferecendo um espaço mediado para compreender a dinâmica da relação, as projeções e reconstruir o diálogo.",
+                "areaServed": "Rio de Janeiro – RJ",
+                "provider": {
+                  "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#business"
+                }
+              }
+            }
+          ]
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5",
+          "reviewCount": "12",
+          "bestRating": "5",
+          "worstRating": "1"
         },
         "sameAs": [
+          "https://share.google/nkfxe4vlQKAWGgswC",
           "https://www.instagram.com/jayrsantospsicanalista/"
         ]
       },
       {
+        "@type": "WebSite",
+        "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#website",
+        "url": "http://www.jayrsantospsicalista.ag5agencia.site/",
+        "name": "Jayr Santos Psicanalista",
+        "publisher": {
+          "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#business"
+        },
+        "inLanguage": "pt-BR"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#webpage",
+        "url": "http://www.jayrsantospsicalista.ag5agencia.site/",
+        "name": "Psicanalista em Campo Grande RJ | Jayr Santos Psicanalista",
+        "description": "Psicanálise para adultos e casais em Campo Grande, Rio de Janeiro. Escuta atenta, acolhedora e ética. Atendimento presencial e online com sigilo absoluto.",
+        "isPartOf": {
+          "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#website"
+        },
+        "about": {
+          "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#business"
+        },
+        "inLanguage": "pt-BR"
+      },
+      {
         "@type": "FAQPage",
-        "@id": "https://jayrsantospsicanalista.com/#faq",
+        "@id": "http://www.jayrsantospsicalista.ag5agencia.site/#faq",
         "mainEntity": [
           {
             "@type": "Question",
@@ -121,21 +240,20 @@
 <body>
 
   <!-- ===== NAVBAR ===== -->
-  <nav class="nav" id="topo">
+  <nav class="nav" id="topo" aria-label="Navegação principal">
     <a href="#topo" class="nav__brand">
-      <span class="nav__mark"><img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" /></span>
+      <span class="nav__mark"><img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" /></span>
       <span class="nav__name">
         <strong>Jayr Santos</strong>
         <em>Psicanalista</em>
       </span>
     </a>
     <div class="nav__links" data-desktop-nav>
-      <a href="#inicio">início</a>
-      <a href="#servicos">atendimento</a>
-      <a href="#sobre">sobre</a>
-      <a href="#depoimentos">depoimentos</a>
-      <a href="#localizacao">onde estou</a>
-      <a href="#contato" class="btn btn--solid btn--sm js-wa">Agendar conversa</a>
+      <a href="#inicio">Início</a>
+      <a href="#servicos">Serviço</a>
+      <a href="#depoimentos">Depoimentos</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#contato">Contato</a>
     </div>
     <button class="nav__burger" data-burger aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -151,8 +269,8 @@
     <div class="hero__word" aria-hidden="true">escuta</div>
     <div class="hero__grid" data-hero-grid>
       <div class="hero__copy">
-        <p class="eyebrow reveal"><span class="eyebrow__line"></span>Psicanálise · Campo Grande – RJ</p>
-        <h1 class="hero__title" data-hero-animated-title>
+        <p class="eyebrow"><span class="eyebrow__line"></span>Psicanálise · Campo Grande – RJ</p>
+        <h1 class="hero__title">
           <span class="hero__title-line-mask">
             <span class="hero__title-line-text">A cura acontece</span>
           </span>
@@ -160,18 +278,19 @@
             <span class="hero__title-line-text">pela <em>fala</em>.</span>
           </span>
         </h1>
-        <p class="hero__lead reveal" data-delay="2">Uma escuta atenta, acolhedora e ética para quem deseja compreender seus conflitos internos, seus relacionamentos e a própria história. Atendimento a adultos e casais — presencial e online.</p>
-        <div class="hero__cta reveal" data-delay="3">
+        <p class="hero__lead">Uma escuta atenta, acolhedora e ética para quem deseja compreender seus conflitos internos, seus relacionamentos e a própria história. Atendimento a adultos e casais — presencial e online.</p>
+        <div class="hero__cta">
           <a href="#contato" class="btn btn--solid btn--lg js-wa">Agendar conversa</a>
           <a href="#servicos" class="btn btn--link">Conhecer o atendimento →</a>
         </div>
       </div>
-      <div class="hero__portrait reveal" data-delay="4" data-hero-portrait>
+      <div class="hero__portrait" data-hero-portrait>
         <div class="hero__line-v" aria-hidden="true"></div>
-        <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.png" alt="Psicanalista Jayr Santos em seu consultório" fetchpriority="high" loading="eager" decoding="async" />
+        <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.webp" alt="Psicanalista Jayr Santos em seu consultório" width="1024" height="1024" fetchpriority="high" loading="eager" decoding="async" />
       </div>
     </div>
-
+    <!-- Background image para mobile -->
+    <div class="hero__bg-mobile" aria-hidden="true"></div>
   </header>
 
 
@@ -298,6 +417,16 @@
       <div class="acolhe__content reveal">
         <span class="acolhe__label">um espaço seguro</span>
         <h2 class="acolhe__heading">Um espaço ético de<br><em>acolhimento</em> e <em>absoluto sigilo</em>.</h2>
+
+        <!-- Imagem mobile: aparece apenas em telas menores, entre título e texto -->
+        <div class="acolhe__visual-mobile">
+          <div class="acolhe__frame">
+            <div class="acolhe__img-wrapper">
+              <img src="assets/jayr-santos-sessao-casal-escuta.webp" alt="Psicanalista Jayr Santos em escuta analítica atenta durante sessão de terapia de casal no consultório em Campo Grande, Rio de Janeiro" loading="lazy" width="700" height="940" />
+            </div>
+          </div>
+        </div>
+
         <p class="acolhe__lead">A clínica se sustenta sobre um compromisso inegociável: a garantia de um setting reservado onde você pode falar sem reservas, sob a proteção do sigilo profissional e de uma escuta qualificada.</p>
 
         <!-- Diferenciais em lista editorial -->
@@ -349,25 +478,25 @@
             <div class="sobre__carousel-main">
               <div class="sobre__carousel-track" id="sobreTrack">
                 <div class="sobre__carousel-slide is-active" data-caption="Jayr Santos, Psicanalista clínico de adultos e casais.">
-                  <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos de pé com camisa azul em seu consultório" />
+                  <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos de pé com camisa azul em seu consultório" width="1122" height="1402" loading="lazy" />
                 </div>
                 <div class="sobre__carousel-slide" data-caption="Consultório West Offices — Espaço reservado, acolhedor e silencioso em Campo Grande.">
-                  <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório preparado para atendimento psicanalítico em Campo Grande" />
+                  <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório preparado para atendimento psicanalítico em Campo Grande" width="1080" height="1440" loading="lazy" />
                 </div>
                 <div class="sobre__carousel-slide" data-caption="Escuta analítica de alto padrão pautada na ética e absoluto sigilo.">
-                  <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.png" alt="Psicanalista Jayr Santos em escuta clínica atenta durante atendimento" />
+                  <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.webp" alt="Psicanalista Jayr Santos em escuta clínica atenta durante atendimento" width="1024" height="1024" loading="lazy" />
                 </div>
               </div>
             </div>
             <div class="sobre__carousel-thumbs" id="sobreThumbs">
               <button class="sobre__thumb-item is-active" data-slide-to="0" aria-label="Ver imagem 1" type="button">
-                <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos" />
+                <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos" width="1122" height="1402" loading="lazy" />
               </button>
               <button class="sobre__thumb-item" data-slide-to="1" aria-label="Ver imagem 2" type="button">
-                <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório West Offices" />
+                <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório West Offices" width="1080" height="1440" loading="lazy" />
               </button>
               <button class="sobre__thumb-item" data-slide-to="2" aria-label="Ver imagem 3" type="button">
-                <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.png" alt="Atendimento clínico" />
+                <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.webp" alt="Atendimento clínico" width="1024" height="1024" loading="lazy" />
               </button>
             </div>
           </div>
@@ -376,6 +505,33 @@
       <div class="reveal" data-delay="1">
         <p class="eyebrow eyebrow--salvia">sobre o profissional</p>
         <h2 class="section-title">Jayr Santos</h2>
+        <!-- Carrossel mobile (só aparece em telas pequenas) -->
+        <div class="sobre__carousel-mobile" data-sobre-carousel-mobile>
+          <div class="sobre__carousel-mobile-frame">
+            <div class="sobre__carousel-mobile-main" id="sobreTrackMobile">
+              <div class="sobre__carousel-mobile-slide is-active">
+                <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Psicanalista Jayr Santos" width="1122" height="1402" loading="lazy" />
+              </div>
+              <div class="sobre__carousel-mobile-slide">
+                <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="Consultório West Offices" width="1080" height="1440" loading="lazy" />
+              </div>
+              <div class="sobre__carousel-mobile-slide">
+                <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.webp" alt="Atendimento clínico" width="1024" height="1024" loading="lazy" />
+              </div>
+            </div>
+            <div class="sobre__carousel-mobile-thumbs">
+              <button class="sobre__carousel-mobile-thumb is-active" data-slide-to="0" aria-label="Ver imagem 1" type="button">
+                <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="" width="1122" height="1402" loading="lazy" />
+              </button>
+              <button class="sobre__carousel-mobile-thumb" data-slide-to="1" aria-label="Ver imagem 2" type="button">
+                <img src="assets/jayr-santos-psicanalista-consultorio.webp" alt="" width="1080" height="1440" loading="lazy" />
+              </button>
+              <button class="sobre__carousel-mobile-thumb" data-slide-to="2" aria-label="Ver imagem 3" type="button">
+                <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero-natural.webp" alt="" width="1024" height="1024" loading="lazy" />
+              </button>
+            </div>
+          </div>
+        </div>
         <p class="sobre__text">Psicanalista dedicado ao atendimento de adultos e casais, ofereço um espaço de acolhimento, sigilo e ética, onde a escuta analítica permite que cada pessoa encontre seus próprios caminhos.</p>
         <p class="sobre__text">Meu trabalho parte de uma convicção simples: é na fala, sustentada por uma escuta atenta e sem pressa, que a transformação se faz possível.</p>
         <div class="facts">
@@ -398,7 +554,7 @@
           
           <p class="depo__note">Relatos espontâneos compartilhados publicamente por pacientes no Google Maps. A confidencialidade e o sigilo absoluto do setting terapêutico são rigorosamente preservados.</p>
           
-          <a href="https://search.google.com/local/writereview?placeid=ChIJM-5pNrTnmwARyCgBZM5XGek" target="_blank" rel="noopener" class="depo__google-link">
+          <a href="https://search.google.com/local/writereview?placeid=ChIJM-5pNrTnmwARyCgBZM5XGek" target="_blank" rel="noopener noreferrer" class="depo__google-link">
             <span class="depo__google-text">Deixar minha avaliação no Google</span>
             <span class="depo__google-arrow">→</span>
           </a>
@@ -482,8 +638,8 @@
       </div>
       <div class="faq__list reveal" data-delay="1" id="faqList">
         <!-- Item 1 -->
-        <div class="faq__item is-open">
-          <button class="faq__q" type="button" aria-expanded="true">
+        <div class="faq__item">
+          <button class="faq__q" type="button" aria-expanded="false">
             <span>O atendimento é online ou presencial?</span>
             <span class="faq__icon">+</span>
           </button>
@@ -573,7 +729,7 @@
               </div>
             </div>
           </div>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=West+Offices+-+Estr.+do+Mendanha%2C+789+-+Campo+Grande%2C+Rio+de+Janeiro+-+RJ%2C+23087-283" target="_blank" rel="noopener" class="btn btn--solid local__cta">Como chegar <span class="btn__arrow">→</span></a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=West+Offices+-+Estr.+do+Mendanha%2C+789+-+Campo+Grande%2C+Rio+de+Janeiro+-+RJ%2C+23087-283" target="_blank" rel="noopener noreferrer" class="btn btn--solid local__cta">Como chegar <span class="btn__arrow">→</span></a>
         </div>
       </div>
     </div>
@@ -630,7 +786,7 @@
           <div class="card__check">✓</div>
           <h3>Mensagem preparada!</h3>
           <p>Abri o WhatsApp com a sua mensagem. Se não abriu automaticamente, toque no botão abaixo.</p>
-          <a href="#" target="_blank" rel="noopener" class="btn btn--solid" id="okWaLink">Abrir WhatsApp <span class="btn__arrow">→</span></a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn--solid" id="okWaLink">Abrir WhatsApp <span class="btn__arrow">→</span></a>
         </div>
       </div>
     </div>
@@ -643,7 +799,7 @@
       <!-- Coluna 1: Marca -->
       <div class="footer-brand">
         <a href="#topo" class="footer-brand__logo">
-          <img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" />
+          <img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" loading="lazy" />
           <span><strong>Jayr Santos</strong><em>Psicanalista</em></span>
         </a>
         <p class="footer-brand__desc">Escuta atenta, acolhedora e ética. Um espaço seguro para quem deseja compreender seus conflitos internos, seus relacionamentos e sua história.</p>
@@ -711,7 +867,7 @@
       <div class="footer-credits-left">
         <span>© Jayr Santos Psicanalista <span id="year">2026</span></span>
         <div class="footer-legal-links">
-          <a href="#" id="ck-prefs-link" style="text-decoration:none; color:inherit; display:inline-flex; align-items:center; gap:6px; font-size: 0.75rem; color: rgba(255,255,255,0.6);">
+          <a href="#" id="ck-prefs-link" class="footer-legal-link--cookies">
             <span id="cookie-toggle" style="display:inline-flex; align-items:center; width:28px; height:14px; background:rgba(255,255,255,0.1); border-radius:10px; padding:2px; border:1px solid rgba(255,255,255,0.2); position:relative; font-size:8px; font-weight:bold;">
               <span style="color:#86EFAC; margin-left:2px;">✓</span>
               <span style="color:#FCA5A5; margin-left:auto; margin-right:2px;">✕</span>
@@ -736,7 +892,7 @@
   <div class="drawer" id="mobileDrawer" aria-hidden="true">
     <div class="drawer__header">
       <a href="#topo" class="drawer__brand">
-        <img src="assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" />
+        <img src="assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" width="200" height="200" loading="lazy" />
         <span class="drawer__brand-name">
           <strong>Jayr Santos</strong>
           <em>Psicanalista</em>
@@ -744,14 +900,12 @@
       </a>
       <button class="drawer__close" id="drawerClose" aria-label="Fechar menu">&times;</button>
     </div>
-    <nav class="drawer__nav">
-      <a href="#inicio">início</a>
-      <a href="#servicos">atendimento</a>
-      <a href="#sobre">sobre</a>
-      <a href="#depoimentos">depoimentos</a>
-      <a href="#faq">dúvidas</a>
-      <a href="#localizacao">onde estou</a>
-      <a href="#contato" class="btn btn--solid js-wa">Agendar conversa</a>
+    <nav class="drawer__nav" aria-label="Navegação mobile">
+      <a href="#inicio">Início</a>
+      <a href="#servicos">Serviço</a>
+      <a href="#depoimentos">Depoimentos</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#contato">Contato</a>
     </nav>
   </div>
 
@@ -882,7 +1036,7 @@
       <div class="wa-content">
         <div class="wa-header">
           <div class="wa-avatar-wrapper">
-            <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Jayr Santos" class="wa-avatar" />
+            <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Jayr Santos" class="wa-avatar" width="308" height="425" loading="lazy" />
           </div>
           <div class="wa-info">
             <span class="wa-name">Jayr Santos</span>
@@ -903,6 +1057,6 @@
   </div>
 
   <script src="cookie-banner.js" defer></script>
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js" defer></script>
 </body>
 </html>

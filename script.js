@@ -40,7 +40,11 @@
       }
       drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
       if (overlay) overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
-      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        document.body.classList.add('no-scroll');
+      } else {
+        document.body.classList.remove('no-scroll');
+      }
     }
 
     if (burger && drawer) {
@@ -386,6 +390,42 @@
       startSobreAuto();
     }
 
+    /* ---------- Carrossel Sobre Mobile ---------- */
+    function initSobreCarouselMobile() {
+      var main = document.getElementById('sobreTrackMobile');
+      var thumbs = document.querySelectorAll('.sobre__carousel-mobile-thumb');
+      if (!main || thumbs.length === 0) return;
+
+      var slides = main.querySelectorAll('.sobre__carousel-mobile-slide');
+      var current = 0;
+      var timer = null;
+      var duration = 5000;
+
+      var go = function (index) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach(function (s, i) {
+          s.classList.toggle('is-active', i === current);
+        });
+        thumbs.forEach(function (t, i) {
+          t.classList.toggle('is-active', i === current);
+        });
+      };
+
+      var next = function () { go(current + 1); };
+      var start = function () { stop(); timer = setInterval(next, duration); };
+      var stop = function () { if (timer) clearInterval(timer); };
+
+      thumbs.forEach(function (thumb, idx) {
+        thumb.addEventListener('click', function () {
+          stop();
+          go(idx);
+          start();
+        });
+      });
+
+      start();
+    }
+
     /* ---------- Scroll Parallax na Hero (Estilo Capa de Revista) ---------- */
     function initHeroParallax() {
       var heroImg = document.querySelector('.hero__portrait img');
@@ -441,6 +481,7 @@
 
     initWaBubble();
     initSobreCarousel();
+    initSobreCarouselMobile();
     initHeroParallax();
     initNavbarScroll();
 

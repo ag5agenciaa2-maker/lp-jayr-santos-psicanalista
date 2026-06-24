@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Termos e Condições | Jayr Santos Psicanalista</title>
   <meta name="description" content="Termos e Condições de Uso do site oficial de Jayr Santos Psicanalista." />
-  <link rel="canonical" href="https://jayrsantospsicanalista.com/termos-e-condicoes.html" />
+  <link rel="canonical" href="http://www.jayrsantospsicalista.ag5agencia.site/termos-e-condicoes.html" />
   <link rel="icon" href="assets/favicon-jayr-santos-psicanalista.ico" />
 
   <!-- Local SEO (Geo Tags) -->
@@ -15,23 +15,35 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://jayrsantospsicanalista.com/termos-e-condicoes.html" />
+  <meta property="og:url" content="http://www.jayrsantospsicalista.ag5agencia.site/termos-e-condicoes.html" />
   <meta property="og:title" content="Termos e Condições | Jayr Santos Psicanalista" />
   <meta property="og:description" content="Termos e Condições de Uso do site oficial de Jayr Santos Psicanalista." />
-  <meta property="og:image" content="https://jayrsantospsicanalista.com/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
+  <meta property="og:image" content="http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://jayrsantospsicanalista.com/termos-e-condicoes.html" />
+  <meta property="twitter:url" content="http://www.jayrsantospsicalista.ag5agencia.site/termos-e-condicoes.html" />
   <meta property="twitter:title" content="Termos e Condições | Jayr Santos Psicanalista" />
   <meta property="twitter:description" content="Termos e Condições de Uso do site oficial de Jayr Santos Psicanalista." />
-  <meta property="twitter:image" content="https://jayrsantospsicanalista.com/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
+  <meta property="twitter:image" content="http://www.jayrsantospsicalista.ag5agencia.site/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
 
+  <!-- PageSpeed optimization: Preload de CSS principal -->
+  <link rel="preload" href="style.css" as="style" />
+
+  <!-- Conectividade para Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Google Fonts: Async-load -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="cookie-banner.css" />
+
+  <!-- CSS não crítico (cookie banner): Async-load -->
+  <link rel="preload" href="cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="cookie-banner.css" /></noscript>
   <style>
     .legal-content {
       line-height: 1.8;
@@ -76,21 +88,20 @@
 <body>
 
   <!-- ===== NAVBAR ===== -->
-  <nav class="nav" id="topo">
+  <nav class="nav" id="topo" aria-label="Navegação principal">
     <a href="index.html#topo" class="nav__brand">
-      <span class="nav__mark"><img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" /></span>
+      <span class="nav__mark"><img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" /></span>
       <span class="nav__name">
         <strong>Jayr Santos</strong>
         <em>Psicanalista</em>
       </span>
     </a>
     <div class="nav__links" data-desktop-nav>
-      <a href="index.html#inicio">início</a>
-      <a href="index.html#servicos">atendimento</a>
-      <a href="index.html#sobre">sobre</a>
-      <a href="index.html#depoimentos">depoimentos</a>
-      <a href="index.html#localizacao">onde estou</a>
-      <a href="index.html#contato" class="btn btn--solid btn--sm js-wa">Agendar conversa</a>
+      <a href="index.html#inicio">Início</a>
+      <a href="index.html#servicos">Serviço</a>
+      <a href="index.html#depoimentos">Depoimentos</a>
+      <a href="index.html#sobre">Sobre</a>
+      <a href="index.html#contato">Contato</a>
     </div>
     <button class="nav__burger" data-burger aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -106,7 +117,7 @@
 
     <section>
       <h2>1. Aceitação dos Termos</h2>
-      <p>Estes Termos de Uso regem o acesso e a utilização do site <code>jayrsantospsicanalista.com</code>. O uso continuado do site constitui aceitação plena e irrevogável destes termos. Este espaço é dedicado à apresentação de serviços de psicanálise clínica e agendamento de consultas para adultos e casais.</p>
+      <p>Estes Termos de Uso regem o acesso e a utilização do site <code>jayrsantospsicalista.ag5agencia.site</code>. O uso continuado do site constitui aceitação plena e irrevogável destes termos. Este espaço é dedicado à apresentação de serviços de psicanálise clínica e agendamento de consultas para adultos e casais.</p>
     </section>
 
     <section>
@@ -161,10 +172,10 @@
       <!-- Coluna 1: Marca -->
       <div class="footer-brand">
         <a href="index.html#topo" class="footer-brand__logo">
-          <img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" />
+          <img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" loading="lazy" />
           <span><strong>Jayr Santos</strong><em>Psicanalista</em></span>
         </a>
-        <p class="footer-brand__desc">Escuta atenta, acolhedora e ética. Um espaço seguro para compreender seus conflitos internos, seus relacionamentos e sua história clínica.</p>
+        <p class="footer-brand__desc">Escuta atenta, acolhedora e ética. Um espaço seguro para quem deseja compreender seus conflitos internos, seus relacionamentos e a própria história.</p>
         <div class="footer-brand__social">
           <a href="https://www.instagram.com/jayrsantospsicanalista/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
@@ -229,7 +240,7 @@
       <div class="footer-credits-left">
         <span>© Jayr Santos Psicanalista <span id="year">2026</span></span>
         <div class="footer-legal-links">
-          <a href="#" id="ck-prefs-link" style="text-decoration:none; color:inherit; display:inline-flex; align-items:center; gap:6px; font-size: 0.75rem; color: rgba(255,255,255,0.6);">
+          <a href="#" id="ck-prefs-link" class="footer-legal-link--cookies">
             <span id="cookie-toggle" style="display:inline-flex; align-items:center; width:28px; height:14px; background:rgba(255,255,255,0.1); border-radius:10px; padding:2px; border:1px solid rgba(255,255,255,0.2); position:relative; font-size:8px; font-weight:bold;">
               <span style="color:#86EFAC; margin-left:2px;">✓</span>
               <span style="color:#FCA5A5; margin-left:auto; margin-right:2px;">✕</span>
@@ -254,7 +265,7 @@
   <div class="drawer" id="mobileDrawer" aria-hidden="true">
     <div class="drawer__header">
       <a href="index.html#topo" class="drawer__brand">
-        <img src="assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" />
+        <img src="assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" width="200" height="200" loading="lazy" />
         <span class="drawer__brand-name">
           <strong>Jayr Santos</strong>
           <em>Psicanalista</em>
@@ -262,14 +273,12 @@
       </a>
       <button class="drawer__close" id="drawerClose" aria-label="Fechar menu">&times;</button>
     </div>
-    <nav class="drawer__nav">
-      <a href="index.html#inicio">início</a>
-      <a href="index.html#servicos">atendimento</a>
-      <a href="index.html#sobre">sobre</a>
-      <a href="index.html#depoimentos">depoimentos</a>
-      <a href="index.html#faq">dúvidas</a>
-      <a href="index.html#localizacao">onde estou</a>
-      <a href="index.html#contato" class="btn btn--solid js-wa">Agendar conversa</a>
+    <nav class="drawer__nav" aria-label="Navegação mobile">
+      <a href="index.html#inicio">Início</a>
+      <a href="index.html#servicos">Serviço</a>
+      <a href="index.html#depoimentos">Depoimentos</a>
+      <a href="index.html#sobre">Sobre</a>
+      <a href="index.html#contato">Contato</a>
     </nav>
   </div>
 
@@ -396,7 +405,7 @@
       <div class="wa-content">
         <div class="wa-header">
           <div class="wa-avatar-wrapper">
-            <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Psicanalista Jayr Santos" class="wa-avatar" />
+            <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Psicanalista Jayr Santos" class="wa-avatar" width="308" height="425" loading="lazy" />
             <span class="wa-status-dot"></span>
           </div>
           <div class="wa-info">
@@ -427,6 +436,6 @@
   </div>
 
   <script src="cookie-banner.js" defer></script>
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js" defer></script>
 </body>
 </html>
