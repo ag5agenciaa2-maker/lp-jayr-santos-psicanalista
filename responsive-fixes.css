@@ -402,7 +402,8 @@
   .sobre__text {
     max-width: 100%;
   }
-  
+
+
   .facts {
     grid-template-columns: 1fr 1fr;
   }

@@ -1816,7 +1816,33 @@ a { color: inherit; }
 }
 .sobre .section-title { margin: 20px 0 24px; }
 .sobre__text { font-size: 17px; line-height: 1.78; margin: 0 0 18px; max-width: 56ch; }
+.sobre__text--lede {
+  font-size: 20px;
+  line-height: 1.62;
+  font-weight: 500;
+  letter-spacing: -.005em;
+  color: var(--noturno);
+  margin-bottom: 24px;
+}
 .sobre__text:last-of-type { margin-bottom: 30px; }
+
+/* Credenciais — Formação & Tripé (tratamento editorial premium) */
+.sobre__text em { font-style: italic; color: var(--azul); }
+
+/* Tripé psicanalítico — itens curtos e explicativos */
+.sobre__tripe {
+  list-style: none; margin: -8px 0 30px; padding: 0;
+  display: grid; gap: 8px;
+}
+.sobre__tripe li {
+  position: relative; padding-left: 20px;
+  font-size: 16px; line-height: 1.5; color: var(--noturno);
+}
+.sobre__tripe li::before {
+  content: ""; position: absolute; left: 1px; top: .68em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--salvia);
+}
+.sobre__tripe strong { font-weight: 600; }
 .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .facts > div { border-left: 2px solid var(--salvia); padding-left: 16px; }
 .facts span { display: block; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--salvia); font-weight: 600; margin-bottom: 6px; }
