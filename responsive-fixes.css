@@ -244,6 +244,15 @@
    ============================================================ */
 
 @media (max-width: 768px) {
+  .servicos__header .section-title {
+    font-size: clamp(24px, 6.5vw, 34px);
+    max-width: 100%;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
   .servicos__flex-container {
     flex-direction: column;
     gap: 20px;

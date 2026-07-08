@@ -1073,7 +1073,8 @@ a { color: inherit; }
 
 .servicos__header .section-title {
   margin-bottom: 0;
-  max-width: 22ch;
+  max-width: 24ch;
+  text-wrap: balance;
 }
 
 .servicos__header .section-title em {
