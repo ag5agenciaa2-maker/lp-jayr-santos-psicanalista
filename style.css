@@ -12,13 +12,23 @@
   --grafite: #2A2E33;
   --erro:    #B4524A;
 
-  --ff-title: 'Playfair Display', Georgia, serif;
+  --ff-title: 'Playfair Display', 'Playfair Fallback', Georgia, serif;
   --ff-body:  'Inter', system-ui, -apple-system, sans-serif;
 
   --pad-y: clamp(80px, 11vw, 150px);
   --pad-x: clamp(20px, 5vw, 72px);
   --max:   1180px;
   --ease:  cubic-bezier(.22, 1, .36, 1);
+}
+
+/* Fallback com métricas ajustadas ao Playfair Display: evita o "pulo" de layout (FOUT) quando a fonte real carrega */
+@font-face {
+  font-family: 'Playfair Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 111%;
+  ascent-override: 96%;
+  descent-override: 22%;
+  line-gap-override: 0%;
 }
 
 * { box-sizing: border-box; }
@@ -421,7 +431,14 @@ a { color: inherit; }
    ============================================================ */
 .hero {
   position: relative;
-  background: var(--offwhite);
+  background-color: var(--offwhite);
+  /* Profundidade de material: fonte de luz sutil no alto-esquerdo + grão fílmico (SVG inline, sem requisição externa) */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+    radial-gradient(118% 100% at 24% 6%, #FCFBF9 0%, #F7F5F0 46%, #F1ECE2 100%);
+  background-size: 160px 160px, cover;
+  background-repeat: repeat, no-repeat;
+  background-blend-mode: soft-light, normal;
   overflow: hidden;
 }
 
@@ -540,14 +557,20 @@ a { color: inherit; }
   }
 }
 
+/* Ritmo vertical do bloco de texto do Hero — escala intencional (grid de 4px):
+   eyebrow→título 16 · título→slogan 16 (cluster de cabeçalho) · slogan→lead 28 · lead→botões 36 */
+.hero__copy .eyebrow {
+  margin-bottom: 16px;
+}
+
 .hero__title {
   font-family: var(--ff-title);
   font-weight: 300; /* Base leve para contraste editorial */
-  font-size: clamp(42px, 5.8vw, 86px);
+  font-size: clamp(39px, 5.4vw, 80px);
   line-height: 1.02;
   letter-spacing: -0.035em; /* Fechamento elegante das letras */
   color: var(--noturno);
-  margin: 0 0 36px;
+  margin: 0 0 16px;
   position: relative;
   z-index: 10;
   display: flex;
@@ -595,6 +618,30 @@ a { color: inherit; }
   to {
     transform: translateY(0);
   }
+}
+
+.hero__slogan {
+  font-family: var(--ff-title);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(19px, 1.7vw, 27px);
+  line-height: 1.3;
+  color: var(--salvia);
+  margin: 0 0 28px;
+  padding-left: 18px;
+  position: relative;
+  z-index: 10;
+}
+
+.hero__slogan::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.18em;
+  bottom: 0.18em;
+  width: 2px;
+  background: var(--salvia);
+  opacity: 0.55;
 }
 
 .hero__lead {

@@ -51,7 +51,7 @@
   }
   
   .hero__title {
-    font-size: clamp(32px, 8vw, 48px);
+    font-size: clamp(35px, 8.6vw, 52px);
   }
   
   .hero__title-line-mask {
@@ -68,7 +68,16 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
+
+  /* Slogan centralizado no mobile (sem a barra/recuo lateral, que só faz sentido no layout alinhado à esquerda) */
+  .hero__slogan {
+    padding-left: 0;
+    text-align: center;
+  }
+  .hero__slogan::before {
+    display: none;
+  }
+
   .hero__cta {
     justify-content: center;
   }
@@ -82,7 +91,7 @@
 /* Ajuste de fontes da hero em telas pequenas */
 @media (max-width: 480px) {
   .hero__title {
-    font-size: clamp(28px, 10vw, 42px);
+    font-size: clamp(31px, 10.6vw, 46px);
     line-height: 1.05;
   }
   
