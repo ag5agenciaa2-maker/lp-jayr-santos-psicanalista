@@ -1830,6 +1830,7 @@ a { color: inherit; }
   flex: 1;
   transition: opacity 0.3s var(--ease);
 }
+.sobre__carousel-caption.is-fading { opacity: 0; }
 .sobre__carousel-counter {
   font-family: var(--ff-body);
   font-size: 13px;
@@ -1993,7 +1994,7 @@ a { color: inherit; }
 
 .gbadge__text {
   font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.78);
   font-weight: 500;
   margin-top: 1px;
 }
@@ -2001,7 +2002,7 @@ a { color: inherit; }
 .depo__note {
   font-size: 14px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.78);
   margin-bottom: 22px;
   max-width: 36ch;
 }
@@ -2070,8 +2071,8 @@ a { color: inherit; }
 .depo__arrow {
   background: none;
   border: none;
-  padding: 8px;
-  color: rgba(255, 255, 255, 0.35);
+  padding: 12px;
+  color: rgba(255, 255, 255, 0.78);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2103,7 +2104,7 @@ a { color: inherit; }
   font-size: 15px;
   font-style: italic;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.78);
   user-select: none;
   display: flex;
   align-items: center;
@@ -2116,11 +2117,11 @@ a { color: inherit; }
 }
 
 .depo__counter-sep {
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .depo__counter-total {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 /* Coluna Direita: Slider com Transição Cross-Fade */
@@ -2199,7 +2200,7 @@ a { color: inherit; }
 .t-slide cite span {
   display: block;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4); /* Data discreta em offwhite sutil */
+  color: rgba(255, 255, 255, 0.78); /* Data discreta em offwhite sutil, contraste WCAG */
   margin-top: 4px;
   font-family: var(--ff-title);
   font-style: italic;
@@ -2632,7 +2633,7 @@ a { color: inherit; }
 }
 .footer-credits-left > span {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.78);
 }
 .footer-legal-links {
   display: flex;
@@ -2640,7 +2641,7 @@ a { color: inherit; }
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.78);
 }
 .footer-legal-links a {
   color: inherit;
@@ -2662,11 +2663,11 @@ a { color: inherit; }
   align-items: center;
   gap: 6px;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.78);
 }
 .footer-credits-right {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.78);
 }
 .footer-credits-right a {
   color: var(--azul);
@@ -2716,9 +2717,9 @@ a { color: inherit; }
 }
 
 /* ========================================
-   WHATSAPP
+   WHATSAPP PREMIUM — Balão + botão flutuante (AG5 V4)
    ======================================== */
-.wa-container {
+.wa-premium-container {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -2726,6 +2727,7 @@ a { color: inherit; }
   font-family: var(--ff-body), sans-serif;
 }
 
+/* Balão Glassmorphism */
 .wa-bubble {
   width: 300px;
   position: absolute;
@@ -2734,7 +2736,7 @@ a { color: inherit; }
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(44, 94, 147, .25);
   border-radius: 20px 20px 4px 20px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.12);
   padding: 18px;
@@ -2742,6 +2744,22 @@ a { color: inherit; }
   visibility: hidden;
   transform: translateY(20px) scale(0.95);
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Cauda triangular conectando o balão ao botão (obrigatória) */
+.wa-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  right: 22px;
+  width: 18px;
+  height: 18px;
+  background: inherit;
+  border-right: 1px solid rgba(44, 94, 147, .35);
+  border-bottom: 1px solid rgba(44, 94, 147, .35);
+  transform: rotate(45deg);
+  border-bottom-right-radius: 4px;
+  z-index: -1;
 }
 
 .wa-bubble.show {
@@ -2769,6 +2787,7 @@ a { color: inherit; }
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: top;
   border: 2px solid #25d366;
 }
 
@@ -2783,6 +2802,30 @@ a { color: inherit; }
   font-weight: 600;
   color: var(--noturno);
   font-size: 15px;
+}
+
+/* Digitação */
+.wa-typing {
+  display: flex;
+  gap: 4px;
+  padding: 6px 0;
+}
+
+.wa-typing span {
+  width: 5px;
+  height: 5px;
+  background: #25d366;
+  border-radius: 50%;
+  animation: wa-typing-ani 1.4s infinite;
+  opacity: 0.4;
+}
+
+.wa-typing span:nth-child(2) { animation-delay: 0.2s; }
+.wa-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes wa-typing-ani {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50%      { transform: translateY(-4px); opacity: 1; }
 }
 
 .wa-message-text p {
@@ -2808,8 +2851,17 @@ a { color: inherit; }
   justify-content: center;
   box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
   text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.6s ease;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.8);
   position: relative;
+}
+
+.wa-float-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
 }
 
 .wa-float-btn:hover {
@@ -2821,6 +2873,7 @@ a { color: inherit; }
 .wa-float-btn svg {
   width: 28px;
   height: 28px;
+  display: block;
 }
 
 .wa-close {
@@ -2842,8 +2895,13 @@ a { color: inherit; }
   color: var(--noturno);
 }
 
+/* Classes utilitárias (PageSpeed fix — evita forced reflow) */
+.wa-typing.is-hidden { display: none !important; }
+.wa-message-text.is-visible { display: block !important; opacity: 0; transition: opacity 500ms ease; }
+.wa-message-text.is-visible.is-in { opacity: 1; }
+
 @media (max-width: 480px) {
-  .wa-container {
+  .wa-premium-container {
     bottom: 20px;
     right: 20px;
   }

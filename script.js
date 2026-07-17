@@ -260,9 +260,9 @@
         if (!telefone) { setError('telefone', 'Por favor, informe seu telefone.'); ok = false; }
         else if (digits.length < 10) { setError('telefone', 'Digite um telefone válido com DDD.'); ok = false; }
 
-        if (!assunto) { setError('assunto', 'Selecione um assunto de interesse.'); ok = false; }
+        if (!assunto) { setError('assunto', 'Selecione um assunto.'); ok = false; }
 
-        if (mensagem.length < 5) { setError('mensagem', 'Por favor, detalhe sua mensagem.'); ok = false; }
+        if (mensagem && mensagem.length < 5) { setError('mensagem', 'Por favor, detalhe sua mensagem.'); ok = false; }
 
         if (!ok) return;
 
@@ -270,8 +270,8 @@
         var msg = 'Olá, me chamo ' + nome + ', vim através do site e gostaria de uma informação.\n\n' +
                   '- E-mail: ' + email + '\n' +
                   '- Telefone: ' + telefone + '\n' +
-                  '- Assunto: ' + assunto + '\n' +
-                  '- Mensagem: ' + mensagem;
+                  '- Assunto: ' + assunto;
+        if (mensagem) msg += '\n- Mensagem: ' + mensagem;
         var link = waBase + '?text=' + encodeURIComponent(msg);
 
         if (okWaLink) okWaLink.setAttribute('href', link);
@@ -281,37 +281,90 @@
       });
     }
 
-    /* ---------- WhatsApp (balão simples) ---------- */
+    /* ---------- WhatsApp Premium (AG5 V4 — gatilho por viewport + typing) ---------- */
     function initWaBubble() {
-      var bubble = document.getElementById('wa-bubble');
+      // Nicho de saúde mental/psicanálise = Compliance Mode (sem badge, sem urgência fabricada)
+      var MODO_COMPLIANCE = true;
+
+      var bubble = document.getElementById('wa-message-bubble');
+      var typing = document.getElementById('wa-typing');
+      var realMessage = document.getElementById('wa-real-message');
+      var badge = document.getElementById('wa-notification');
       var closeBtn = document.getElementById('wa-close-btn');
       var mainBtn = document.getElementById('wa-main-btn');
-      var shown = false;
+      var targetSection = document.getElementById('servicos');
 
-      if (!bubble) return;
+      if (!bubble || !typing || !realMessage || !closeBtn || !mainBtn || !targetSection) return;
 
-      // Mostrar o balão após 8 segundos, apenas uma vez
-      setTimeout(function () {
-        if (!shown) {
+      var DELAY_BALAO = 25000;
+      var DURATION_TYPING = 2500;
+      var DURATION_BALAO_VISIVEL = 15000;
+      var DELAY_BADGE_APOS_SUMIR = 5000;
+
+      var triggered = false;
+      var autoHideTimer = null;
+      var badgeTimer = null;
+      var userClosed = false;
+
+      function trigger() {
+        if (triggered) return;
+        triggered = true;
+
+        mainBtn.classList.add('visible');
+
+        setTimeout(function () {
+          if (userClosed) return;
           bubble.classList.add('show');
-          shown = true;
+
+          setTimeout(function () {
+            if (userClosed) return;
+            typing.classList.add('is-hidden');
+            realMessage.classList.add('is-visible');
+            requestAnimationFrame(function () { realMessage.classList.add('is-in'); });
+          }, DURATION_TYPING);
+
+          autoHideTimer = setTimeout(function () {
+            if (userClosed) return;
+            bubble.classList.remove('show');
+
+            if (!MODO_COMPLIANCE && badge) {
+              badgeTimer = setTimeout(function () {
+                if (userClosed) return;
+                badge.classList.add('show');
+              }, DELAY_BADGE_APOS_SUMIR);
+            }
+          }, DURATION_BALAO_VISIVEL);
+        }, DELAY_BALAO);
+      }
+
+      if ('IntersectionObserver' in window) {
+        var waObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) trigger();
+          });
+        }, { threshold: 0.1 });
+        waObserver.observe(targetSection);
+      } else {
+        trigger();
+      }
+
+      closeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        userClosed = true;
+        bubble.classList.remove('show');
+        if (autoHideTimer) clearTimeout(autoHideTimer);
+        if (badgeTimer) clearTimeout(badgeTimer);
+        if (!MODO_COMPLIANCE && badge) {
+          setTimeout(function () { badge.classList.add('show'); }, DELAY_BADGE_APOS_SUMIR);
         }
-      }, 8000);
+      });
 
-      // Fechar balão
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          bubble.classList.remove('show');
-        });
-      }
-
-      // Ao clicar no botão, esconder balão
-      if (mainBtn) {
-        mainBtn.addEventListener('click', function () {
-          bubble.classList.remove('show');
-        });
-      }
+      mainBtn.addEventListener('click', function () {
+        bubble.classList.remove('show');
+        if (badge) badge.classList.remove('show');
+        if (autoHideTimer) clearTimeout(autoHideTimer);
+        if (badgeTimer) clearTimeout(badgeTimer);
+      });
     }
 
     /* ---------- Carrossel Sobre o Profissional (Galeria com Miniaturas) ---------- */
@@ -340,7 +393,7 @@
 
       var updateSobreCarousel = function (index) {
         sobreCurrent = (index + sobreSlides.length) % sobreSlides.length;
-        if (sobreCaption) sobreCaption.style.opacity = '0';
+        if (sobreCaption) sobreCaption.classList.add('is-fading');
         setTimeout(function () {
           sobreSlides.forEach(function (slide, i) {
             var isActive = i === sobreCurrent;
@@ -348,7 +401,7 @@
             if (isActive && sobreCaption) {
               var cap = slide.getAttribute('data-caption');
               sobreCaption.textContent = cap;
-              sobreCaption.style.opacity = '1';
+              sobreCaption.classList.remove('is-fading');
             }
           });
           sobreThumbs.forEach(function (thumb, i) {

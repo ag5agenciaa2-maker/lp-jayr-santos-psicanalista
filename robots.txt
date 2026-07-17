@@ -23,4 +23,6 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: http://www.jayrsantospsicalista.ag5agencia.site/sitemap.xml
+Sitemap: http://www.jayrsantospsicanalista.ag5agencia.site/sitemap.xml
+
+# LLMs: http://www.jayrsantospsicanalista.ag5agencia.site/llms.txt

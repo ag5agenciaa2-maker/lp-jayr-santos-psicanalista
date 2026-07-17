@@ -755,7 +755,7 @@
    ============================================================ */
 
 @media (max-width: 768px) {
-  .wa-container {
+  .wa-premium-container {
     bottom: 16px;
     right: 16px;
   }
