@@ -1,74 +1,46 @@
-/* ==========================================================
-   COOKIE BANNER UNIVERSAL — Skill Profissional (Versão AG5)
-   Versão: 2.1.0
-   Compatível com: Qualquer site HTML/CSS/JS
-   Sem dependências externas
-   ========================================================== */
-
 :root {
-    /* ── Cores principais (Sutis e Integradas) ── */
-    --ck-bg: #1a1a1a;
-    /* Fundo neutro e discreto */
-    --ck-accent: #2C5E93;
-    /* Azul-petróleo oficial */
-    --ck-accent-dark: #1B3A5C;
-    /* Azul-noturno para hover */
-    --ck-accent-rgb: 44, 94, 147;
-    /* RGB correspondente ao #2C5E93 */
+    /* ── Variáveis Customizáveis do Projeto (Flexíveis) ── */
+    --ck-bg: #0b1825;                    /* Fundo escuro (Navy ou tom principal escuro do projeto) */
+    --ck-accent: #2c5e93;                /* Tom de destaque (Champagne/Dourado/Primary) */
+    --ck-accent-dark: #1b3a5c;           /* Tom de destaque hover */
+    --ck-accent-rgb: 44, 94, 147;        /* RGB para transparências */
+    --ck-text-light: #f7f5f0;            /* Texto claro principal */
 
-    /* ── Texto ── */
-    --ck-text-primary: rgba(255, 255, 255, 0.95);
-    --ck-text-muted: rgba(255, 255, 255, 0.8);
-    /* Contraste aumentado para melhor legibilidade */
-    --ck-text-link: var(--ck-accent);
+    /* ── Configurações de Layout (Compacto Sandra Back) ── */
+    --ck-radius: 10px;
+    --ck-radius-modal: 12px;
+    --ck-radius-btn: 6px;
+    --ck-banner-max-width: 420px;       /* Largura ultra-compacta */
+    --ck-modal-max-width: 440px;
 
-    /* ── Modal (fundo claro) ── */
-    --ck-modal-bg: #ffffff;
-    --ck-modal-footer-bg: #f8f9fa;
-    --ck-modal-border: rgba(0, 0, 0, 0.1);
-    --ck-modal-text: #1a1a1a;
-    --ck-modal-text-muted: #4a4a4a;
-    /* Escurecido para melhor leitura */
-    --ck-modal-category-name: #111111;
-
-    /* ── Toggle ── */
-    --ck-toggle-off: #d0d5db;
-    --ck-toggle-on: var(--ck-accent);
-
-    /* ── Layout ── */
-    --ck-radius: 12px;
-    --ck-radius-sm: 5px;
-    --ck-max-width: 1280px;
-    --ck-modal-max-width: 520px;
-
-    /* ── Animação ── */
-    --ck-transition: 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    --ck-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
-    /* ── Z-index ── */
-    --ck-z-banner: 9000;
-    --ck-z-overlay: 9050;
-    --ck-z-modal: 9100;
-    --ck-z-float: 8999;
+    /* ── Transições e Z-index ── */
+    --ck-transition: 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    --ck-z-banner: 9500;
+    --ck-z-overlay: 9998;
+    --ck-z-modal: 9999;
 }
 
 /* ============================================================
-   BANNER DE ACEITE
+   BANNER DE ACEITE (COMPACTO & ELEGANTE)
    ============================================================ */
 .ck-banner {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 24px;
+    left: 24px;
+    width: calc(100% - 48px);
+    max-width: var(--ck-banner-max-width);
     z-index: var(--ck-z-banner);
     background: var(--ck-bg);
-    border-top: 1px solid rgba(var(--ck-accent-rgb), 0.12);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
-    transform: translateY(100%);
-    transition: transform 0.42s var(--ck-ease-out);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    color: var(--ck-text-light);
+    padding: 18px 20px;
+    border-radius: var(--ck-radius);
+    border: 1px solid rgba(var(--ck-accent-rgb), 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: translateY(140%);
+    transition: transform var(--ck-transition);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .ck-banner.ck-banner--visible {
@@ -76,55 +48,45 @@
 }
 
 .ck-banner.ck-banner--hidden {
-    transform: translateY(100%);
+    transform: translateY(140%);
     pointer-events: none;
 }
 
 .ck-banner__inner {
-    max-width: var(--ck-max-width);
-    margin: 0 auto;
-    padding: 10px 28px;
     display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.ck-banner__content {
-    flex: 1;
-    min-width: 0;
-}
-
-.ck-banner__title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--ck-accent);
-    margin-bottom: 2px;
-    line-height: 1.3;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .ck-banner__text {
-    font-size: 0.85rem;
-    color: var(--ck-text-muted);
-    line-height: 1.5;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: rgba(246, 241, 232, 0.9);
     margin: 0;
+    text-align: left;
 }
 
 .ck-banner__link {
-    color: var(--ck-text-link);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    transition: color var(--ck-transition);
-}
-
-.ck-banner__link:hover {
     color: var(--ck-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--ck-transition);
 }
 
 .ck-banner__actions {
     display: flex;
     align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+
+.ck-banner__actions .ck-btn {
+    flex: 1;
+    white-space: nowrap;
+    padding: 8px 10px;
+    font-size: 0.7rem;
+    text-align: center;
 }
 
 /* ============================================================
@@ -134,25 +96,21 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.38rem 0.9rem;
+    padding: 9px 16px;
     font-family: inherit;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: var(--ck-radius-sm);
-    border: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: var(--ck-radius-btn);
+    border: 1px solid transparent;
     cursor: pointer;
     transition: all var(--ck-transition);
-    white-space: nowrap;
-    line-height: 1;
-    min-height: 30px;
-    letter-spacing: 0.1px;
 }
 
-/* Primário — Accent */
 .ck-btn--primary {
     background: var(--ck-accent);
-    color: #fff;
-    font-weight: 600;
+    color: #ffffff;
 }
 
 .ck-btn--primary:hover {
@@ -160,167 +118,194 @@
     transform: translateY(-1px);
 }
 
-/* Outline — Borda sutil */
 .ck-btn--outline {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.38);
+    border-color: rgba(246, 241, 232, 0.25);
+    color: var(--ck-text-light);
 }
 
 .ck-btn--outline:hover {
-    border-color: rgba(255, 255, 255, 0.28);
-    color: rgba(255, 255, 255, 0.65);
+    border-color: var(--ck-text-light);
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* Ghost — Link underline */
 .ck-btn--ghost {
     background: transparent;
-    color: rgba(255, 255, 255, 0.3);
-    border: none;
-    padding: 0.38rem 0.4rem;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    font-size: 0.72rem;
+    color: rgba(246, 241, 232, 0.7);
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.ck-btn--ghost:hover {
+    color: var(--ck-text-light);
 }
 
 /* ============================================================
-   MODAL DE PERSONALIZAÇÃO
+   MODAL DE PREFERÊNCIAS (COMPACTO)
    ============================================================ */
 .ck-modal {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: var(--ck-z-modal);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-    pointer-events: none;
     opacity: 0;
+    pointer-events: none;
     transition: opacity var(--ck-transition);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
 }
 
 .ck-modal.ck-modal--visible {
-    pointer-events: all;
     opacity: 1;
+    pointer-events: auto;
 }
 
 .ck-modal__overlay {
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: var(--ck-z-overlay);
-    cursor: pointer;
 }
 
 .ck-modal__box {
     position: relative;
-    z-index: calc(var(--ck-z-modal) + 10);
-    background: var(--ck-modal-bg);
-    border-radius: var(--ck-radius);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+    z-index: var(--ck-z-modal);
     width: 100%;
     max-width: var(--ck-modal-max-width);
     max-height: 88vh;
+    background: #ffffff;
+    border-radius: var(--ck-radius-modal);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transform: translateY(14px) scale(0.98);
+    transform: scale(0.95);
     transition: transform var(--ck-transition);
-    border-top: 2px solid var(--ck-accent);
 }
 
 .ck-modal.ck-modal--visible .ck-modal__box {
-    transform: translateY(0) scale(1);
+    transform: scale(1);
 }
 
 .ck-modal__header {
+    background: var(--ck-bg);
+    color: var(--ck-text-light);
+    padding: 18px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 14px 18px 11px;
-    border-bottom: 1px solid var(--ck-modal-border);
-    background: var(--ck-bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .ck-modal__title {
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    color: var(--ck-accent);
     margin: 0;
+    color: var(--ck-text-light);
     line-height: 1.3;
 }
 
 .ck-modal__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
     border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.4rem;
     cursor: pointer;
-    flex-shrink: 0;
-    transition: all var(--transition-fast);
+    line-height: 1;
+    padding: 0 4px;
+    transition: color var(--ck-transition);
+}
+
+.ck-modal__close:hover {
+    color: var(--ck-text-light);
 }
 
 .ck-modal__body {
-    flex: 1;
+    padding: 20px;
     overflow-y: auto;
-    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #fafafa;
 }
 
 .ck-modal__intro {
-    font-size: 0.9rem;
-    color: var(--ck-modal-text-muted);
-    line-height: 1.6;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--ck-modal-border);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #555555;
+    margin: 0 0 6px 0;
+}
+
+/* Categorias */
+.ck-category {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 14px;
 }
 
 .ck-category__header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
-    padding: 9px 0;
+    gap: 14px;
+}
+
+.ck-category__info {
+    flex: 1;
 }
 
 .ck-category__name {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--ck-modal-category-name);
-    margin-bottom: 1px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 4px 0;
 }
 
 .ck-category__desc {
-    font-size: 0.85rem;
-    color: #555;
-    line-height: 1.5;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: #666666;
     margin: 0;
 }
 
 .ck-category__badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 7px;
-    background: rgba(var(--ck-accent-rgb), 0.1);
-    color: var(--ck-accent-dark);
-    font-size: 0.65rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    border-radius: 20px;
+    background: #f0f0f0;
+    color: #666666;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
 }
 
+/* Checkbox simples customizado */
+.ck-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--ck-accent);
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+/* Toggle switch (usado no modal de preferências quando o HTML usa .ck-toggle) */
 .ck-toggle {
     position: relative;
     display: inline-block;
     width: 34px;
     height: 19px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .ck-toggle input {
@@ -332,7 +317,7 @@
 .ck-toggle__slider {
     position: absolute;
     inset: 0;
-    background: var(--ck-toggle-off);
+    background: #d0d5db;
     border-radius: 20px;
     transition: background var(--ck-transition);
 }
@@ -349,22 +334,31 @@
     transition: transform var(--ck-transition);
 }
 
-.ck-toggle input:checked+.ck-toggle__slider {
-    background: var(--ck-toggle-on);
+.ck-toggle input:checked + .ck-toggle__slider {
+    background: var(--ck-accent);
 }
 
-.ck-toggle input:checked+.ck-toggle__slider::before {
+.ck-toggle input:checked + .ck-toggle__slider::before {
     transform: translateX(15px);
 }
 
+/* Footer do Modal */
 .ck-modal__footer {
+    padding: 14px 20px;
+    background: #ffffff;
+    border-top: 1px solid #eeeeee;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 7px;
-    padding: 10px 18px;
-    border-top: 1px solid var(--ck-modal-border);
-    background: var(--ck-modal-footer-bg);
+    gap: 10px;
+}
+
+.ck-modal__footer .ck-btn--ghost {
+    color: #666666;
+}
+
+.ck-modal__footer .ck-btn--ghost:hover {
+    color: #111111;
 }
 
 /* ============================================================
@@ -372,56 +366,51 @@
    ============================================================ */
 .ck-toast {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(16px);
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
     background: var(--ck-bg);
-    color: var(--ck-accent);
+    color: var(--ck-text-light);
+    border: 1px solid rgba(var(--ck-accent-rgb), 0.3);
+    padding: 12px 20px;
+    border-radius: 8px;
     font-size: 0.82rem;
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: var(--ck-radius-sm);
-    border: 1px solid rgba(var(--ck-accent-rgb), 0.28);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    z-index: 9999;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(100px);
     opacity: 0;
-    transition: all 300ms ease;
-    white-space: nowrap;
+    transition: all var(--ck-transition);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
 }
 
 .ck-toast.ck-toast--visible {
+    transform: translateY(0);
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
 }
 
-@media (max-width: 767px) {
-    .ck-banner__inner {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 16px;
+/* RESPONSIVO */
+@media (max-width: 580px) {
+    .ck-banner {
+        bottom: 12px;
+        left: 12px;
+        width: calc(100% - 24px);
+        padding: 14px 16px;
     }
 
     .ck-banner__actions {
-        width: 100%;
-        gap: 5px;
+        flex-direction: row !important;
+        gap: 6px;
     }
 
     .ck-banner__actions .ck-btn {
         flex: 1;
-    }
-
-    .ck-modal {
-        align-items: flex-end;
-        padding: 0;
-    }
-
-    .ck-modal__box {
-        max-width: 100%;
-        border-radius: var(--ck-radius) var(--ck-radius) 0 0;
+        width: auto !important;
+        padding: 8px 4px;
+        font-size: 0.65rem;
     }
 
     .ck-modal__footer {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .ck-modal__footer .ck-btn {
@@ -429,27 +418,7 @@
     }
 }
 
-/* ========================================
-   COOKIE TOGGLE - Estilo iOS Minimalista
-   ======================================== */
-
-/* Estado ativo (cookies aceitos) - bolinha à direita */
-#cookie-toggle.active #cookie-toggle-dot {
-    left: 15px !important;
-    background: var(--ck-accent, #2C5E93);
-}
-
-/* Estado inativo (cookies rejeitados) - bolinha à esquerda */
-#cookie-toggle.inactive #cookie-toggle-dot {
-    left: 2px !important;
-    background: #888;
-}
-
-/* Hover effect no toggle */
-#ck-prefs-link:hover #cookie-toggle {
-    border-color: rgba(255,255,255,0.4) !important;
-}
-
-#ck-prefs-link:hover #cookie-toggle-dot {
-    box-shadow: 0 0 8px rgba(var(--ck-accent-rgb, 44, 94, 147), 0.5) !important;
+/* Link de preferências de cookies no rodapé */
+#ck-prefs-link:hover {
+    opacity: 1 !important;
 }
