@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Administrativo | Blog Jayr Santos Psicanalista</title>
-  <link href="config.yml" type="text/yaml" rel="cms-config-url" />
+  <title>Painel do Blog | Jayr Santos Psicanalista</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="../assets/favicon-jayr-santos-psicanalista.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
@@ -13,208 +14,181 @@
       font-family: 'Inter', sans-serif;
       background: #F7F5F0;
       color: #2A2E33;
+      min-height: 100vh;
     }
-    .file-protocol-warning {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #ffffff;
-      border: 1px solid #1B3A5C;
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-    .header-box {
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
+    h1, h2 { font-family: 'Playfair Display', serif; color: #1B3A5C; }
+
+    /* Login */
+    #login-screen {
+      min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid #E8DFD2;
-      padding-bottom: 20px;
-      margin-bottom: 24px;
+      justify-content: center;
     }
-    .header-box h1 {
-      font-family: 'Playfair Display', serif;
-      color: #1B3A5C;
-      margin: 0;
-      font-size: 1.8rem;
-    }
-    .badge {
-      background: #8FA68E;
-      color: #fff;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    .info-card {
-      background: #1B3A5C;
-      color: #F7F5F0;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-    .info-card strong { color: #8FA68E; }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #1B3A5C;
-    }
-    .form-group input, .form-group textarea {
+    .login-box {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 40px;
       width: 100%;
-      padding: 12px;
-      border: 1px solid #CCC;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 1rem;
+      max-width: 380px;
     }
-    .form-group textarea {
-      min-height: 180px;
-      resize: vertical;
+    .login-box h1 { font-size: 1.5rem; margin: 0 0 24px; text-align: center; }
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 12px; border: 1px solid #CCC; border-radius: 6px;
+      font-family: inherit; font-size: 1rem;
     }
-    .btn-submit {
-      background: #1B3A5C;
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
+    .field textarea { min-height: 200px; resize: vertical; font-family: monospace; font-size: 0.9rem; }
+    .btn {
+      background: #1B3A5C; color: #fff; border: none; padding: 12px 24px;
+      font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-submit:hover {
-      background: #2C5E93;
-    }
-    .preview-box {
-      margin-top: 30px;
-      background: #f0f0f0;
-      padding: 20px;
-      border-radius: 8px;
-      display: none;
-    }
-    .preview-box pre {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      font-size: 0.9rem;
-    }
-  </style>
+    .btn:hover { background: #2C5E93; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn--danger { background: #b23a3a; }
+    .btn--danger:hover { background: #8f2e2e; }
+    .btn--ghost { background: transparent; color: #1B3A5C; border: 1px solid #1B3A5C; }
+    .error-msg { color: #b23a3a; font-size: 0.9rem; margin-top: 10px; text-align: center; }
 
-  <!-- Script Identity apenas quando não estiver em file:// -->
-  <script>
-    if (window.location.protocol !== 'file:') {
-      document.write('<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"><\/script>');
+    /* Painel */
+    #panel-screen { display: none; }
+    .panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
     }
-  </script>
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid #E8DFD2; }
+    .tab-btn {
+      background: none; border: none; padding: 10px 18px; font-weight: 600;
+      color: #8FA68E; cursor: pointer; border-bottom: 3px solid transparent; font-size: 0.95rem;
+    }
+    .tab-btn.active { color: #1B3A5C; border-bottom-color: #1B3A5C; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .post-list { display: grid; gap: 12px; }
+    .post-row {
+      background: #fff; border-radius: 8px; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .post-row__info strong { display: block; color: #1B3A5C; }
+    .post-row__meta { font-size: 0.85rem; color: #8FA68E; }
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge--publicado { background: #8FA68E; color: #fff; }
+    .badge--rascunho { background: #ddd; color: #555; }
+    .post-row__actions { display: flex; gap: 8px; }
+    .post-row__actions button { padding: 8px 14px; font-size: 0.85rem; }
+
+    .editor-box { background: #fff; border-radius: 8px; padding: 28px; }
+    .editor-grid { display: grid; gap: 18px; }
+    .editor-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+
+    .comment-row {
+      background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .comment-row__meta { font-size: 0.85rem; color: #8FA68E; margin-bottom: 6px; }
+    .comment-row__texto { margin: 8px 0; }
+    .comment-row__actions { display: flex; gap: 8px; }
+
+    .empty-state { color: #8FA68E; padding: 20px 0; }
+    #image-preview { max-width: 200px; border-radius: 6px; margin-top: 8px; display: none; }
+  </style>
 </head>
 <body>
 
-  <div id="local-admin-root"></div>
-
-  <script>
-    if (window.location.protocol === 'file:') {
-      // Exibe a interface de criação de artigos local caso o arquivo seja aberto diretamente via file://
-      document.getElementById('local-admin-root').innerHTML = `
-        <div class="file-protocol-warning">
-          <div class="header-box">
-            <h1>Painel do Blog (Modo Local)</h1>
-            <span class="badge">Visualização Offline</span>
-          </div>
-
-          <div class="info-card">
-            <strong>ℹ️ Como funciona a publicação no Cloudflare + GitHub:</strong><br/>
-            O painel interativo com login automático (Decap CMS) é ativado automaticamente quando o site estiver publicado no seu domínio no <strong>Cloudflare Pages</strong> (ex: <code>https://seusite.com.br/admin</code>) ou em um servidor web local (HTTP).<br/><br/>
-            Abaixo, você pode criar e baixar o arquivo do artigo para salvar diretamente na pasta <code>content/blog/</code> do seu projeto!
-          </div>
-
-          <h2>Criador Rápido de Artigo (.md)</h2>
-          <form id="post-form">
-            <div class="form-group">
-              <label for="post-title">Título do Artigo:</label>
-              <input type="text" id="post-title" placeholder="Ex: O papel da psicanálise na ansiedade" required />
-            </div>
-
-            <div class="form-group">
-              <label for="post-slug">Slug / Nome do Arquivo (URL):</label>
-              <input type="text" id="post-slug" placeholder="Ex: o-papel-da-psicanalise-na-ansiedade" required />
-            </div>
-
-            <div class="form-group">
-              <label for="post-desc">Resumo para o Google (SEO):</label>
-              <input type="text" id="post-desc" placeholder="Resumo de 1 ou 2 frases sobre o artigo" required />
-            </div>
-
-            <div class="form-group">
-              <label for="post-image">Caminho da Imagem de Capa:</label>
-              <input type="text" id="post-image" value="assets/jayr-santos-psicanalista-atendimento-sobre.webp" required />
-            </div>
-
-            <div class="form-group">
-              <label for="post-body">Conteúdo do Artigo (em Markdown):</label>
-              <textarea id="post-body" placeholder="Escreva o artigo aqui... Você pode usar ## Títulos, *Itálico*, **Negrito** e > Citações."></textarea>
-            </div>
-
-            <button type="submit" class="btn-submit">📥 Baixar Arquivo .md do Artigo</button>
-          </form>
-
-          <div id="preview-container" class="preview-box">
-            <h3>Conteúdo gerado do arquivo:</h3>
-            <pre id="preview-content"></pre>
-          </div>
+  <!-- ===== TELA DE LOGIN ===== -->
+  <div id="login-screen">
+    <div class="login-box">
+      <h1>Painel do Blog</h1>
+      <form id="login-form">
+        <div class="field">
+          <label for="login-email">E-mail</label>
+          <input type="email" id="login-email" required autocomplete="username" />
         </div>
-      `;
+        <div class="field">
+          <label for="login-senha">Senha</label>
+          <input type="password" id="login-senha" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Entrar</button>
+        <p id="login-error" class="error-msg" hidden></p>
+      </form>
+    </div>
+  </div>
 
-      document.getElementById('post-title').addEventListener('input', function(e) {
-        const title = e.target.value;
-        const slug = title.toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z0-9\s-]/g, "")
-          .trim().replace(/\s+/g, "-");
-        document.getElementById('post-slug').value = slug;
-      });
+  <!-- ===== PAINEL ===== -->
+  <div id="panel-screen">
+    <div class="wrap">
+      <div class="panel-header">
+        <h1 style="margin:0; font-size:1.6rem;">Painel do Blog</h1>
+        <button class="btn btn--ghost" id="logout-btn">Sair</button>
+      </div>
 
-      document.getElementById('post-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const title = document.getElementById('post-title').value;
-        const slug = document.getElementById('post-slug').value;
-        const desc = document.getElementById('post-desc').value;
-        const img = document.getElementById('post-image').value;
-        const body = document.getElementById('post-body').value;
-        const today = new Date().toISOString().split('T')[0];
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="posts">Artigos</button>
+        <button class="tab-btn" data-tab="novo">Novo Artigo</button>
+        <button class="tab-btn" data-tab="comentarios">Comentários</button>
+      </div>
 
-        const mdContent = `---
-title: "${title}"
-slug: "${slug}"
-date: "${today}"
-description: "${desc}"
-coverImage: "${img}"
-author: "Jayr Santos"
-tags:
-  - "Psicanálise"
----
+      <!-- Aba: lista de posts -->
+      <div class="tab-panel active" id="tab-posts">
+        <div id="posts-list" class="post-list"><p class="empty-state">Carregando...</p></div>
+      </div>
 
-${body}`;
+      <!-- Aba: novo/editar post -->
+      <div class="tab-panel" id="tab-novo">
+        <div class="editor-box">
+          <h2 id="editor-title" style="margin-top:0; font-size:1.2rem;">Novo artigo</h2>
+          <form id="post-form" class="editor-grid">
+            <input type="hidden" id="post-id" value="" />
+            <div class="field">
+              <label for="post-titulo">Título</label>
+              <input type="text" id="post-titulo" required />
+            </div>
+            <div class="field">
+              <label for="post-slug">Slug (URL amigável, opcional)</label>
+              <input type="text" id="post-slug" placeholder="gerado automaticamente a partir do título" />
+            </div>
+            <div class="field">
+              <label for="post-descricao">Resumo (SEO)</label>
+              <input type="text" id="post-descricao" maxlength="200" placeholder="1-2 frases para o Google e para o card do blog" />
+            </div>
+            <div class="field">
+              <label for="post-tag">Categoria/Tag</label>
+              <input type="text" id="post-tag" value="Psicanálise" />
+            </div>
+            <div class="field">
+              <label for="post-capa">Imagem de capa</label>
+              <input type="file" id="post-capa" accept="image/*" />
+              <input type="hidden" id="post-capa-url" />
+              <img id="image-preview" alt="Pré-visualização da capa" />
+            </div>
+            <div class="field">
+              <label for="post-corpo">Conteúdo (Markdown: ## títulos, **negrito**, *itálico*, listas com - ou 1., > citação)</label>
+              <textarea id="post-corpo" required></textarea>
+            </div>
+            <div class="editor-actions">
+              <button type="submit" class="btn" data-status="publicado">Publicar</button>
+              <button type="submit" class="btn btn--ghost" data-status="rascunho">Salvar como rascunho</button>
+              <button type="button" class="btn btn--ghost" id="cancel-edit-btn" hidden>Cancelar edição</button>
+            </div>
+            <p id="post-feedback" class="error-msg" hidden></p>
+          </form>
+        </div>
+      </div>
 
-        document.getElementById('preview-content').textContent = mdContent;
-        document.getElementById('preview-container').style.display = 'block';
+      <!-- Aba: comentários -->
+      <div class="tab-panel" id="tab-comentarios">
+        <div id="comments-admin-list"><p class="empty-state">Carregando...</p></div>
+      </div>
+    </div>
+  </div>
 
-        // Baixar arquivo .md
-        const blob = new Blob([mdContent], { type: 'text/markdown' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `${slug}.md`;
-        a.click();
-      });
-
-    } else {
-      // Em protocolo HTTP/HTTPS (Cloudflare Pages), carrega o script do Decap CMS
-      const script = document.createElement('script');
-      script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
-      document.body.appendChild(script);
-    }
-  </script>
+  <script src="admin.js"></script>
 </body>
 </html>

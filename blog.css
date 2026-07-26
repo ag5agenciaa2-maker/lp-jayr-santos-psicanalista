@@ -330,3 +330,98 @@
 .back-to-blog:hover {
   color: #ffffff;
 }
+
+/* ---------- Comentários (artigo.html) ---------- */
+.article-comments {
+  margin-top: 20px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(27, 58, 92, 0.1);
+}
+
+.article-comments__title {
+  font-family: var(--ff-title);
+  font-size: 1.5rem;
+  color: var(--noturno);
+  margin: 0 0 24px;
+}
+
+.article-comments__list {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.article-comments__empty {
+  color: var(--salvia);
+  font-size: 0.95rem;
+}
+
+.comment-item {
+  background: var(--offwhite);
+  border: 1px solid rgba(27, 58, 92, 0.08);
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+
+.comment-item__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.comment-item__nome {
+  font-weight: 600;
+  color: var(--noturno);
+  font-size: 0.95rem;
+}
+
+.comment-item__data {
+  font-size: 0.8rem;
+  color: var(--salvia);
+}
+
+.comment-item__texto {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--grafite);
+  margin: 0;
+}
+
+.article-comments__form {
+  display: grid;
+  gap: 16px;
+  background: var(--areia);
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.article-comments__form .field label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--noturno);
+  margin-bottom: 6px;
+}
+
+.article-comments__form .field input,
+.article-comments__form .field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(27, 58, 92, 0.18);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.article-comments__form .btn {
+  justify-self: start;
+}
+
+.article-comments__feedback {
+  font-size: 0.9rem;
+  color: var(--azul);
+  margin: 0;
+}

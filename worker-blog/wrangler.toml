@@ -1,0 +1,16 @@
+name = "jayr-blog-api"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "blog-jayr-santos-psicanalista"
+database_id = "d248f96a-c74b-435b-a88e-76fcb287ac9f"
+
+[[r2_buckets]]
+binding = "IMAGENS"
+bucket_name = "jayr-santos-blog-imagens"
+
+[vars]
+IMAGENS_PUBLIC_URL = "https://pub-9ed433e219ad4d1fb2fc4ea047ecf9b3.r2.dev"
+ALLOWED_ORIGIN = "https://www.jayrsantospsicanalista.ag5agencia.site"
