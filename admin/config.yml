@@ -1,5 +1,6 @@
 backend:
   name: github
+  repo: usuario/repositorio # Substitua pelo seu usuario/nome-do-repositorio no GitHub
   branch: main # Altere para a branch principal se for 'master'
   site_domain: jayrsantospsicanalista.ag5agencia.site
 
