@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Administrativo | Blog Jayr Santos Psicanalista</title>
+  <link href="config.yml" type="text/yaml" rel="cms-config-url" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #F7F5F0;
+      color: #2A2E33;
+    }
+    .file-protocol-warning {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      border: 1px solid #1B3A5C;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .header-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #E8DFD2;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    .header-box h1 {
+      font-family: 'Playfair Display', serif;
+      color: #1B3A5C;
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    .badge {
+      background: #8FA68E;
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .info-card {
+      background: #1B3A5C;
+      color: #F7F5F0;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .info-card strong { color: #8FA68E; }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1B3A5C;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #CCC;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+    .form-group textarea {
+      min-height: 180px;
+      resize: vertical;
+    }
+    .btn-submit {
+      background: #1B3A5C;
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background: #2C5E93;
+    }
+    .preview-box {
+      margin-top: 30px;
+      background: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+    }
+    .preview-box pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <!-- Script Identity apenas quando não estiver em file:// -->
+  <script>
+    if (window.location.protocol !== 'file:') {
+      document.write('<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+
+  <div id="local-admin-root"></div>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      // Exibe a interface de criação de artigos local caso o arquivo seja aberto diretamente via file://
+      document.getElementById('local-admin-root').innerHTML = `
+        <div class="file-protocol-warning">
+          <div class="header-box">
+            <h1>Painel do Blog (Modo Local)</h1>
+            <span class="badge">Visualização Offline</span>
+          </div>
+
+          <div class="info-card">
+            <strong>ℹ️ Como funciona a publicação no Cloudflare + GitHub:</strong><br/>
+            O painel interativo com login automático (Decap CMS) é ativado automaticamente quando o site estiver publicado no seu domínio no <strong>Cloudflare Pages</strong> (ex: <code>https://seusite.com.br/admin</code>) ou em um servidor web local (HTTP).<br/><br/>
+            Abaixo, você pode criar e baixar o arquivo do artigo para salvar diretamente na pasta <code>content/blog/</code> do seu projeto!
+          </div>
+
+          <h2>Criador Rápido de Artigo (.md)</h2>
+          <form id="post-form">
+            <div class="form-group">
+              <label for="post-title">Título do Artigo:</label>
+              <input type="text" id="post-title" placeholder="Ex: O papel da psicanálise na ansiedade" required />
+            </div>
+
+            <div class="form-group">
+              <label for="post-slug">Slug / Nome do Arquivo (URL):</label>
+              <input type="text" id="post-slug" placeholder="Ex: o-papel-da-psicanalise-na-ansiedade" required />
+            </div>
+
+            <div class="form-group">
+              <label for="post-desc">Resumo para o Google (SEO):</label>
+              <input type="text" id="post-desc" placeholder="Resumo de 1 ou 2 frases sobre o artigo" required />
+            </div>
+
+            <div class="form-group">
+              <label for="post-image">Caminho da Imagem de Capa:</label>
+              <input type="text" id="post-image" value="assets/jayr-santos-psicanalista-atendimento-sobre.webp" required />
+            </div>
+
+            <div class="form-group">
+              <label for="post-body">Conteúdo do Artigo (em Markdown):</label>
+              <textarea id="post-body" placeholder="Escreva o artigo aqui... Você pode usar ## Títulos, *Itálico*, **Negrito** e > Citações."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">📥 Baixar Arquivo .md do Artigo</button>
+          </form>
+
+          <div id="preview-container" class="preview-box">
+            <h3>Conteúdo gerado do arquivo:</h3>
+            <pre id="preview-content"></pre>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('post-title').addEventListener('input', function(e) {
+        const title = e.target.value;
+        const slug = title.toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9\s-]/g, "")
+          .trim().replace(/\s+/g, "-");
+        document.getElementById('post-slug').value = slug;
+      });
+
+      document.getElementById('post-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const title = document.getElementById('post-title').value;
+        const slug = document.getElementById('post-slug').value;
+        const desc = document.getElementById('post-desc').value;
+        const img = document.getElementById('post-image').value;
+        const body = document.getElementById('post-body').value;
+        const today = new Date().toISOString().split('T')[0];
+
+        const mdContent = `---
+title: "${title}"
+slug: "${slug}"
+date: "${today}"
+description: "${desc}"
+coverImage: "${img}"
+author: "Jayr Santos"
+tags:
+  - "Psicanálise"
+---
+
+${body}`;
+
+        document.getElementById('preview-content').textContent = mdContent;
+        document.getElementById('preview-container').style.display = 'block';
+
+        // Baixar arquivo .md
+        const blob = new Blob([mdContent], { type: 'text/markdown' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${slug}.md`;
+        a.click();
+      });
+
+    } else {
+      // Em protocolo HTTP/HTTPS (Cloudflare Pages), carrega o script do Decap CMS
+      const script = document.createElement('script');
+      script.src = "https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js";
+      document.body.appendChild(script);
+    }
+  </script>
+</body>
+</html>

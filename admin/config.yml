@@ -1,0 +1,28 @@
+backend:
+  name: github
+  branch: main # Altere para a branch principal se for 'master'
+  site_domain: jayrsantospsicanalista.ag5agencia.site
+
+media_folder: "assets/blog"
+public_folder: "assets/blog"
+
+display_url: https://jayrsantospsicanalista.ag5agencia.site
+logo_url: https://jayrsantospsicanalista.ag5agencia.site/assets/logo-jayr-santos-psicanalista.webp
+
+collections:
+  - name: "blog"
+    label: "Artigos do Blog"
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    editor:
+      preview: true
+    fields:
+      - { label: "Título do Artigo", name: "title", widget: "string" }
+      - { label: "Slug (URL amigável)", name: "slug", widget: "string", hint: "Exemplo: o-que-e-psicanalise" }
+      - { label: "Data de Publicação", name: "date", widget: "datetime", format: "YYYY-MM-DD", dateFormat: "YYYY-MM-DD", timeFormat: false }
+      - { label: "Descrição / Resumo (SEO)", name: "description", widget: "text", hint: "Resumo em 1-2 frases para aparecer no Google e nos cards do blog." }
+      - { label: "Imagem de Capa", name: "coverImage", widget: "image", required: false }
+      - { label: "Autor", name: "author", widget: "string", default: "Jayr Santos" }
+      - { label: "Tags / Categorias", name: "tags", widget: "list", default: ["Psicanálise"] }
+      - { label: "Conteúdo do Artigo", name: "body", widget: "markdown" }
