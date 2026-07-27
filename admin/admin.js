@@ -652,7 +652,7 @@ function renderizarComentarios() {
       <div class="comment-row__contato">
         <span class="comment-row__contato-item"><strong>Nome:</strong> ${escapeHtml(c.nome)}</span>
         <span class="comment-row__contato-item"><strong>E-mail:</strong> ${c.email ? `<a href="mailto:${escapeAttr(c.email)}">${escapeHtml(c.email)}</a>` : "—"}</span>
-        <span class="comment-row__contato-item"><strong>Site:</strong> ${c.site ? `<a href="${escapeAttr(c.site)}" target="_blank" rel="noopener noreferrer">${escapeHtml(c.site)}</a>` : "—"}</span>
+        <span class="comment-row__contato-item"><strong>Telefone:</strong> ${c.site ? escapeHtml(c.site) : "—"}</span>
       </div>
       <p class="comment-row__texto">${escapeHtml(c.texto).replace(/\n/g, "<br>")}</p>
       <div class="comment-row__actions">

@@ -340,8 +340,8 @@ function commentFormFields(idPrefix, saved) {
       <input type="email" id="${idPrefix}-email" required maxlength="200" value="${email}" />
     </div>
     <div class="field">
-      <label for="${idPrefix}-site">Site</label>
-      <input type="url" id="${idPrefix}-site" maxlength="200" value="${site}" />
+      <label for="${idPrefix}-site">Telefone (opcional)</label>
+      <input type="tel" id="${idPrefix}-site" maxlength="30" value="${site}" />
     </div>
     <div class="field">
       <label for="${idPrefix}-texto">Comentário *</label>
@@ -379,14 +379,11 @@ async function submitComment({ slug, parentId, idPrefix, container, onSuccess })
 
 function renderCommentNode(comment, childrenByParent, slug, depth) {
   const filhos = childrenByParent.get(comment.id) || [];
-  const siteLink = comment.site
-    ? `<a href="${escapeHtml(comment.site)}" target="_blank" rel="noopener noreferrer nofollow" class="comment-item__site">${escapeHtml(comment.nome)}</a>`
-    : escapeHtml(comment.nome);
 
   return `
     <div class="comment-item" data-comment-id="${comment.id}" style="margin-left: ${Math.min(depth, 4) * 28}px;">
       <div class="comment-item__head">
-        <span class="comment-item__nome">${siteLink}</span>
+        <span class="comment-item__nome">${escapeHtml(comment.nome)}</span>
         <span class="comment-item__data">${formatDate(comment.criado_em)}</span>
       </div>
       <p class="comment-item__texto">${escapeHtml(comment.texto)}</p>
@@ -444,8 +441,10 @@ async function initComments(slug) {
     box.innerHTML = `
       <form class="article-comments__form article-comments__form--reply" data-parent-id="${parentId}">
         ${commentFormFields(idPrefix, saved)}
-        <button type="submit" class="btn btn--solid">Responder</button>
-        <button type="button" class="btn btn--ghost" data-cancel-reply>Cancelar</button>
+        <div class="article-comments__form-actions">
+          <button type="submit" class="btn btn--solid">Comentar</button>
+          <button type="button" class="btn btn--ghost" data-cancel-reply>Cancelar</button>
+        </div>
         <p class="article-comments__feedback" hidden></p>
       </form>
     `;

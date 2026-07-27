@@ -446,10 +446,19 @@
 
 .article-comments__form {
   display: grid;
-  gap: 16px;
-  background: var(--areia);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 16px;
+  background: #eaf2fb;
   padding: 24px;
   border-radius: 8px;
+}
+
+.article-comments__form .article-comments__notice,
+.article-comments__form .field:has(textarea),
+.article-comments__form .article-comments__save-check,
+.article-comments__form .btn,
+.article-comments__form .article-comments__feedback {
+  grid-column: 1 / -1;
 }
 
 .article-comments__form .field label {
@@ -469,10 +478,17 @@
   font-family: inherit;
   font-size: 0.95rem;
   resize: vertical;
+  background: #fff;
 }
 
 .article-comments__form .btn {
   justify-self: start;
+}
+
+@media (max-width: 640px) {
+  .article-comments__form {
+    grid-template-columns: 1fr;
+  }
 }
 
 .article-comments__feedback {
@@ -530,17 +546,43 @@
 
 .comment-item__reply-form .article-comments__form--reply {
   display: grid;
-  gap: 14px;
-  background: #ffffff;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 14px;
+  background: #eaf2fb;
   padding: 18px;
   border-radius: 8px;
   border: 1px solid rgba(27, 58, 92, 0.12);
+}
+
+.comment-item__reply-form .article-comments__form--reply .article-comments__notice,
+.comment-item__reply-form .article-comments__form--reply .field:has(textarea),
+.comment-item__reply-form .article-comments__form--reply .article-comments__save-check,
+.comment-item__reply-form .article-comments__form--reply .article-comments__form-actions,
+.comment-item__reply-form .article-comments__form--reply .article-comments__feedback {
+  grid-column: 1 / -1;
+}
+
+.article-comments__form-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.comment-item__reply-form .article-comments__form--reply .field input,
+.comment-item__reply-form .article-comments__form--reply .field textarea {
+  background: #fff;
 }
 
 .comment-item__reply-form .article-comments__form--reply .btn--ghost {
   background: none;
   color: var(--salvia);
   border: 1px solid rgba(27, 58, 92, 0.18);
+}
+
+@media (max-width: 640px) {
+  .comment-item__reply-form .article-comments__form--reply {
+    grid-template-columns: 1fr;
+  }
 }
 
 .comment-item__site {

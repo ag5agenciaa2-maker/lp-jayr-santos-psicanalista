@@ -174,8 +174,8 @@ export default {
         if (!nome || !emailValido || !texto || nome.length > 100 || email.length > 200 || texto.length > 2000) {
           return json({ error: "dados inválidos" }, 400, request);
         }
-        if (site && (typeof site !== "string" || site.length > 200)) {
-          return json({ error: "site inválido" }, 400, request);
+        if (site && (typeof site !== "string" || site.length > 30)) {
+          return json({ error: "telefone inválido" }, 400, request);
         }
 
         let parentIdValido = null;

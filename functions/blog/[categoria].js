@@ -614,8 +614,8 @@ function renderPostPage({ post, siteOrigin, requestUrl, relacionados = [], tagSl
           <input type="email" id="c-email" name="email" required maxlength="200" />
         </div>
         <div class="field">
-          <label for="c-site">Site</label>
-          <input type="url" id="c-site" name="site" maxlength="200" />
+          <label for="c-site">Telefone (opcional)</label>
+          <input type="tel" id="c-site" name="site" maxlength="30" />
         </div>
         <div class="field">
           <label for="c-texto">Comentário *</label>
