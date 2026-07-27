@@ -598,7 +598,10 @@ export async function onRequestGet(context) {
   ).bind(slug).first();
 
   if (post) {
-    const requestUrl = `${siteOrigin}/blog/${slug}/`;
+    // Sem barra final: com blog/ já existindo como pasta física (blog/index.html),
+    // o Pages só aciona esta Function em /blog/slug — /blog/slug/ (com barra) cai
+    // no fallback de "diretório" antes de chegar aqui.
+    const requestUrl = `${siteOrigin}/blog/${slug}`;
     return new Response(renderPostPage({ post, siteOrigin, requestUrl }), {
       headers: { "Content-Type": "text/html; charset=UTF-8" },
     });

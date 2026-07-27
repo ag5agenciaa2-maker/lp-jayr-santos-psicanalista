@@ -15,9 +15,11 @@ const OLD_SLUGS = new Set([
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
 // e SSR automáticos via functions/blog/[categoria].js — sem precisar de
-// nenhuma lista manual.
+// nenhuma lista manual. IMPORTANTE: sem barra final — com a pasta blog/
+// já existindo fisicamente (blog/index.html), o Cloudflare Pages não
+// aciona a Function dinâmica em /blog/algo/ (com barra), só em /blog/algo.
 function urlDoPost(slug) {
-  return OLD_SLUGS.has(slug) ? `/${encodeURIComponent(slug)}/` : `/blog/${encodeURIComponent(slug)}/`;
+  return OLD_SLUGS.has(slug) ? `/${encodeURIComponent(slug)}/` : `/blog/${encodeURIComponent(slug)}`;
 }
 
 // Detecta se o corpo já é HTML (editor WYSIWYG, posts novos) em vez de

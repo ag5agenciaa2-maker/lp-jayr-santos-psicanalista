@@ -180,6 +180,18 @@ document.getElementById("post-tag").addEventListener("change", (e) => {
   }
 });
 
+// Contador de caracteres do resumo/meta description — ideal 120-160, o Google
+// costuma truncar depois disso nos resultados de busca.
+const descricaoEl = document.getElementById("post-descricao");
+const descricaoCountEl = document.getElementById("post-descricao-count");
+function atualizarContadorDescricao() {
+  const len = descricaoEl.value.length;
+  descricaoCountEl.textContent = `${len}/160`;
+  descricaoCountEl.classList.toggle("is-warning", len > 0 && len < 120);
+  descricaoCountEl.classList.toggle("is-over", len > 160);
+}
+descricaoEl.addEventListener("input", atualizarContadorDescricao);
+
 // Cria a categoria (se for nova) e devolve o nome final a usar no post.
 // Retorna null se o usuário escolheu "nova categoria" mas não preencheu o nome.
 async function resolverCategoriaParaSalvar() {
@@ -457,6 +469,7 @@ function editarPost(id) {
   document.getElementById("post-titulo").value = post.titulo;
   document.getElementById("post-slug").value = post.slug;
   document.getElementById("post-descricao").value = post.descricao || "";
+  atualizarContadorDescricao();
   selecionarCategoriaNoForm(post.tag);
   document.getElementById("post-capa-url").value = post.capa_url || "";
 
@@ -494,6 +507,7 @@ function resetPostForm() {
   document.getElementById("cancel-edit-btn").hidden = true;
   quill.setContents([]);
   postCorpoEl.value = "";
+  atualizarContadorDescricao();
 }
 
 // ---- Upload de imagem de capa ----
