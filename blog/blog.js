@@ -12,6 +12,7 @@ const BLOG_API_BASE = "https://jayr-blog-api.ag5agenciaa2.workers.dev";
 const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
   "quando-o-corpo-grita",
+  "bets-e-a-dor-psiquica",
 ]);
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
