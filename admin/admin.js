@@ -140,10 +140,10 @@ let todasCategorias = [];
 const NOVA_CATEGORIA_VALUE = "__nova__";
 
 async function carregarCategorias() {
-  const res = await fetch("https://jayr-blog-api.ag5agenciaa2.workers.dev/api/categorias").catch(() => null);
-  const data = res && res.ok ? await res.json().catch(() => null) : null;
-  todasCategorias = (data && data.categorias) || [];
+  const res = await apiFetch("/api/admin/categorias").catch(() => null);
+  todasCategorias = (res && res.ok && res.data.categorias) || [];
   popularSelectCategorias();
+  renderizarCategoriasAdmin();
 }
 
 function popularSelectCategorias(selecionar) {
@@ -202,6 +202,98 @@ async function resolverCategoriaParaSalvar() {
   document.getElementById("nova-categoria-field").hidden = true;
   document.getElementById("nova-categoria-nome").value = "";
   return res.data.categoria.nome;
+}
+
+// ---- Aba Categorias: listar, editar, excluir ----
+function renderizarCategoriasAdmin() {
+  const container = document.getElementById("categorias-admin-list");
+  if (!container) return;
+
+  if (!todasCategorias.length) { container.innerHTML = "<p class=\"empty-state\">Nenhuma categoria ainda.</p>"; return; }
+
+  container.innerHTML = todasCategorias.map(c => {
+    const fixa = c.slug === "outros-temas";
+    return `
+    <div class="categoria-row ${fixa ? "categoria-row--fixa" : ""}" data-id="${c.id}">
+      <div class="categoria-row__info">
+        <strong>${escapeHtml(c.nome)}</strong>
+        <span class="categoria-row__meta">
+          ${c.total_posts} artigo${c.total_posts === 1 ? "" : "s"}
+          ${fixa ? " · categoria fixa, recebe artigos de categorias excluídas" : ""}
+        </span>
+      </div>
+      <div class="categoria-row__actions">
+        ${fixa ? "" : `
+          <button class="btn btn--ghost btn--sm" data-action="editar-categoria" data-id="${c.id}">Editar</button>
+          <button class="btn btn--danger btn--sm" data-action="excluir-categoria" data-id="${c.id}">Excluir</button>
+        `}
+      </div>
+    </div>
+  `;
+  }).join("");
+
+  container.querySelectorAll('[data-action="editar-categoria"]').forEach(btn => {
+    btn.addEventListener("click", () => iniciarEdicaoCategoria(btn.dataset.id));
+  });
+  container.querySelectorAll('[data-action="excluir-categoria"]').forEach(btn => {
+    btn.addEventListener("click", () => excluirCategoria(btn.dataset.id));
+  });
+}
+
+function iniciarEdicaoCategoria(id) {
+  const categoria = todasCategorias.find(c => String(c.id) === String(id));
+  if (!categoria) return;
+  const row = document.querySelector(`.categoria-row[data-id="${id}"]`);
+  if (!row) return;
+
+  row.innerHTML = `
+    <form class="categoria-row__edit-form" data-id="${id}">
+      <input type="text" value="${escapeAttr(categoria.nome)}" maxlength="80" required />
+      <button type="submit" class="btn btn--sm">Salvar</button>
+      <button type="button" class="btn btn--ghost btn--sm" data-action="cancelar-edicao">Cancelar</button>
+    </form>
+  `;
+
+  row.querySelector("[data-action=\"cancelar-edicao\"]").addEventListener("click", () => renderizarCategoriasAdmin());
+  row.querySelector("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const novoNome = e.target.querySelector("input").value.trim();
+    if (!novoNome) return;
+
+    const res = await apiFetch(`/api/admin/categorias/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome: novoNome }),
+    }).catch(() => null);
+
+    if (res && res.ok) {
+      await carregarCategorias();
+      carregarPosts();
+      carregarDashboard();
+    } else {
+      alert((res && res.data && res.data.error) || "Erro ao renomear categoria.");
+      renderizarCategoriasAdmin();
+    }
+  });
+}
+
+async function excluirCategoria(id) {
+  const categoria = todasCategorias.find(c => String(c.id) === String(id));
+  if (!categoria) return;
+
+  const aviso = categoria.total_posts > 0
+    ? `Excluir "${categoria.nome}"? Os ${categoria.total_posts} artigo(s) dessa categoria serão movidos para "Outros Temas".`
+    : `Excluir a categoria "${categoria.nome}"?`;
+  if (!confirm(aviso)) return;
+
+  const res = await apiFetch(`/api/admin/categorias/${id}`, { method: "DELETE" }).catch(() => null);
+  if (res && res.ok) {
+    await carregarCategorias();
+    carregarPosts();
+    carregarDashboard();
+  } else {
+    alert((res && res.data && res.data.error) || "Erro ao excluir categoria.");
+  }
 }
 
 // ---- Dashboard ----

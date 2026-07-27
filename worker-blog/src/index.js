@@ -114,9 +114,15 @@ export default {
       }
 
       // ---- CATEGORIAS PÚBLICAS ----
+      // Só lista categorias com pelo menos 1 post publicado. "Outros Temas" sempre
+      // por último (é categoria de "resto", não um tema planejado); as demais em A-Z.
       if (path === "/api/categorias" && method === "GET") {
         const { results } = await env.DB.prepare(
-          "SELECT id, nome, slug FROM categorias ORDER BY nome ASC"
+          `SELECT c.id, c.nome, c.slug, COUNT(p.id) AS total_posts
+           FROM categorias c
+           JOIN posts p ON p.tag = c.nome AND p.status = 'publicado'
+           GROUP BY c.id
+           ORDER BY (c.slug = 'outros-temas') ASC, c.nome ASC`
         ).all();
         return json({ categorias: results }, 200, request);
       }
@@ -192,6 +198,18 @@ export default {
         const usuarioId = await requireAuth(request, env);
         if (!usuarioId) return json({ error: "não autorizado" }, 401, request);
 
+        // Lista TODAS as categorias (mesmo sem posts) + contagem, para o admin
+        // popular o <select> do formulário e decidir sobre exclusões com segurança.
+        if (path === "/api/admin/categorias" && method === "GET") {
+          const { results } = await env.DB.prepare(
+            `SELECT c.id, c.nome, c.slug,
+                    (SELECT COUNT(*) FROM posts p WHERE p.tag = c.nome) AS total_posts
+             FROM categorias c
+             ORDER BY (c.slug = 'outros-temas') ASC, c.nome ASC`
+          ).all();
+          return json({ categorias: results }, 200, request);
+        }
+
         if (path === "/api/admin/categorias" && method === "POST") {
           const body = await request.json();
           const nome = (body.nome || "").trim();
@@ -206,6 +224,46 @@ export default {
             "INSERT INTO categorias (nome, slug) VALUES (?, ?)"
           ).bind(nome, slug).run();
           return json({ ok: true, categoria: { id: r.meta.last_row_id, nome, slug } }, 201, request);
+        }
+
+        const matchCategoriaAdmin = path.match(/^\/api\/admin\/categorias\/(\d+)$/);
+        if (matchCategoriaAdmin && method === "PUT") {
+          const id = matchCategoriaAdmin[1];
+          const body = await request.json();
+          const novoNome = (body.nome || "").trim();
+          if (!novoNome || novoNome.length > 80) return json({ error: "nome de categoria inválido" }, 400, request);
+
+          const atual = await env.DB.prepare("SELECT id, nome, slug FROM categorias WHERE id = ?").bind(id).first();
+          if (!atual) return json({ error: "categoria não encontrada" }, 404, request);
+          if (atual.slug === "outros-temas") return json({ error: "\"Outros Temas\" não pode ser renomeada" }, 400, request);
+
+          const novoSlug = slugify(novoNome);
+          if (!novoSlug) return json({ error: "nome de categoria inválido" }, 400, request);
+
+          const conflito = await env.DB.prepare("SELECT id FROM categorias WHERE slug = ? AND id != ?").bind(novoSlug, id).first();
+          if (conflito) return json({ error: "já existe uma categoria com esse nome" }, 400, request);
+
+          await env.DB.prepare("UPDATE categorias SET nome = ?, slug = ? WHERE id = ?").bind(novoNome, novoSlug, id).run();
+          // Propaga o novo nome para todos os posts que usavam o nome antigo da categoria.
+          await env.DB.prepare("UPDATE posts SET tag = ? WHERE tag = ?").bind(novoNome, atual.nome).run();
+
+          return json({ ok: true, categoria: { id: Number(id), nome: novoNome, slug: novoSlug } }, 200, request);
+        }
+
+        if (matchCategoriaAdmin && method === "DELETE") {
+          const id = matchCategoriaAdmin[1];
+          const atual = await env.DB.prepare("SELECT id, nome, slug FROM categorias WHERE id = ?").bind(id).first();
+          if (!atual) return json({ error: "categoria não encontrada" }, 404, request);
+          if (atual.slug === "outros-temas") return json({ error: "\"Outros Temas\" não pode ser excluída" }, 400, request);
+
+          const outrosTemas = await env.DB.prepare("SELECT nome FROM categorias WHERE slug = 'outros-temas'").first();
+          if (outrosTemas) {
+            // Posts que usavam a categoria excluída migram para "Outros Temas" em vez de ficarem órfãos.
+            await env.DB.prepare("UPDATE posts SET tag = ? WHERE tag = ?").bind(outrosTemas.nome, atual.nome).run();
+          }
+
+          await env.DB.prepare("DELETE FROM categorias WHERE id = ?").bind(id).run();
+          return json({ ok: true }, 200, request);
         }
 
         if (path === "/api/admin/posts" && method === "GET") {

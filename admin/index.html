@@ -217,6 +217,22 @@
 
     #image-preview { max-width: 220px; border-radius: 8px; margin-top: 10px; display: none; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
 
+    /* ---------- Categorias ---------- */
+    .categoria-row {
+      background: #fff; border-radius: 10px; padding: 16px 20px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      flex-wrap: wrap; box-shadow: 0 2px 10px rgba(27,58,92,0.06); border: 1px solid rgba(27,58,92,0.04);
+    }
+    .categoria-row__info strong { display: block; color: var(--noturno); font-size: 1rem; margin-bottom: 3px; }
+    .categoria-row__meta { font-size: 0.82rem; color: var(--salvia); }
+    .categoria-row--fixa .categoria-row__meta { font-style: italic; }
+    .categoria-row__edit-form { display: flex; gap: 8px; align-items: center; flex: 1; min-width: 220px; }
+    .categoria-row__edit-form input {
+      flex: 1; padding: 8px 12px; border: 1px solid #D8D2C4; border-radius: 6px;
+      font-family: inherit; font-size: 0.9rem;
+    }
+    .categoria-row__actions { display: flex; gap: 8px; }
+
     /* ---------- Comentários ---------- */
     .comment-row {
       background: #fff; border-radius: 10px; padding: 18px 20px; margin-bottom: 12px;
@@ -302,6 +318,10 @@
             <svg class="nav-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Comentários
             <span class="nav-btn__badge" id="sidebar-pendentes-badge" hidden>0</span>
+          </button>
+          <button class="nav-btn" data-tab="categorias">
+            <svg class="nav-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41 11 3.83V3H10.17L2 11.17V13a1 1 0 0 0 .29.7l8 8a1 1 0 0 0 1.42 0l9-9a1 1 0 0 0 0-1.42Z"/><circle cx="6.5" cy="6.5" r="1.5"/></svg>
+            Categorias
           </button>
         </nav>
         <div class="sidebar__footer">
@@ -438,6 +458,17 @@
             </select>
           </div>
           <div id="comments-admin-list"><p class="empty-state">Carregando…</p></div>
+        </div>
+
+        <!-- Aba: categorias -->
+        <div class="tab-panel" id="tab-categorias">
+          <div class="main__header">
+            <div>
+              <h1>Categorias</h1>
+              <p>Organize os temas do blog — usadas no formulário de artigo e em "Explore por tema" na página inicial</p>
+            </div>
+          </div>
+          <div id="categorias-admin-list"><p class="empty-state">Carregando…</p></div>
         </div>
 
       </main>
