@@ -113,6 +113,14 @@ export default {
         return json({ token, expira_em: expira }, 200, request);
       }
 
+      // ---- CATEGORIAS PÚBLICAS ----
+      if (path === "/api/categorias" && method === "GET") {
+        const { results } = await env.DB.prepare(
+          "SELECT id, nome, slug FROM categorias ORDER BY nome ASC"
+        ).all();
+        return json({ categorias: results }, 200, request);
+      }
+
       // ---- POSTS PÚBLICOS ----
       if (path === "/api/posts" && method === "GET") {
         const tag = url.searchParams.get("tag");
@@ -183,6 +191,22 @@ export default {
       if (path.startsWith("/api/admin/")) {
         const usuarioId = await requireAuth(request, env);
         if (!usuarioId) return json({ error: "não autorizado" }, 401, request);
+
+        if (path === "/api/admin/categorias" && method === "POST") {
+          const body = await request.json();
+          const nome = (body.nome || "").trim();
+          if (!nome || nome.length > 80) return json({ error: "nome de categoria inválido" }, 400, request);
+          const slug = slugify(nome);
+          if (!slug) return json({ error: "nome de categoria inválido" }, 400, request);
+
+          const existente = await env.DB.prepare("SELECT id, nome, slug FROM categorias WHERE slug = ?").bind(slug).first();
+          if (existente) return json({ ok: true, categoria: existente, ja_existia: true }, 200, request);
+
+          const r = await env.DB.prepare(
+            "INSERT INTO categorias (nome, slug) VALUES (?, ?)"
+          ).bind(nome, slug).run();
+          return json({ ok: true, categoria: { id: r.meta.last_row_id, nome, slug } }, 201, request);
+        }
 
         if (path === "/api/admin/posts" && method === "GET") {
           const { results } = await env.DB.prepare(

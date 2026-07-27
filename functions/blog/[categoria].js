@@ -1,39 +1,57 @@
-<!DOCTYPE html>
+/* Pages Function — página de categoria do blog, totalmente dinâmica.
+   Qualquer categoria criada pelo admin (tabela `categorias` no D1) já
+   funciona em /blog/[slug]/ sem precisar gerar arquivo HTML nenhum.
+   As 7 páginas estáticas antigas (blog/masculinidade/index.html etc)
+   continuam servindo normalmente — arquivo estático sempre tem
+   prioridade sobre esta rota, então nada quebra. */
+
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderPage({ categoria, siteOrigin, requestUrl }) {
+  const nomeEsc = escapeHtml(categoria.nome);
+  const descricao = `Artigos sobre ${categoria.nome} por Jayr Santos Psicanalista em Campo Grande, RJ.`;
+  const descEsc = escapeHtml(descricao);
+  const imagemAbs = `${siteOrigin}/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp`;
+
+  return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog de Psicanálise em Campo Grande RJ | Jayr Santos Psicanalista</title>
-  <meta name="description" content="Artigos, reflexões e conteúdos sobre psicanálise, autoconhecimento, saúde emocional e relacionamentos por Jayr Santos Psicanalista em Campo Grande, RJ." />
-  <link rel="canonical" href="http://www.jayrsantospsicanalista.ag5agencia.site/blog" />
-  <link rel="icon" href="../assets/favicon-jayr-santos-psicanalista.ico" />
+  <title>${nomeEsc} | Blog Jayr Santos Psicanalista</title>
+  <meta name="description" content="${descEsc}" />
+  <link rel="canonical" href="${requestUrl}" />
+  <link rel="icon" href="/assets/favicon-jayr-santos-psicanalista.ico" />
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="http://www.jayrsantospsicanalista.ag5agencia.site/blog" />
-  <meta property="og:title" content="Blog de Psicanálise em Campo Grande RJ | Jayr Santos Psicanalista" />
-  <meta property="og:description" content="Artigos, reflexões e conteúdos sobre psicanálise, autoconhecimento, saúde emocional e relacionamentos por Jayr Santos Psicanalista em Campo Grande, RJ." />
-  <meta property="og:image" content="http://www.jayrsantospsicanalista.ag5agencia.site/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" />
+  <meta property="og:url" content="${requestUrl}" />
+  <meta property="og:title" content="${nomeEsc} | Blog Jayr Santos Psicanalista" />
+  <meta property="og:description" content="${descEsc}" />
+  <meta property="og:image" content="${imagemAbs}" />
 
-  <!-- Conectividade para Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
 
-  <!-- CSS principal e Blog -->
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="../responsive-fixes.css" />
-  <link rel="stylesheet" href="blog.css" />
-  <link rel="preload" href="../cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="../cookie-banner.css" /></noscript>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/responsive-fixes.css" />
+  <link rel="stylesheet" href="/blog/blog.css" />
+  <link rel="preload" href="/cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/cookie-banner.css" /></noscript>
 </head>
 <body>
 
   <!-- ===== NAVBAR ===== -->
   <nav class="nav" id="topo" aria-label="Navegação principal">
     <a href="/#topo" class="nav__brand">
-      <span class="nav__mark"><img src="../assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" /></span>
+      <span class="nav__mark"><img src="/assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" /></span>
       <span class="nav__name">
         <strong>Jayr Santos</strong>
         <em>Psicanalista</em>
@@ -56,28 +74,16 @@
   <header class="blog-hero">
     <div class="blog-hero__watermark" aria-hidden="true">Ψ</div>
     <div class="wrap">
-      <p class="eyebrow" style="color: var(--areia); margin-bottom: 12px;"><span class="eyebrow__line" style="background: var(--areia);"></span>Reflexões & Psicanálise</p>
-      <h1 class="blog-hero__title">Artigos e Textos Clínicos</h1>
-      <p class="blog-hero__subtitle">Um espaço dedicado à escuta da palavra, ao autoconhecimento, à compreensão dos relacionamentos e à saúde emocional.</p>
+      <p class="eyebrow" style="color: var(--areia); margin-bottom: 12px;"><span class="eyebrow__line" style="background: var(--areia);"></span><a href="/blog/" style="color: var(--areia); text-decoration: none;">Blog</a> · ${nomeEsc}</p>
+      <h1 class="blog-hero__title">${nomeEsc}</h1>
+      <p class="blog-hero__subtitle">Reflexões e artigos sobre ${nomeEsc.toLowerCase()} a partir da escuta psicanalítica.</p>
     </div>
   </header>
 
-  <!-- ===== CATEGORIAS DO BLOG ===== -->
-  <section class="blog-categories blog-categories--top">
-    <div class="wrap">
-      <p class="eyebrow" style="margin-bottom: 12px;"><span class="eyebrow__line"></span>Explore por tema</p>
-      <h2 class="section-title">Categorias</h2>
-      <div id="blog-categories-container" class="blog-categories__grid">
-        <!-- Renderizado dinamicamente via blog.js -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== ARTIGOS MAIS RECENTES ===== -->
+  <!-- ===== ARTIGOS DA CATEGORIA ===== -->
   <main class="blog-section">
     <div class="wrap">
-      <p class="eyebrow" style="margin-bottom: 12px;"><span class="eyebrow__line"></span>Publicados recentemente</p>
-      <div id="blog-grid-container" class="blog-grid">
+      <div id="category-grid-container" class="blog-grid" data-tag="${nomeEsc}">
         <!-- Renderizado dinamicamente via blog.js -->
       </div>
     </div>
@@ -99,7 +105,7 @@
       <!-- Coluna 1: Marca -->
       <div class="footer-brand">
         <a href="/#topo" class="footer-brand__logo">
-          <img src="../assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" loading="lazy" />
+          <img src="/assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" loading="lazy" />
           <span><strong>Jayr Santos</strong><em>Psicanalista</em></span>
         </a>
         <p class="footer-brand__desc">Escuta atenta, acolhedora e ética. Um espaço seguro para quem deseja compreender seus conflitos internos, seus relacionamentos e sua história.</p>
@@ -192,7 +198,7 @@
   <div class="drawer" id="mobileDrawer" aria-hidden="true">
     <div class="drawer__header">
       <a href="/#topo" class="drawer__brand">
-        <img src="../assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" width="200" height="200" loading="lazy" />
+        <img src="/assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" width="200" height="200" loading="lazy" />
         <span class="drawer__brand-name">
           <strong>Jayr Santos</strong>
           <em>Psicanalista</em>
@@ -316,7 +322,7 @@
       <div class="wa-content">
         <div class="wa-header">
           <div class="wa-avatar-wrapper">
-            <img src="../assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Jayr Santos" class="wa-avatar" width="48" height="48" loading="lazy" />
+            <img src="/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Jayr Santos" class="wa-avatar" width="48" height="48" loading="lazy" />
           </div>
           <div class="wa-info">
             <span class="wa-name">Jayr Santos</span>
@@ -338,9 +344,33 @@
     </a>
   </div>
 
-  <script src="../cookie-banner.js" defer></script>
-  <script src="../script.js" defer></script>
-  <script src="blog.js" defer></script>
+  <script src="/cookie-banner.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script src="/blog/blog.js" defer></script>
   <script src="https://control-blog.ag5agencia.site/r.js" data-c="jayr-santos-psicanalista" defer></script>
 </body>
-</html>
+</html>`;
+}
+
+export async function onRequestGet(context) {
+  const { params, env, request } = context;
+  const slug = params.categoria;
+
+  const categoria = await env.DB.prepare(
+    "SELECT id, nome, slug FROM categorias WHERE slug = ?"
+  ).bind(slug).first();
+
+  if (!categoria) {
+    return context.next();
+  }
+
+  const url = new URL(request.url);
+  const siteOrigin = url.origin;
+  const requestUrl = `${siteOrigin}/blog/${slug}/`;
+
+  const html = renderPage({ categoria, siteOrigin, requestUrl });
+
+  return new Response(html, {
+    headers: { "Content-Type": "text/html; charset=UTF-8" },
+  });
+}

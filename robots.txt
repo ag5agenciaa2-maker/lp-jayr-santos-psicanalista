@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /blog/admin/
+Disallow: /admin/
 
 # Permitir robôs de IA especificamente (GEO)
 User-agent: GPTBot

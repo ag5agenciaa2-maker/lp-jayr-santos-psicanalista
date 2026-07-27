@@ -120,6 +120,27 @@ async function renderBlogList() {
   container.innerHTML = data.posts.map(renderBlogCard).join("");
 }
 
+// ---- blog/index.html: grid "Explore por tema" — categorias vêm do banco (admin cria dinamicamente) ----
+async function renderBlogCategorias() {
+  const container = document.getElementById("blog-categories-container");
+  if (!container) return;
+
+  const data = await apiGet("/api/categorias");
+  const categorias = (data && data.categorias) || [];
+
+  if (!categorias.length) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = categorias.map(c => `
+    <a href="/blog/${encodeURIComponent(c.slug)}/" class="blog-categories__card">
+      <span class="blog-categories__name">${escapeHtml(c.nome)}</span>
+      <span class="blog-categories__arrow">→</span>
+    </a>
+  `).join("");
+}
+
 function renderBlogCard(post) {
   return `
     <article class="blog-card">
@@ -470,6 +491,7 @@ async function initComments(slug) {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderBlogList();
+  renderBlogCategorias();
   renderCategoryList();
   renderSingleArticle();
 });

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel do Blog | Jayr Santos Psicanalista</title>
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" href="../../assets/favicon-jayr-santos-psicanalista.ico" />
+  <link rel="icon" href="../assets/favicon-jayr-santos-psicanalista.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
 
   <!-- Quill (editor WYSIWYG) -->
@@ -377,15 +377,15 @@
                 <div class="field">
                   <label for="post-tag">Categoria</label>
                   <select id="post-tag">
-                    <option value="Saúde Mental e Emoções">Saúde Mental e Emoções</option>
-                    <option value="Família e Relacionamentos">Família e Relacionamentos</option>
-                    <option value="Sociedade e Comportamentos">Sociedade e Comportamentos</option>
-                    <option value="Trabalho e Vida Profissional">Trabalho e Vida Profissional</option>
-                    <option value="Fé e Espiritualidade">Fé e Espiritualidade</option>
-                    <option value="Feminilidade">Feminilidade</option>
-                    <option value="Masculinidade">Masculinidade</option>
+                    <option value="">Carregando categorias…</option>
                   </select>
                 </div>
+              </div>
+
+              <div class="field" id="nova-categoria-field" hidden>
+                <label for="nova-categoria-nome">Nome da nova categoria</label>
+                <input type="text" id="nova-categoria-nome" maxlength="80" placeholder="Ex.: Luto e Perdas" />
+                <p class="field-hint">Aparece automaticamente em "Explore por tema" na página inicial do blog.</p>
               </div>
 
               <div class="field">

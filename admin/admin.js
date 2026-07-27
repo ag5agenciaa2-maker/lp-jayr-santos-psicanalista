@@ -57,6 +57,7 @@ function showLogin() {
 function showPanel() {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("panel-screen").style.display = "block";
+  carregarCategorias();
   carregarDashboard();
   carregarPosts();
   carregarComentarios();
@@ -133,6 +134,75 @@ quill.on("text-change", () => {
 // ---- Dados em cache (para busca/filtro sem refetch) ----
 let todosPosts = [];
 let todosComentarios = [];
+let todasCategorias = [];
+
+// ---- Categorias (compartilhadas com a home do blog via /api/categorias) ----
+const NOVA_CATEGORIA_VALUE = "__nova__";
+
+async function carregarCategorias() {
+  const res = await fetch("https://jayr-blog-api.ag5agenciaa2.workers.dev/api/categorias").catch(() => null);
+  const data = res && res.ok ? await res.json().catch(() => null) : null;
+  todasCategorias = (data && data.categorias) || [];
+  popularSelectCategorias();
+}
+
+function popularSelectCategorias(selecionar) {
+  const select = document.getElementById("post-tag");
+  const atual = selecionar || select.value;
+  select.innerHTML = todasCategorias.map(c => `<option value="${escapeAttr(c.nome)}">${escapeHtml(c.nome)}</option>`).join("")
+    + `<option value="${NOVA_CATEGORIA_VALUE}">+ Adicionar nova categoria…</option>`;
+  if (atual && todasCategorias.some(c => c.nome === atual)) select.value = atual;
+  else if (todasCategorias.length) select.value = todasCategorias[0].nome;
+}
+
+// Seleciona a categoria de um post no <select>, mesmo que ela não exista mais
+// na lista atual de categorias (post antigo, categoria removida etc).
+function selecionarCategoriaNoForm(tag) {
+  const select = document.getElementById("post-tag");
+  if (tag && !todasCategorias.some(c => c.nome === tag)) {
+    const opt = document.createElement("option");
+    opt.value = tag;
+    opt.textContent = `${tag} (categoria não listada)`;
+    select.insertBefore(opt, select.firstChild);
+  }
+  select.value = tag || (todasCategorias[0] ? todasCategorias[0].nome : "");
+}
+
+document.getElementById("post-tag").addEventListener("change", (e) => {
+  const campoNova = document.getElementById("nova-categoria-field");
+  const inputNova = document.getElementById("nova-categoria-nome");
+  if (e.target.value === NOVA_CATEGORIA_VALUE) {
+    campoNova.hidden = false;
+    inputNova.focus();
+  } else {
+    campoNova.hidden = true;
+    inputNova.value = "";
+  }
+});
+
+// Cria a categoria (se for nova) e devolve o nome final a usar no post.
+// Retorna null se o usuário escolheu "nova categoria" mas não preencheu o nome.
+async function resolverCategoriaParaSalvar() {
+  const select = document.getElementById("post-tag");
+  if (select.value !== NOVA_CATEGORIA_VALUE) return select.value;
+
+  const nome = document.getElementById("nova-categoria-nome").value.trim();
+  if (!nome) return null;
+
+  const res = await apiFetch("/api/admin/categorias", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nome }),
+  }).catch(() => null);
+
+  if (!res || !res.ok) return null;
+
+  await carregarCategorias();
+  popularSelectCategorias(res.data.categoria.nome);
+  document.getElementById("nova-categoria-field").hidden = true;
+  document.getElementById("nova-categoria-nome").value = "";
+  return res.data.categoria.nome;
+}
 
 // ---- Dashboard ----
 async function carregarDashboard() {
@@ -295,7 +365,7 @@ function editarPost(id) {
   document.getElementById("post-titulo").value = post.titulo;
   document.getElementById("post-slug").value = post.slug;
   document.getElementById("post-descricao").value = post.descricao || "";
-  document.getElementById("post-tag").value = post.tag || "Saúde Mental e Emoções";
+  selecionarCategoriaNoForm(post.tag);
   document.getElementById("post-capa-url").value = post.capa_url || "";
 
   const corpo = post.corpo_md || "";
@@ -325,7 +395,9 @@ function resetPostForm() {
   document.getElementById("post-form").reset();
   document.getElementById("post-id").value = "";
   document.getElementById("post-capa-url").value = "";
-  document.getElementById("post-tag").value = "Saúde Mental e Emoções";
+  popularSelectCategorias();
+  document.getElementById("nova-categoria-field").hidden = true;
+  document.getElementById("nova-categoria-nome").value = "";
   document.getElementById("image-preview").style.display = "none";
   document.getElementById("cancel-edit-btn").hidden = true;
   quill.setContents([]);
@@ -374,11 +446,19 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
   const titulo = document.getElementById("post-titulo").value.trim();
   const slugInput = document.getElementById("post-slug").value.trim();
   const descricao = document.getElementById("post-descricao").value.trim();
-  const tag = document.getElementById("post-tag").value.trim() || "Saúde Mental e Emoções";
   const capaUrl = document.getElementById("post-capa-url").value;
   const corpoMd = postCorpoEl.value;
 
   if (!titulo || !corpoMd) return;
+
+  const feedback = document.getElementById("post-feedback");
+
+  const tag = await resolverCategoriaParaSalvar();
+  if (!tag) {
+    feedback.hidden = false;
+    feedback.textContent = "Escolha uma categoria ou informe o nome da nova categoria.";
+    return;
+  }
 
   const payload = {
     titulo,
@@ -390,7 +470,6 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
     status,
   };
 
-  const feedback = document.getElementById("post-feedback");
   feedback.hidden = false;
   feedback.textContent = "Salvando…";
 
