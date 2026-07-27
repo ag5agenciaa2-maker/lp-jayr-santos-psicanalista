@@ -134,7 +134,7 @@ function editarPost(id, posts) {
   document.getElementById("post-titulo").value = post.titulo;
   document.getElementById("post-slug").value = post.slug;
   document.getElementById("post-descricao").value = post.descricao || "";
-  document.getElementById("post-tag").value = post.tag || "Psicanálise";
+  document.getElementById("post-tag").value = post.tag || "Saúde Mental e Emoções";
   document.getElementById("post-capa-url").value = post.capa_url || "";
   document.getElementById("post-corpo").value = post.corpo_md || "";
 
@@ -160,7 +160,7 @@ function resetPostForm() {
   document.getElementById("post-form").reset();
   document.getElementById("post-id").value = "";
   document.getElementById("post-capa-url").value = "";
-  document.getElementById("post-tag").value = "Psicanálise";
+  document.getElementById("post-tag").value = "Saúde Mental e Emoções";
   document.getElementById("image-preview").style.display = "none";
   document.getElementById("cancel-edit-btn").hidden = true;
 }
@@ -206,7 +206,7 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
   const titulo = document.getElementById("post-titulo").value.trim();
   const slugInput = document.getElementById("post-slug").value.trim();
   const descricao = document.getElementById("post-descricao").value.trim();
-  const tag = document.getElementById("post-tag").value.trim() || "Psicanálise";
+  const tag = document.getElementById("post-tag").value.trim() || "Saúde Mental e Emoções";
   const capaUrl = document.getElementById("post-capa-url").value;
   const corpoMd = document.getElementById("post-corpo").value;
 

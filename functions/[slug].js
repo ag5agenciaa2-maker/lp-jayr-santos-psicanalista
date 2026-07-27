@@ -1,31 +1,147 @@
-<!DOCTYPE html>
+/* Pages Function — serve posts antigos do blog na URL original (raiz do domínio,
+   sem /blog/), sem redirect, direto do mesmo banco D1 usado pelo painel admin.
+   Só os slugs explicitamente listados em OLD_SLUGS respondem aqui; qualquer outro
+   valor de [slug] segue o fluxo normal do Pages (next()). */
+
+const OLD_SLUGS = new Set([
+  "prossiga-a-vida-nao-terminou",
+]);
+
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+}
+
+function markdownToHtml(md) {
+  if (!md) return "";
+  const lines = md.replace(/\r\n/g, "\n").split("\n");
+  const htmlParts = [];
+  let inUl = false;
+  let inOl = false;
+  let paragraphBuffer = [];
+
+  function flushParagraph() {
+    if (paragraphBuffer.length) {
+      htmlParts.push(`<p>${inlineFormat(paragraphBuffer.join(" "))}</p>`);
+      paragraphBuffer = [];
+    }
+  }
+  function closeLists() {
+    if (inUl) { htmlParts.push("</ul>"); inUl = false; }
+    if (inOl) { htmlParts.push("</ol>"); inOl = false; }
+  }
+  function inlineFormat(text) {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) { flushParagraph(); closeLists(); continue; }
+    if (/^### /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<h3>${inlineFormat(line.slice(4))}</h3>`); continue; }
+    if (/^## /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<h2>${inlineFormat(line.slice(3))}</h2>`); continue; }
+    if (/^# /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<h1>${inlineFormat(line.slice(2))}</h1>`); continue; }
+    if (/^> /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<blockquote>${inlineFormat(line.slice(2))}</blockquote>`); continue; }
+    if (/^[*-] /.test(line)) {
+      flushParagraph();
+      if (inOl) { htmlParts.push("</ol>"); inOl = false; }
+      if (!inUl) { htmlParts.push("<ul>"); inUl = true; }
+      htmlParts.push(`<li>${inlineFormat(line.slice(2))}</li>`);
+      continue;
+    }
+    if (/^\d+\. /.test(line)) {
+      flushParagraph();
+      if (inUl) { htmlParts.push("</ul>"); inUl = false; }
+      if (!inOl) { htmlParts.push("<ol>"); inOl = true; }
+      htmlParts.push(`<li>${inlineFormat(line.replace(/^\d+\.\s+/, ""))}</li>`);
+      continue;
+    }
+    closeLists();
+    paragraphBuffer.push(line);
+  }
+  flushParagraph();
+  closeLists();
+  return htmlParts.join("\n");
+}
+
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderPage({ post, siteOrigin, requestUrl }) {
+  const capaUrl = (post.capa_url || "/assets/jayr-santos-psicanalista-atendimento-sobre.webp");
+  const capaAbs = capaUrl.startsWith("http") ? capaUrl : `${siteOrigin}${capaUrl}`;
+  const tituloEsc = escapeHtml(post.titulo);
+  const descEsc = escapeHtml(post.descricao || "");
+  const tagEsc = escapeHtml(post.tag || "Psicanálise");
+  const corpoHtml = markdownToHtml(post.corpo_md);
+  const dataFormatada = formatDate(post.publicado_em);
+
+  const schemaJson = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": requestUrl },
+    "headline": post.titulo,
+    "description": post.descricao,
+    "image": [capaAbs],
+    "datePublished": post.publicado_em,
+    "dateModified": post.atualizado_em || post.publicado_em,
+    "author": {
+      "@type": "Person",
+      "name": post.autor || "Jayr Santos",
+      "jobTitle": "Psicanalista Clínico",
+      "url": siteOrigin,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Jayr Santos Psicanalista",
+      "logo": { "@type": "ImageObject", "url": `${siteOrigin}/assets/logo-jayr-santos-psicanalista.webp` },
+    },
+  };
+
+  return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artigo | Jayr Santos Psicanalista</title>
-  <meta name="description" content="Artigo sobre psicanálise e saúde emocional por Jayr Santos Psicanalista em Campo Grande, RJ." />
-  <link rel="icon" href="assets/favicon-jayr-santos-psicanalista.ico" />
+  <title>${tituloEsc} | Blog Jayr Santos Psicanalista</title>
+  <meta name="description" content="${descEsc}" />
+  <link rel="canonical" href="${requestUrl}" />
+  <link rel="icon" href="/assets/favicon-jayr-santos-psicanalista.ico" />
 
-  <!-- Conectividade para Fontes -->
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="${requestUrl}" />
+  <meta property="og:title" content="${tituloEsc} | Blog Jayr Santos Psicanalista" />
+  <meta property="og:description" content="${descEsc}" />
+  <meta property="og:image" content="${capaAbs}" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
 
-  <!-- CSS principal e Blog -->
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="responsive-fixes.css" />
-  <link rel="stylesheet" href="blog.css" />
-  <link rel="preload" href="cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="cookie-banner.css" /></noscript>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/responsive-fixes.css" />
+  <link rel="stylesheet" href="/blog/blog.css" />
+  <link rel="preload" href="/cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/cookie-banner.css" /></noscript>
+
+  <script type="application/ld+json">${JSON.stringify(schemaJson)}</script>
 </head>
-<body>
+<body data-ssr="true" data-slug="${escapeHtml(post.slug)}">
 
   <!-- ===== NAVBAR ===== -->
   <nav class="nav" id="topo" aria-label="Navegação principal">
     <a href="/#topo" class="nav__brand">
-      <span class="nav__mark"><img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" /></span>
+      <span class="nav__mark"><img src="/assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" /></span>
       <span class="nav__name">
         <strong>Jayr Santos</strong>
         <em>Psicanalista</em>
@@ -49,14 +165,14 @@
     <div class="article-header__container">
       <a href="/blog" class="back-to-blog">← Voltar para o Blog</a>
       <div class="article-meta">
-        <span class="blog-card__tag" id="article-tag" style="background: rgba(255,255,255,0.15); color: #fff;">Psicanálise</span>
-        <time id="article-date">Carregando data...</time>
+        <span class="blog-card__tag" style="background: rgba(255,255,255,0.15); color: #fff;">${tagEsc}</span>
+        <time>${dataFormatada}</time>
       </div>
-      <h1 class="article-title" id="article-title">Carregando artigo...</h1>
-      <p class="article-description" id="article-description"></p>
+      <h1 class="article-title">${tituloEsc}</h1>
+      <p class="article-description">${descEsc}</p>
 
       <div class="article-author-box">
-        <img src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Jayr Santos Psicanalista" />
+        <img src="/assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Jayr Santos Psicanalista" />
         <div class="article-author-info">
           <span class="article-author-name">Jayr Santos</span>
           <span class="article-author-role">Psicanalista Clínico em Campo Grande - RJ</span>
@@ -67,12 +183,12 @@
 
   <!-- ===== IMAGEM DE CAPA ===== -->
   <div class="article-cover">
-    <img id="article-cover-img" src="assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Capa do Artigo" />
+    <img src="${capaAbs}" alt="${tituloEsc}" />
   </div>
 
   <!-- ===== CORPO DO ARTIGO ===== -->
   <main class="article-body" id="article-body">
-    <p>Carregando conteúdo do artigo...</p>
+    ${corpoHtml}
   </main>
 
   <!-- ===== CTA FINAL DO ARTIGO ===== -->
@@ -115,7 +231,7 @@
       <!-- Coluna 1: Marca -->
       <div class="footer-brand">
         <a href="/#topo" class="footer-brand__logo">
-          <img src="assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" loading="lazy" />
+          <img src="/assets/logo-jayr-santos-psicanalista.webp" alt="Logotipo oficial Jayr Santos Psicanalista" width="400" height="400" loading="lazy" />
           <span><strong>Jayr Santos</strong><em>Psicanalista</em></span>
         </a>
         <p class="footer-brand__desc">Escuta atenta, acolhedora e ética. Um espaço seguro para quem deseja compreender seus conflitos internos, seus relacionamentos e sua história.</p>
@@ -208,7 +324,7 @@
   <div class="drawer" id="mobileDrawer" aria-hidden="true">
     <div class="drawer__header">
       <a href="/#topo" class="drawer__brand">
-        <img src="assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" width="200" height="200" loading="lazy" />
+        <img src="/assets/logo-jayr-santos-psicanalista-mobile.webp" alt="Logotipo oficial Jayr Santos Psicanalista" class="drawer__logo" width="200" height="200" loading="lazy" />
         <span class="drawer__brand-name">
           <strong>Jayr Santos</strong>
           <em>Psicanalista</em>
@@ -332,7 +448,7 @@
       <div class="wa-content">
         <div class="wa-header">
           <div class="wa-avatar-wrapper">
-            <img src="assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Jayr Santos" class="wa-avatar" width="48" height="48" loading="lazy" />
+            <img src="/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp" alt="Jayr Santos" class="wa-avatar" width="48" height="48" loading="lazy" />
           </div>
           <div class="wa-info">
             <span class="wa-name">Jayr Santos</span>
@@ -354,9 +470,37 @@
     </a>
   </div>
 
-  <script src="cookie-banner.js" defer></script>
-  <script src="script.js" defer></script>
-  <script src="blog.js" defer></script>
+  <script src="/cookie-banner.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script src="/blog/blog.js" defer></script>
   <script src="https://control-blog.ag5agencia.site/r.js" data-c="jayr-santos-psicanalista" defer></script>
 </body>
-</html>
+</html>`;
+}
+
+export async function onRequestGet(context) {
+  const { params, env, request } = context;
+  const slug = params.slug;
+
+  if (!OLD_SLUGS.has(slug)) {
+    return context.next();
+  }
+
+  const post = await env.DB.prepare(
+    "SELECT * FROM posts WHERE slug = ? AND status = 'publicado'"
+  ).bind(slug).first();
+
+  if (!post) {
+    return context.next();
+  }
+
+  const url = new URL(request.url);
+  const siteOrigin = url.origin;
+  const requestUrl = `${siteOrigin}/${slug}/`;
+
+  const html = renderPage({ post, siteOrigin, requestUrl });
+
+  return new Response(html, {
+    headers: { "Content-Type": "text/html; charset=UTF-8" },
+  });
+}

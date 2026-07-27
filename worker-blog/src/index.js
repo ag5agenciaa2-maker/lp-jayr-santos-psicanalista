@@ -10,6 +10,8 @@ const ALLOWED_ORIGINS = [
   "https://www.jayrsantospsicalista.ag5agencia.site",
   "https://jayrsantospsicalista.ag5agencia.site",
   "https://lp-jayr-santos-psicanalista.pages.dev",
+  "https://www.jayrsantospsicanalista.com",
+  "https://jayrsantospsicanalista.com",
 ];
 
 function corsHeaders(request) {
@@ -113,9 +115,15 @@ export default {
 
       // ---- POSTS PÚBLICOS ----
       if (path === "/api/posts" && method === "GET") {
-        const { results } = await env.DB.prepare(
-          "SELECT id, slug, titulo, descricao, capa_url, autor, tag, publicado_em FROM posts WHERE status = 'publicado' ORDER BY publicado_em DESC"
-        ).all();
+        const tag = url.searchParams.get("tag");
+        const stmt = tag
+          ? env.DB.prepare(
+              "SELECT id, slug, titulo, descricao, capa_url, autor, tag, publicado_em FROM posts WHERE status = 'publicado' AND tag = ? ORDER BY publicado_em DESC"
+            ).bind(tag)
+          : env.DB.prepare(
+              "SELECT id, slug, titulo, descricao, capa_url, autor, tag, publicado_em FROM posts WHERE status = 'publicado' ORDER BY publicado_em DESC"
+            );
+        const { results } = await stmt.all();
         return json({ posts: results }, 200, request);
       }
 
@@ -181,7 +189,7 @@ export default {
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
           ).bind(
             slug, body.titulo, body.descricao || "", body.capa_url || "",
-            body.autor || "Jayr Santos", body.tag || "Psicanálise",
+            body.autor || "Jayr Santos", body.tag || "Saúde Mental e Emoções",
             body.corpo_md || "", status, publicadoEm
           ).run();
 
@@ -205,7 +213,7 @@ export default {
              WHERE id=?`
           ).bind(
             body.titulo, body.descricao || "", body.capa_url || "",
-            body.autor || "Jayr Santos", body.tag || "Psicanálise",
+            body.autor || "Jayr Santos", body.tag || "Saúde Mental e Emoções",
             body.corpo_md || "", novoStatus, publicadoEm, id
           ).run();
 

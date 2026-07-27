@@ -92,7 +92,7 @@ async function apiPost(path, body) {
   return { ok: res.ok, status: res.status, data: await res.json().catch(() => null) };
 }
 
-// ---- blog.html: lista de posts publicados ----
+// ---- blog/index.html: lista de posts publicados (recentes, todas as categorias) ----
 async function renderBlogList() {
   const container = document.getElementById("blog-grid-container");
   if (!container) return;
@@ -105,11 +105,15 @@ async function renderBlogList() {
     return;
   }
 
-  container.innerHTML = data.posts.map(post => `
+  container.innerHTML = data.posts.map(renderBlogCard).join("");
+}
+
+function renderBlogCard(post) {
+  return `
     <article class="blog-card">
       <div class="blog-card__image-wrap">
-        <a href="/artigo?post=${encodeURIComponent(post.slug)}">
-          <img src="${post.capa_url || 'assets/jayr-santos-psicanalista-atendimento-sobre.webp'}" alt="${post.titulo}" class="blog-card__image" loading="lazy" />
+        <a href="/blog/artigo?post=${encodeURIComponent(post.slug)}">
+          <img src="${post.capa_url || '/assets/jayr-santos-psicanalista-atendimento-sobre.webp'}" alt="${post.titulo}" class="blog-card__image" loading="lazy" />
         </a>
       </div>
       <div class="blog-card__content">
@@ -118,21 +122,46 @@ async function renderBlogList() {
           <time>${formatDate(post.publicado_em)}</time>
         </div>
         <h2 class="blog-card__title">
-          <a href="/artigo?post=${encodeURIComponent(post.slug)}">${post.titulo}</a>
+          <a href="/blog/artigo?post=${encodeURIComponent(post.slug)}">${post.titulo}</a>
         </h2>
         <p class="blog-card__excerpt">${post.descricao || ""}</p>
         <div class="blog-card__footer">
-          <a href="/artigo?post=${encodeURIComponent(post.slug)}" class="blog-card__link">Ler artigo completo <span>→</span></a>
+          <a href="/blog/artigo?post=${encodeURIComponent(post.slug)}" class="blog-card__link">Ler artigo completo <span>→</span></a>
         </div>
       </div>
     </article>
-  `).join("");
+  `;
+}
+
+// ---- blog/[categoria]/index.html: lista de posts filtrados por categoria ----
+async function renderCategoryList() {
+  const container = document.getElementById("category-grid-container");
+  if (!container) return;
+
+  const tag = container.dataset.tag;
+  container.innerHTML = '<p class="blog-loading">Carregando artigos...</p>';
+  const data = await apiGet(`/api/posts?tag=${encodeURIComponent(tag)}`);
+
+  if (!data || !data.posts || !data.posts.length) {
+    container.innerHTML = '<p class="blog-empty">Ainda não há artigos publicados nesta categoria. Volte em breve.</p>';
+    return;
+  }
+
+  container.innerHTML = data.posts.map(renderBlogCard).join("");
 }
 
 // ---- artigo.html: post individual + comentários ----
 async function renderSingleArticle() {
   const bodyEl = document.getElementById("article-body");
   if (!bodyEl) return;
+
+  // Páginas SSR (posts antigos servidos via Pages Function, URL limpa na raiz)
+  // já vêm com o HTML do artigo pronto — só falta inicializar os comentários.
+  if (document.body.dataset.ssr === "true") {
+    const slug = document.body.dataset.slug;
+    if (slug) initComments(slug);
+    return;
+  }
 
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("post");
@@ -162,7 +191,7 @@ async function renderSingleArticle() {
   if (descEl) descEl.textContent = post.descricao || "";
   if (tagEl) tagEl.textContent = post.tag || "Psicanálise";
   if (coverEl) {
-    coverEl.src = post.capa_url || "assets/jayr-santos-psicanalista-atendimento-sobre.webp";
+    coverEl.src = post.capa_url || "/assets/jayr-santos-psicanalista-atendimento-sobre.webp";
     coverEl.alt = post.titulo;
   }
 
@@ -172,11 +201,22 @@ async function renderSingleArticle() {
   initComments(slug);
 }
 
+function injectCanonical(fullUrl) {
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = fullUrl;
+}
+
 function injectSchemaOrg(post, slug) {
-  const fullUrl = `${window.location.origin}/artigo?post=${encodeURIComponent(slug)}`;
+  const fullUrl = `${window.location.origin}/blog/artigo?post=${encodeURIComponent(slug)}`;
+  injectCanonical(fullUrl);
   const imageUrl = (post.capa_url || "").startsWith("http")
     ? post.capa_url
-    : `${window.location.origin}/${post.capa_url || "assets/jayr-santos-psicanalista-atendimento-sobre.webp"}`;
+    : `${window.location.origin}${post.capa_url || "/assets/jayr-santos-psicanalista-atendimento-sobre.webp"}`;
 
   const schemaJson = {
     "@context": "https://schema.org",
@@ -267,5 +307,6 @@ async function initComments(slug) {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderBlogList();
+  renderCategoryList();
   renderSingleArticle();
 });
