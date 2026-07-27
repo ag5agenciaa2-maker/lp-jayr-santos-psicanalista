@@ -1,9 +1,11 @@
-/* Pages Function — página de categoria do blog, totalmente dinâmica.
-   Qualquer categoria criada pelo admin (tabela `categorias` no D1) já
-   funciona em /blog/[slug]/ sem precisar gerar arquivo HTML nenhum.
-   As 7 páginas estáticas antigas (blog/masculinidade/index.html etc)
-   continuam servindo normalmente — arquivo estático sempre tem
-   prioridade sobre esta rota, então nada quebra. */
+/* Pages Function — /blog/[slug]/ atende DOIS tipos de conteúdo na mesma rota:
+   1) Categoria (tabela `categorias`) — já existia, continua igual.
+   2) Post NOVO publicado pelo painel admin (tabela `posts`) — SSR profissional
+      com URL limpa, sem precisar cadastrar cada post numa whitelist manual
+      (diferente dos posts antigos migrados do blog .com, que usam
+      functions/[slug].js com OLD_SLUGS explícito).
+   A Function tenta categoria primeiro; se não achar, tenta post; se nenhum
+   dos dois existir, cai no fluxo normal do Pages (next()). */
 
 function escapeHtml(str) {
   return String(str || "")
@@ -13,28 +15,84 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
-function renderPage({ categoria, siteOrigin, requestUrl }) {
-  const nomeEsc = escapeHtml(categoria.nome);
-  const descricao = `Artigos sobre ${categoria.nome} por Jayr Santos Psicanalista em Campo Grande, RJ.`;
-  const descEsc = escapeHtml(descricao);
-  const imagemAbs = `${siteOrigin}/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp`;
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+}
 
+function isHtmlContent(str) {
+  if (!str) return false;
+  return /^\s*<(p|h[1-6]|ul|ol|blockquote|div|figure)[\s>]/i.test(str);
+}
+
+function markdownToHtml(md) {
+  if (!md) return "";
+  const lines = md.replace(/\r\n/g, "\n").split("\n");
+  const htmlParts = [];
+  let inUl = false;
+  let inOl = false;
+  let paragraphBuffer = [];
+
+  function flushParagraph() {
+    if (paragraphBuffer.length) {
+      htmlParts.push(`<p>${inlineFormat(paragraphBuffer.join(" "))}</p>`);
+      paragraphBuffer = [];
+    }
+  }
+  function closeLists() {
+    if (inUl) { htmlParts.push("</ul>"); inUl = false; }
+    if (inOl) { htmlParts.push("</ol>"); inOl = false; }
+  }
+  function inlineFormat(text) {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) { flushParagraph(); closeLists(); continue; }
+    if (/^### /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<h3>${inlineFormat(line.slice(4))}</h3>`); continue; }
+    if (/^## /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<h2>${inlineFormat(line.slice(3))}</h2>`); continue; }
+    if (/^# /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<h1>${inlineFormat(line.slice(2))}</h1>`); continue; }
+    if (/^> /.test(line)) { flushParagraph(); closeLists(); htmlParts.push(`<blockquote>${inlineFormat(line.slice(2))}</blockquote>`); continue; }
+    if (/^[*-] /.test(line)) {
+      flushParagraph();
+      if (inOl) { htmlParts.push("</ol>"); inOl = false; }
+      if (!inUl) { htmlParts.push("<ul>"); inUl = true; }
+      htmlParts.push(`<li>${inlineFormat(line.slice(2))}</li>`);
+      continue;
+    }
+    if (/^\d+\. /.test(line)) {
+      flushParagraph();
+      if (inUl) { htmlParts.push("</ul>"); inUl = false; }
+      if (!inOl) { htmlParts.push("<ol>"); inOl = true; }
+      htmlParts.push(`<li>${inlineFormat(line.replace(/^\d+\.\s+/, ""))}</li>`);
+      continue;
+    }
+    closeLists();
+    paragraphBuffer.push(line);
+  }
+  flushParagraph();
+  closeLists();
+  return htmlParts.join("\n");
+}
+
+function renderPostBody(corpo) {
+  return isHtmlContent(corpo) ? corpo : markdownToHtml(corpo);
+}
+
+/* ===== Shell comum (nav, footer, drawer, cookie banner, WA) — igual às demais páginas do blog ===== */
+function pageShell({ headContent, bodyDataAttrs, headerContent, mainContent }) {
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${nomeEsc} | Blog Jayr Santos Psicanalista</title>
-  <meta name="description" content="${descEsc}" />
-  <link rel="canonical" href="${requestUrl}" />
-  <link rel="icon" href="/assets/favicon-jayr-santos-psicanalista.ico" />
-
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="${requestUrl}" />
-  <meta property="og:title" content="${nomeEsc} | Blog Jayr Santos Psicanalista" />
-  <meta property="og:description" content="${descEsc}" />
-  <meta property="og:image" content="${imagemAbs}" />
-
+  ${headContent}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -46,7 +104,7 @@ function renderPage({ categoria, siteOrigin, requestUrl }) {
   <link rel="preload" href="/cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link rel="stylesheet" href="/cookie-banner.css" /></noscript>
 </head>
-<body>
+<body ${bodyDataAttrs}>
 
   <!-- ===== NAVBAR ===== -->
   <nav class="nav" id="topo" aria-label="Navegação principal">
@@ -70,33 +128,9 @@ function renderPage({ categoria, siteOrigin, requestUrl }) {
     </button>
   </nav>
 
-  <!-- ===== HERO DO BLOG ===== -->
-  <header class="blog-hero">
-    <div class="blog-hero__watermark" aria-hidden="true">Ψ</div>
-    <div class="wrap">
-      <p class="eyebrow" style="color: var(--areia); margin-bottom: 12px;"><span class="eyebrow__line" style="background: var(--areia);"></span><a href="/blog/" style="color: var(--areia); text-decoration: none;">Blog</a> · ${nomeEsc}</p>
-      <h1 class="blog-hero__title">${nomeEsc}</h1>
-      <p class="blog-hero__subtitle">Reflexões e artigos sobre ${nomeEsc.toLowerCase()} a partir da escuta psicanalítica.</p>
-    </div>
-  </header>
+  ${headerContent}
 
-  <!-- ===== ARTIGOS DA CATEGORIA ===== -->
-  <main class="blog-section">
-    <div class="wrap">
-      <div id="category-grid-container" class="blog-grid" data-tag="${nomeEsc}">
-        <!-- Renderizado dinamicamente via blog.js -->
-      </div>
-    </div>
-  </main>
-
-  <!-- ===== CTA FINAL ===== -->
-  <section class="section" style="background: var(--noturno); color: var(--offwhite); text-align: center; padding: 60px 20px;">
-    <div class="wrap" style="max-width: 700px;">
-      <h2 style="font-family: var(--ff-title); font-size: 2rem; color: #fff; margin-bottom: 16px;">Gostaria de agendar uma conversa?</h2>
-      <p style="color: var(--areia); margin-bottom: 28px; font-size: 1.1rem;">O atendimento presencial em Campo Grande (RJ) e online oferece um espaço ético, sigiloso e acolhedor.</p>
-      <a href="https://wa.me/5521971666854?text=Ol%C3%A1%2C%20li%20o%20seu%20blog%20e%20gostaria%20de%20agendar%20uma%20conversa." class="btn btn--solid btn--lg js-wa" data-wa-text="Olá, li o seu blog e gostaria de agendar uma conversa." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp</a>
-    </div>
-  </section>
+  ${mainContent}
 
   <!-- ===== RODAPÉ ===== -->
   <footer class="footer" id="rodape">
@@ -352,6 +386,195 @@ function renderPage({ categoria, siteOrigin, requestUrl }) {
 </html>`;
 }
 
+/* ===== Página de CATEGORIA ===== */
+function renderCategoriaPage({ categoria, siteOrigin, requestUrl }) {
+  const nomeEsc = escapeHtml(categoria.nome);
+  const descricao = `Artigos sobre ${categoria.nome} por Jayr Santos Psicanalista em Campo Grande, RJ.`;
+  const descEsc = escapeHtml(descricao);
+  const imagemAbs = `${siteOrigin}/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp`;
+
+  const headContent = `
+  <title>${nomeEsc} | Blog Jayr Santos Psicanalista</title>
+  <meta name="description" content="${descEsc}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="${requestUrl}" />
+  <link rel="icon" href="/assets/favicon-jayr-santos-psicanalista.ico" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="${requestUrl}" />
+  <meta property="og:title" content="${nomeEsc} | Blog Jayr Santos Psicanalista" />
+  <meta property="og:description" content="${descEsc}" />
+  <meta property="og:image" content="${imagemAbs}" />`;
+
+  const headerContent = `
+  <!-- ===== HERO DO BLOG ===== -->
+  <header class="blog-hero">
+    <div class="blog-hero__watermark" aria-hidden="true">Ψ</div>
+    <div class="wrap">
+      <p class="eyebrow" style="color: var(--areia); margin-bottom: 12px;"><span class="eyebrow__line" style="background: var(--areia);"></span><a href="/blog/" style="color: var(--areia); text-decoration: none;">Blog</a> · ${nomeEsc}</p>
+      <h1 class="blog-hero__title">${nomeEsc}</h1>
+      <p class="blog-hero__subtitle">Reflexões e artigos sobre ${nomeEsc.toLowerCase()} a partir da escuta psicanalítica.</p>
+    </div>
+  </header>`;
+
+  const mainContent = `
+  <!-- ===== ARTIGOS DA CATEGORIA ===== -->
+  <main class="blog-section">
+    <div class="wrap">
+      <div id="category-grid-container" class="blog-grid" data-tag="${nomeEsc}">
+        <!-- Renderizado dinamicamente via blog.js -->
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== CTA FINAL ===== -->
+  <section class="section" style="background: var(--noturno); color: var(--offwhite); text-align: center; padding: 60px 20px;">
+    <div class="wrap" style="max-width: 700px;">
+      <h2 style="font-family: var(--ff-title); font-size: 2rem; color: #fff; margin-bottom: 16px;">Gostaria de agendar uma conversa?</h2>
+      <p style="color: var(--areia); margin-bottom: 28px; font-size: 1.1rem;">O atendimento presencial em Campo Grande (RJ) e online oferece um espaço ético, sigiloso e acolhedor.</p>
+      <a href="https://wa.me/5521971666854?text=Ol%C3%A1%2C%20li%20o%20seu%20blog%20e%20gostaria%20de%20agendar%20uma%20conversa." class="btn btn--solid btn--lg js-wa" data-wa-text="Olá, li o seu blog e gostaria de agendar uma conversa." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp</a>
+    </div>
+  </section>`;
+
+  return pageShell({ headContent, bodyDataAttrs: "", headerContent, mainContent });
+}
+
+/* ===== Página de POST NOVO (publicado pelo painel admin) ===== */
+function renderPostPage({ post, siteOrigin, requestUrl }) {
+  const capaUrl = (post.capa_url || "/assets/jayr-santos-psicanalista-atendimento-sobre.webp");
+  const capaAbs = capaUrl.startsWith("http") ? capaUrl : `${siteOrigin}${capaUrl}`;
+  const tituloEsc = escapeHtml(post.titulo);
+  const descEsc = escapeHtml(post.descricao || `Artigo de Jayr Santos Psicanalista sobre ${post.tag || "psicanálise"}.`);
+  const tagEsc = escapeHtml(post.tag || "Psicanálise");
+  const corpoHtml = renderPostBody(post.corpo_md);
+  const dataFormatada = formatDate(post.publicado_em);
+
+  const schemaJson = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": requestUrl },
+    "headline": post.titulo,
+    "description": post.descricao || undefined,
+    "image": [capaAbs],
+    "datePublished": post.publicado_em,
+    "dateModified": post.atualizado_em || post.publicado_em,
+    "author": {
+      "@type": "Person",
+      "name": post.autor || "Jayr Santos",
+      "jobTitle": "Psicanalista Clínico",
+      "url": siteOrigin,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Jayr Santos Psicanalista",
+      "logo": { "@type": "ImageObject", "url": `${siteOrigin}/assets/logo-jayr-santos-psicanalista.webp` },
+    },
+  };
+
+  const headContent = `
+  <title>${tituloEsc} | Blog Jayr Santos Psicanalista</title>
+  <meta name="description" content="${descEsc}" />
+  <meta name="author" content="${escapeHtml(post.autor || "Jayr Santos")}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="${requestUrl}" />
+  <link rel="icon" href="/assets/favicon-jayr-santos-psicanalista.ico" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="${requestUrl}" />
+  <meta property="og:title" content="${tituloEsc} | Blog Jayr Santos Psicanalista" />
+  <meta property="og:description" content="${descEsc}" />
+  <meta property="og:image" content="${capaAbs}" />
+  <meta property="article:author" content="${escapeHtml(post.autor || "Jayr Santos")}" />
+  <meta property="article:section" content="${tagEsc}" />
+  ${post.publicado_em ? `<meta property="article:published_time" content="${post.publicado_em}" />` : ""}
+  <script type="application/ld+json">${JSON.stringify(schemaJson)}</script>`;
+
+  const headerContent = `
+  <!-- ===== HEADER DO ARTIGO ===== -->
+  <header class="article-header">
+    <div class="article-header__container">
+      <a href="/blog" class="back-to-blog">← Voltar para o Blog</a>
+      <div class="article-meta">
+        <span class="blog-card__tag" style="background: rgba(255,255,255,0.15); color: #fff;">${tagEsc}</span>
+        <time>${dataFormatada}</time>
+      </div>
+      <h1 class="article-title">${tituloEsc}</h1>
+      <p class="article-description">${descEsc}</p>
+
+      <div class="article-author-box">
+        <img src="/assets/jayr-santos-psicanalista-atendimento-sobre.webp" alt="Jayr Santos Psicanalista" />
+        <div class="article-author-info">
+          <span class="article-author-name">${escapeHtml(post.autor || "Jayr Santos")}</span>
+          <span class="article-author-role">Psicanalista Clínico em Campo Grande - RJ</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== IMAGEM DE CAPA ===== -->
+  <div class="article-cover">
+    <img src="${capaAbs}" alt="${tituloEsc}" />
+  </div>`;
+
+  const mainContent = `
+  <!-- ===== CORPO DO ARTIGO ===== -->
+  <main class="article-body" id="article-body">
+    ${corpoHtml}
+  </main>
+
+  <!-- ===== CTA FINAL DO ARTIGO ===== -->
+  <div class="wrap" style="max-width: 760px; margin-bottom: 40px; padding: 0 var(--pad-x);">
+    <div class="article-cta">
+      <h3>Deseja iniciar o seu processo analítico?</h3>
+      <p>A psicanálise oferece um espaço único para olhar para a sua história com acolhimento, sigilo e profundidade. Atendimentos presenciais em Campo Grande (RJ) e online.</p>
+      <a href="https://wa.me/5521971666854?text=Ol%C3%A1%2C%20li%20o%20seu%20artigo%20e%20gostaria%20de%20agendar%20uma%20conversa." class="btn btn--solid btn--lg js-wa" data-wa-text="Olá, li o seu artigo e gostaria de agendar uma conversa." target="_blank" rel="noopener noreferrer">Agendar Sessão via WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- ===== COMENTÁRIOS ===== -->
+  <div class="wrap" style="max-width: 760px; margin-bottom: 80px; padding: 0 var(--pad-x);">
+    <section class="article-comments" aria-label="Comentários do artigo">
+      <h3 class="article-comments__title">Comentários</h3>
+
+      <div id="comments-list" class="article-comments__list">
+        <p class="article-comments__empty">Carregando comentários...</p>
+      </div>
+
+      <h4 class="article-comments__form-title">Deixe um comentário</h4>
+      <form id="comment-form" class="article-comments__form" novalidate>
+        <p class="article-comments__notice">O seu endereço de e-mail não será publicado. Campos obrigatórios são marcados com *</p>
+        <div class="field">
+          <label for="c-nome">Nome *</label>
+          <input type="text" id="c-nome" name="nome" required maxlength="100" />
+        </div>
+        <div class="field">
+          <label for="c-email">E-mail *</label>
+          <input type="email" id="c-email" name="email" required maxlength="200" />
+        </div>
+        <div class="field">
+          <label for="c-site">Site</label>
+          <input type="url" id="c-site" name="site" maxlength="200" />
+        </div>
+        <div class="field">
+          <label for="c-texto">Comentário *</label>
+          <textarea id="c-texto" name="texto" rows="3" required maxlength="2000"></textarea>
+        </div>
+        <label class="article-comments__save-check">
+          <input type="checkbox" id="c-salvar" />
+          Salvar meus dados neste navegador para a próxima vez que eu comentar.
+        </label>
+        <button type="submit" class="btn btn--solid">Enviar comentário</button>
+        <p id="comment-feedback" class="article-comments__feedback" hidden></p>
+      </form>
+    </section>
+  </div>`;
+
+  return pageShell({
+    headContent,
+    bodyDataAttrs: `data-ssr="true" data-slug="${escapeHtml(post.slug)}"`,
+    headerContent,
+    mainContent,
+  });
+}
+
 export async function onRequestGet(context) {
   const { params, env, request } = context;
   const slug = params.categoria;
@@ -360,17 +583,26 @@ export async function onRequestGet(context) {
     "SELECT id, nome, slug FROM categorias WHERE slug = ?"
   ).bind(slug).first();
 
-  if (!categoria) {
-    return context.next();
-  }
-
   const url = new URL(request.url);
   const siteOrigin = url.origin;
-  const requestUrl = `${siteOrigin}/blog/${slug}/`;
 
-  const html = renderPage({ categoria, siteOrigin, requestUrl });
+  if (categoria) {
+    const requestUrl = `${siteOrigin}/blog/${slug}/`;
+    return new Response(renderCategoriaPage({ categoria, siteOrigin, requestUrl }), {
+      headers: { "Content-Type": "text/html; charset=UTF-8" },
+    });
+  }
 
-  return new Response(html, {
-    headers: { "Content-Type": "text/html; charset=UTF-8" },
-  });
+  const post = await env.DB.prepare(
+    "SELECT * FROM posts WHERE slug = ? AND status = 'publicado'"
+  ).bind(slug).first();
+
+  if (post) {
+    const requestUrl = `${siteOrigin}/blog/${slug}/`;
+    return new Response(renderPostPage({ post, siteOrigin, requestUrl }), {
+      headers: { "Content-Type": "text/html; charset=UTF-8" },
+    });
+  }
+
+  return context.next();
 }

@@ -5,6 +5,21 @@
 
 const BLOG_API_BASE = "https://jayr-blog-api.ag5agenciaa2.workers.dev";
 
+// Posts antigos migrados do blog .com preservam a URL original na raiz do
+// domínio (ex: /prossiga-a-vida-nao-terminou/), via functions/[slug].js.
+// Mantida em sincronia manual com OLD_SLUGS naquele arquivo — só cresce
+// quando um post antigo específico é migrado, não é o caminho padrão.
+const OLD_SLUGS = new Set([
+  "prossiga-a-vida-nao-terminou",
+]);
+
+// Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
+// e SSR automáticos via functions/blog/[categoria].js — sem precisar de
+// nenhuma lista manual.
+function urlDoPost(slug) {
+  return OLD_SLUGS.has(slug) ? `/${encodeURIComponent(slug)}/` : `/blog/${encodeURIComponent(slug)}/`;
+}
+
 // Detecta se o corpo já é HTML (editor WYSIWYG, posts novos) em vez de
 // Markdown (posts antigos, formato legado) — evita reprocessar HTML como texto puro.
 function isHtmlContent(str) {
@@ -142,10 +157,11 @@ async function renderBlogCategorias() {
 }
 
 function renderBlogCard(post) {
+  const href = urlDoPost(post.slug);
   return `
     <article class="blog-card">
       <div class="blog-card__image-wrap">
-        <a href="/blog/artigo?post=${encodeURIComponent(post.slug)}">
+        <a href="${href}">
           <img src="${post.capa_url || '/assets/jayr-santos-psicanalista-atendimento-sobre.webp'}" alt="${post.titulo}" class="blog-card__image" loading="lazy" />
         </a>
       </div>
@@ -155,11 +171,11 @@ function renderBlogCard(post) {
           <time>${formatDate(post.publicado_em)}</time>
         </div>
         <h2 class="blog-card__title">
-          <a href="/blog/artigo?post=${encodeURIComponent(post.slug)}">${post.titulo}</a>
+          <a href="${href}">${post.titulo}</a>
         </h2>
         <p class="blog-card__excerpt">${post.descricao || ""}</p>
         <div class="blog-card__footer">
-          <a href="/blog/artigo?post=${encodeURIComponent(post.slug)}" class="blog-card__link">Ler artigo completo <span>→</span></a>
+          <a href="${href}" class="blog-card__link">Ler artigo completo <span>→</span></a>
         </div>
       </div>
     </article>
