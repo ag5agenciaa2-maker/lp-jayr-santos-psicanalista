@@ -19,6 +19,7 @@ const OLD_SLUGS = new Set([
   "alem-do-vicio-e-do-controle-redescobrindo-o-nos",
   "transtorno-disformico-corporal-sob-o-olhar-da-psicanalise",
   "os-transtornos-alimentares-sob-o-olhar-da-psicanalise",
+  "o-panico-sob-o-olhar-da-psicanalise",
 ]);
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
