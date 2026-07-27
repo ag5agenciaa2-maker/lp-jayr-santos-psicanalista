@@ -6,7 +6,7 @@
 
   /* ⚠️ CONFIRMAR número oficial antes de publicar.
      Dossiê traz três números divergentes — usando o do contrato. */
-  var WHATSAPP = '5521991028333';
+  var WHATSAPP = '5521971666854';
   var waBase = 'https://wa.me/' + WHATSAPP;
 
   document.addEventListener('DOMContentLoaded', function () {
