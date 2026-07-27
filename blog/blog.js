@@ -5,8 +5,20 @@
 
 const BLOG_API_BASE = "https://jayr-blog-api.ag5agenciaa2.workers.dev";
 
+// Detecta se o corpo já é HTML (editor WYSIWYG, posts novos) em vez de
+// Markdown (posts antigos, formato legado) — evita reprocessar HTML como texto puro.
+function isHtmlContent(str) {
+  if (!str) return false;
+  return /^\s*<(p|h[1-6]|ul|ol|blockquote|div|figure)[\s>]/i.test(str);
+}
+
+function renderPostBody(corpo) {
+  return isHtmlContent(corpo) ? corpo : markdownToHtml(corpo);
+}
+
 // Parser Markdown -> HTML (suporta headings, bold/itálico, blockquote,
 // listas ul/ol com fechamento correto, links e parágrafos)
+// Mantido para exibir corretamente os posts publicados antes do editor WYSIWYG.
 function markdownToHtml(md) {
   if (!md) return "";
   const lines = md.replace(/\r\n/g, "\n").split("\n");
@@ -195,7 +207,7 @@ async function renderSingleArticle() {
     coverEl.alt = post.titulo;
   }
 
-  bodyEl.innerHTML = markdownToHtml(post.corpo_md);
+  bodyEl.innerHTML = renderPostBody(post.corpo_md);
 
   injectSchemaOrg(post, slug);
   initComments(slug);

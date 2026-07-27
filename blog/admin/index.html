@@ -7,111 +7,248 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" href="../../assets/favicon-jayr-santos-psicanalista.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+
+  <!-- Quill (editor WYSIWYG) -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+
   <style>
     * { box-sizing: border-box; }
+    :root {
+      --noturno: #1B3A5C;
+      --azul: #2C5E93;
+      --offwhite: #F7F5F0;
+      --areia: #E8DFD2;
+      --salvia: #8FA68E;
+      --grafite: #2A2E33;
+      --perigo: #b23a3a;
+    }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #F7F5F0;
-      color: #2A2E33;
+      background: var(--offwhite);
+      color: var(--grafite);
       min-height: 100vh;
     }
-    .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
-    h1, h2 { font-family: 'Playfair Display', serif; color: #1B3A5C; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--noturno); }
 
-    /* Login */
+    /* ---------- Login ---------- */
     #login-screen {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: linear-gradient(160deg, var(--noturno) 0%, #14293f 100%);
     }
     .login-box {
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 40px;
+      border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      padding: 44px 40px;
       width: 100%;
       max-width: 380px;
     }
-    .login-box h1 { font-size: 1.5rem; margin: 0 0 24px; text-align: center; }
+    .login-box__brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-box__brand span {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--salvia);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .login-box h1 { font-size: 1.5rem; margin: 0; text-align: center; }
     .field { margin-bottom: 18px; }
-    .field label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+    .field label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: var(--noturno); }
     .field input, .field textarea, .field select {
-      width: 100%; padding: 12px; border: 1px solid #CCC; border-radius: 6px;
-      font-family: inherit; font-size: 1rem;
+      width: 100%; padding: 12px 14px; border: 1px solid #D8D2C4; border-radius: 8px;
+      font-family: inherit; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(44,94,147,0.12);
     }
     .field textarea { min-height: 200px; resize: vertical; font-family: monospace; font-size: 0.9rem; }
-    .btn {
-      background: #1B3A5C; color: #fff; border: none; padding: 12px 24px;
-      font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: #2C5E93; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn--danger { background: #b23a3a; }
-    .btn--danger:hover { background: #8f2e2e; }
-    .btn--ghost { background: transparent; color: #1B3A5C; border: 1px solid #1B3A5C; }
-    .error-msg { color: #b23a3a; font-size: 0.9rem; margin-top: 10px; text-align: center; }
+    .field-hint { font-size: 0.78rem; color: var(--salvia); margin-top: 5px; }
 
-    /* Painel */
-    #panel-screen { display: none; }
-    .panel-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    .btn {
+      background: var(--noturno); color: #fff; border: none; padding: 12px 22px;
+      font-size: 0.95rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+      transition: background 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 6px;
     }
-    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid #E8DFD2; }
-    .tab-btn {
-      background: none; border: none; padding: 10px 18px; font-weight: 600;
-      color: #8FA68E; cursor: pointer; border-bottom: 3px solid transparent; font-size: 0.95rem;
+    .btn:hover { background: var(--azul); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .btn--danger { background: var(--perigo); }
+    .btn--danger:hover { background: #8f2e2e; }
+    .btn--ghost { background: transparent; color: var(--noturno); border: 1px solid #D8D2C4; }
+    .btn--ghost:hover { background: var(--offwhite); color: var(--noturno); }
+    .btn--sm { padding: 7px 14px; font-size: 0.83rem; }
+    .btn--block { width: 100%; justify-content: center; }
+    .error-msg { color: var(--perigo); font-size: 0.9rem; margin-top: 10px; text-align: center; }
+
+    /* ---------- Layout com sidebar ---------- */
+    #panel-screen { display: none; min-height: 100vh; }
+    .shell { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 236px; flex-shrink: 0; background: var(--noturno); color: #fff;
+      display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh;
     }
-    .tab-btn.active { color: #1B3A5C; border-bottom-color: #1B3A5C; }
+    .sidebar__brand {
+      padding: 24px 22px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar__brand strong { display: block; font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #fff; }
+    .sidebar__brand span { display: block; font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-top: 3px; letter-spacing: 0.03em; }
+    .sidebar__nav { flex: 1; padding: 16px 12px; display: flex; flex-direction: column; gap: 3px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 11px; width: 100%; text-align: left;
+      background: none; border: none; color: rgba(255,255,255,0.72); padding: 11px 14px;
+      border-radius: 8px; font-size: 0.92rem; font-weight: 500; cursor: pointer;
+      transition: background 0.15s, color 0.15s; font-family: inherit;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .nav-btn.active { background: var(--azul); color: #fff; font-weight: 600; }
+    .nav-btn__icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .nav-btn__badge {
+      margin-left: auto; background: #d98b3f; color: #fff; font-size: 0.72rem; font-weight: 700;
+      padding: 1px 7px; border-radius: 20px; min-width: 20px; text-align: center;
+    }
+    .sidebar__footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .sidebar__footer .btn--ghost { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.25); }
+    .sidebar__footer .btn--ghost:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    .main { flex: 1; min-width: 0; padding: 32px 40px 60px; }
+    .main__header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 14px;
+    }
+    .main__header h1 { margin: 0; font-size: 1.7rem; }
+    .main__header p { margin: 4px 0 0; color: var(--salvia); font-size: 0.92rem; }
+
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* ---------- Dashboard ---------- */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: #fff; border-radius: 12px; padding: 20px 22px;
+      box-shadow: 0 2px 10px rgba(27,58,92,0.06); border: 1px solid rgba(27,58,92,0.05);
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--azul);
+    }
+    .stat-card--warn::before { background: #d98b3f; }
+    .stat-card--ok::before { background: var(--salvia); }
+    .stat-card__label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--salvia); font-weight: 600; margin-bottom: 8px; }
+    .stat-card__value { font-family: 'Playfair Display', serif; font-size: 2.1rem; color: var(--noturno); line-height: 1; }
+    .stat-card__sub { font-size: 0.8rem; color: #999; margin-top: 6px; }
+
+    .dash-section-title { font-size: 1.05rem; margin: 32px 0 14px; }
+    .dash-list { background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(27,58,92,0.06); overflow: hidden; }
+    .dash-list-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 14px 20px; border-bottom: 1px solid var(--offwhite); font-size: 0.9rem;
+    }
+    .dash-list-item:last-child { border-bottom: none; }
+    .dash-list-item__title { color: var(--noturno); font-weight: 600; }
+    .dash-list-item__meta { color: var(--salvia); font-size: 0.82rem; }
+
+    /* ---------- Toolbar (busca/filtro) ---------- */
+    .toolbar {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
+    }
+    .toolbar__search { position: relative; flex: 1; min-width: 220px; }
+    .toolbar__search input {
+      width: 100%; padding: 10px 14px 10px 38px; border: 1px solid #D8D2C4; border-radius: 8px;
+      font-family: inherit; font-size: 0.92rem; background: #fff;
+    }
+    .toolbar__search input:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(44,94,147,0.12); }
+    .toolbar__search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--salvia); pointer-events: none; }
+    .toolbar select {
+      padding: 10px 14px; border: 1px solid #D8D2C4; border-radius: 8px; font-family: inherit;
+      font-size: 0.88rem; background: #fff; color: var(--grafite); cursor: pointer;
+    }
+
+    /* ---------- Listas ---------- */
     .post-list { display: grid; gap: 12px; }
     .post-row {
-      background: #fff; border-radius: 8px; padding: 16px 20px;
+      background: #fff; border-radius: 10px; padding: 16px 20px;
       display: flex; justify-content: space-between; align-items: center; gap: 16px;
-      flex-wrap: wrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      flex-wrap: wrap; box-shadow: 0 2px 10px rgba(27,58,92,0.06);
+      border: 1px solid rgba(27,58,92,0.04); transition: box-shadow 0.2s;
     }
-    .post-row__info strong { display: block; color: #1B3A5C; }
-    .post-row__meta { font-size: 0.85rem; color: #8FA68E; }
-    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-    .badge--publicado { background: #8FA68E; color: #fff; }
-    .badge--rascunho { background: #ddd; color: #555; }
+    .post-row:hover { box-shadow: 0 6px 18px rgba(27,58,92,0.1); }
+    .post-row__info strong { display: block; color: var(--noturno); font-size: 1rem; margin-bottom: 4px; }
+    .post-row__meta { font-size: 0.83rem; color: var(--salvia); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .post-row__tag {
+      background: var(--offwhite); color: var(--noturno); padding: 2px 9px; border-radius: 20px;
+      font-size: 0.74rem; font-weight: 600;
+    }
+    .badge { padding: 3px 11px; border-radius: 20px; font-size: 0.73rem; font-weight: 700; letter-spacing: 0.02em; }
+    .badge--publicado { background: rgba(143,166,142,0.18); color: #4c6b4b; }
+    .badge--rascunho { background: rgba(0,0,0,0.06); color: #666; }
+    .badge--aprovado { background: rgba(143,166,142,0.18); color: #4c6b4b; }
+    .badge--pendente { background: rgba(217,139,63,0.16); color: #a5620f; }
+    .badge--rejeitado { background: rgba(178,58,58,0.12); color: var(--perigo); }
     .post-row__actions { display: flex; gap: 8px; }
-    .post-row__actions button { padding: 8px 14px; font-size: 0.85rem; }
 
-    .editor-box { background: #fff; border-radius: 8px; padding: 28px; }
+    /* ---------- Editor ---------- */
+    .editor-box { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(27,58,92,0.06); }
     .editor-grid { display: grid; gap: 18px; }
-    .editor-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+    .editor-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
+    .editor-actions__saved { font-size: 0.82rem; color: var(--salvia); }
 
+    #editor-quill { background: #fff; border-radius: 0 0 8px 8px; }
+    #editor-quill .ql-editor { min-height: 340px; font-size: 1rem; line-height: 1.7; font-family: 'Inter', sans-serif; }
+    .ql-toolbar.ql-snow { border-radius: 8px 8px 0 0; border-color: #D8D2C4 !important; background: var(--offwhite); }
+    .ql-container.ql-snow { border-color: #D8D2C4 !important; border-radius: 0 0 8px 8px; }
+    .ql-editor.ql-blank::before { color: #aaa; font-style: normal; }
+
+    .editor-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 720px) { .editor-meta-grid { grid-template-columns: 1fr; } }
+
+    #image-preview { max-width: 220px; border-radius: 8px; margin-top: 10px; display: none; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+
+    /* ---------- Comentários ---------- */
     .comment-row {
-      background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      background: #fff; border-radius: 10px; padding: 18px 20px; margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(27,58,92,0.06); border: 1px solid rgba(27,58,92,0.04);
     }
-    .comment-row__top { font-size: 0.85rem; color: #8FA68E; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .comment-row__top { font-size: 0.85rem; color: var(--salvia); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .comment-row__reply-quote {
-      border-left: 3px solid #2C5E93; padding: 6px 12px; margin-bottom: 10px;
-      background: #EFF3F8; border-radius: 0 6px 6px 0; font-size: 0.85rem; color: #1B3A5C;
+      border-left: 3px solid var(--azul); padding: 6px 12px; margin-bottom: 10px;
+      background: #EFF3F8; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: var(--noturno);
     }
-    .comment-row__reply-quote-label { display: block; font-size: 0.78rem; color: #2C5E93; margin-bottom: 2px; }
+    .comment-row__reply-quote-label { display: block; font-size: 0.78rem; color: var(--azul); margin-bottom: 2px; }
     .comment-row__reply-quote-texto { margin: 0; font-style: italic; color: #444; }
-    .comment-row__reply-quote--orfao { color: #8FA68E; font-style: italic; }
+    .comment-row__reply-quote--orfao { color: var(--salvia); font-style: italic; }
     .comment-row__contato {
       display: flex; flex-wrap: wrap; gap: 4px 20px; padding: 10px 12px;
-      background: #F7F5F0; border-radius: 6px; font-size: 0.88rem; margin-bottom: 10px;
+      background: var(--offwhite); border-radius: 8px; font-size: 0.88rem; margin-bottom: 10px;
     }
-    .comment-row__contato-item strong { color: #1B3A5C; }
-    .comment-row__contato-item a { color: #2C5E93; word-break: break-all; }
-    .comment-row__texto { margin: 8px 0; }
-    .comment-row__actions { display: flex; gap: 8px; }
-    .comment-row__reply-tag { display: inline-block; margin-left: 6px; font-style: italic; color: #2C5E93; }
+    .comment-row__contato-item strong { color: var(--noturno); }
+    .comment-row__contato-item a { color: var(--azul); word-break: break-all; }
+    .comment-row__texto { margin: 8px 0; line-height: 1.6; }
+    .comment-row__actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .empty-state { color: #8FA68E; padding: 20px 0; }
-    #image-preview { max-width: 200px; border-radius: 6px; margin-top: 8px; display: none; }
+    .empty-state { color: var(--salvia); padding: 40px 20px; text-align: center; background: #fff; border-radius: 12px; }
+
+    @media (max-width: 860px) {
+      .shell { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; overflow-x: auto; }
+      .sidebar__brand { padding: 14px 18px; border-bottom: none; border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+      .sidebar__nav { flex-direction: row; padding: 10px; }
+      .sidebar__footer { border-top: none; border-left: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+      .main { padding: 22px 18px 40px; }
+    }
   </style>
 </head>
 <body>
@@ -119,7 +256,10 @@
   <!-- ===== TELA DE LOGIN ===== -->
   <div id="login-screen">
     <div class="login-box">
-      <h1>Painel do Blog</h1>
+      <div class="login-box__brand">
+        <h1>Painel do Blog</h1>
+        <span>Jayr Santos Psicanalista</span>
+      </div>
       <form id="login-form">
         <div class="field">
           <label for="login-email">E-mail</label>
@@ -129,7 +269,7 @@
           <label for="login-senha">Senha</label>
           <input type="password" id="login-senha" required autocomplete="current-password" />
         </div>
-        <button type="submit" class="btn" style="width:100%;">Entrar</button>
+        <button type="submit" class="btn btn--block">Entrar</button>
         <p id="login-error" class="error-msg" hidden></p>
       </form>
     </div>
@@ -137,80 +277,175 @@
 
   <!-- ===== PAINEL ===== -->
   <div id="panel-screen">
-    <div class="wrap">
-      <div class="panel-header">
-        <h1 style="margin:0; font-size:1.6rem;">Painel do Blog</h1>
-        <button class="btn btn--ghost" id="logout-btn">Sair</button>
-      </div>
+    <div class="shell">
 
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="posts">Artigos</button>
-        <button class="tab-btn" data-tab="novo">Novo Artigo</button>
-        <button class="tab-btn" data-tab="comentarios">Comentários</button>
-      </div>
-
-      <!-- Aba: lista de posts -->
-      <div class="tab-panel active" id="tab-posts">
-        <div id="posts-list" class="post-list"><p class="empty-state">Carregando...</p></div>
-      </div>
-
-      <!-- Aba: novo/editar post -->
-      <div class="tab-panel" id="tab-novo">
-        <div class="editor-box">
-          <h2 id="editor-title" style="margin-top:0; font-size:1.2rem;">Novo artigo</h2>
-          <form id="post-form" class="editor-grid">
-            <input type="hidden" id="post-id" value="" />
-            <div class="field">
-              <label for="post-titulo">Título</label>
-              <input type="text" id="post-titulo" required />
-            </div>
-            <div class="field">
-              <label for="post-slug">Slug (URL amigável, opcional)</label>
-              <input type="text" id="post-slug" placeholder="gerado automaticamente a partir do título" />
-            </div>
-            <div class="field">
-              <label for="post-descricao">Resumo (SEO)</label>
-              <input type="text" id="post-descricao" maxlength="200" placeholder="1-2 frases para o Google e para o card do blog" />
-            </div>
-            <div class="field">
-              <label for="post-tag">Categoria</label>
-              <select id="post-tag">
-                <option value="Saúde Mental e Emoções">Saúde Mental e Emoções</option>
-                <option value="Família e Relacionamentos">Família e Relacionamentos</option>
-                <option value="Sociedade e Comportamentos">Sociedade e Comportamentos</option>
-                <option value="Trabalho e Vida Profissional">Trabalho e Vida Profissional</option>
-                <option value="Fé e Espiritualidade">Fé e Espiritualidade</option>
-                <option value="Feminilidade">Feminilidade</option>
-                <option value="Masculinidade">Masculinidade</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="post-capa">Imagem de capa</label>
-              <input type="file" id="post-capa" accept="image/*" />
-              <input type="hidden" id="post-capa-url" />
-              <img id="image-preview" alt="Pré-visualização da capa" />
-            </div>
-            <div class="field">
-              <label for="post-corpo">Conteúdo (Markdown: ## títulos, **negrito**, *itálico*, listas com - ou 1., > citação)</label>
-              <textarea id="post-corpo" required></textarea>
-            </div>
-            <div class="editor-actions">
-              <button type="submit" class="btn" data-status="publicado">Publicar</button>
-              <button type="submit" class="btn btn--ghost" data-status="rascunho">Salvar como rascunho</button>
-              <button type="button" class="btn btn--ghost" id="cancel-edit-btn" hidden>Cancelar edição</button>
-            </div>
-            <p id="post-feedback" class="error-msg" hidden></p>
-          </form>
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <strong>Painel do Blog</strong>
+          <span>Jayr Santos Psicanalista</span>
         </div>
-      </div>
+        <nav class="sidebar__nav">
+          <button class="nav-btn active" data-tab="dashboard">
+            <svg class="nav-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            Painel
+          </button>
+          <button class="nav-btn" data-tab="posts">
+            <svg class="nav-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Artigos
+          </button>
+          <button class="nav-btn" data-tab="novo">
+            <svg class="nav-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Novo Artigo
+          </button>
+          <button class="nav-btn" data-tab="comentarios">
+            <svg class="nav-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Comentários
+            <span class="nav-btn__badge" id="sidebar-pendentes-badge" hidden>0</span>
+          </button>
+        </nav>
+        <div class="sidebar__footer">
+          <button class="btn btn--ghost btn--block btn--sm" id="logout-btn">Sair</button>
+        </div>
+      </aside>
 
-      <!-- Aba: comentários -->
-      <div class="tab-panel" id="tab-comentarios">
-        <div id="comments-admin-list"><p class="empty-state">Carregando...</p></div>
-      </div>
+      <!-- Conteúdo -->
+      <main class="main">
+
+        <!-- Aba: Dashboard -->
+        <div class="tab-panel active" id="tab-dashboard">
+          <div class="main__header">
+            <div>
+              <h1>Painel</h1>
+              <p>Visão geral do blog</p>
+            </div>
+          </div>
+          <div id="dashboard-content">
+            <div class="stats-grid">
+              <div class="stat-card"><div class="stat-card__label">Carregando…</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aba: lista de posts -->
+        <div class="tab-panel" id="tab-posts">
+          <div class="main__header">
+            <div>
+              <h1>Artigos</h1>
+              <p>Todos os artigos publicados e em rascunho</p>
+            </div>
+            <button class="btn" data-goto-tab="novo">+ Novo Artigo</button>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar__search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="posts-search" placeholder="Buscar por título…" />
+            </div>
+            <select id="posts-filter-status">
+              <option value="">Todos os status</option>
+              <option value="publicado">Publicados</option>
+              <option value="rascunho">Rascunhos</option>
+            </select>
+            <select id="posts-filter-tag">
+              <option value="">Todas as categorias</option>
+            </select>
+          </div>
+          <div id="posts-list" class="post-list"><p class="empty-state">Carregando…</p></div>
+        </div>
+
+        <!-- Aba: novo/editar post -->
+        <div class="tab-panel" id="tab-novo">
+          <div class="main__header">
+            <div>
+              <h1 id="editor-title">Novo artigo</h1>
+              <p>Escreva com formatação completa — negrito, títulos, listas, links e mais</p>
+            </div>
+          </div>
+          <div class="editor-box">
+            <form id="post-form" class="editor-grid">
+              <input type="hidden" id="post-id" value="" />
+              <div class="field">
+                <label for="post-titulo">Título</label>
+                <input type="text" id="post-titulo" required placeholder="O título do seu artigo" />
+              </div>
+
+              <div class="editor-meta-grid">
+                <div class="field">
+                  <label for="post-slug">Slug (URL amigável)</label>
+                  <input type="text" id="post-slug" placeholder="gerado automaticamente a partir do título" />
+                </div>
+                <div class="field">
+                  <label for="post-tag">Categoria</label>
+                  <select id="post-tag">
+                    <option value="Saúde Mental e Emoções">Saúde Mental e Emoções</option>
+                    <option value="Família e Relacionamentos">Família e Relacionamentos</option>
+                    <option value="Sociedade e Comportamentos">Sociedade e Comportamentos</option>
+                    <option value="Trabalho e Vida Profissional">Trabalho e Vida Profissional</option>
+                    <option value="Fé e Espiritualidade">Fé e Espiritualidade</option>
+                    <option value="Feminilidade">Feminilidade</option>
+                    <option value="Masculinidade">Masculinidade</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="post-descricao">Resumo (SEO)</label>
+                <input type="text" id="post-descricao" maxlength="200" placeholder="1-2 frases para o Google e para o card do blog" />
+                <p class="field-hint">Aparece nos resultados do Google e no card do artigo na listagem do blog.</p>
+              </div>
+
+              <div class="field">
+                <label for="post-capa">Imagem de capa</label>
+                <input type="file" id="post-capa" accept="image/*" />
+                <input type="hidden" id="post-capa-url" />
+                <img id="image-preview" alt="Pré-visualização da capa" />
+              </div>
+
+              <div class="field">
+                <label for="editor-quill">Conteúdo do artigo</label>
+                <div id="editor-quill"></div>
+                <textarea id="post-corpo" required hidden></textarea>
+              </div>
+
+              <div class="editor-actions">
+                <button type="submit" class="btn" data-status="publicado">Publicar</button>
+                <button type="submit" class="btn btn--ghost" data-status="rascunho">Salvar como rascunho</button>
+                <button type="button" class="btn btn--ghost" id="cancel-edit-btn" hidden>Cancelar edição</button>
+                <span class="editor-actions__saved" id="post-feedback" hidden></span>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Aba: comentários -->
+        <div class="tab-panel" id="tab-comentarios">
+          <div class="main__header">
+            <div>
+              <h1>Comentários</h1>
+              <p>Modere e responda aos comentários dos leitores</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="toolbar__search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="comments-search" placeholder="Buscar por nome, e-mail ou texto…" />
+            </div>
+            <select id="comments-filter-status">
+              <option value="">Todos os status</option>
+              <option value="pendente">Pendentes</option>
+              <option value="aprovado">Aprovados</option>
+              <option value="rejeitado">Rejeitados</option>
+            </select>
+          </div>
+          <div id="comments-admin-list"><p class="empty-state">Carregando…</p></div>
+        </div>
+
+      </main>
     </div>
   </div>
 
+  <!-- Quill (editor WYSIWYG) -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

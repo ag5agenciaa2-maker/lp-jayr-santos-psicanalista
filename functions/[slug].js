@@ -14,6 +14,15 @@ function formatDate(dateStr) {
   return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
 }
 
+function isHtmlContent(str) {
+  if (!str) return false;
+  return /^\s*<(p|h[1-6]|ul|ol|blockquote|div|figure)[\s>]/i.test(str);
+}
+
+function renderPostBody(corpo) {
+  return isHtmlContent(corpo) ? corpo : markdownToHtml(corpo);
+}
+
 function markdownToHtml(md) {
   if (!md) return "";
   const lines = md.replace(/\r\n/g, "\n").split("\n");
@@ -82,7 +91,7 @@ function renderPage({ post, siteOrigin, requestUrl }) {
   const tituloEsc = escapeHtml(post.titulo);
   const descEsc = escapeHtml(post.descricao || "");
   const tagEsc = escapeHtml(post.tag || "Psicanálise");
-  const corpoHtml = markdownToHtml(post.corpo_md);
+  const corpoHtml = renderPostBody(post.corpo_md);
   const dataFormatada = formatDate(post.publicado_em);
 
   const schemaJson = {

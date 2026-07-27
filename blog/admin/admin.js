@@ -1,7 +1,8 @@
 /* ============================================================
    Painel do Blog - Jayr Santos Psicanalista
-   SPA simples: login por e-mail/senha, CRUD de posts, moderação
-   de comentários. Fala direto com o Worker (jayr-blog-api).
+   SPA: login por e-mail/senha, dashboard, CRUD de posts com editor
+   WYSIWYG (Quill), busca/filtro, moderação de comentários em árvore.
+   Fala direto com o Worker (jayr-blog-api).
    ============================================================ */
 
 const API_BASE = "https://jayr-blog-api.ag5agenciaa2.workers.dev";
@@ -56,6 +57,7 @@ function showLogin() {
 function showPanel() {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("panel-screen").style.display = "block";
+  carregarDashboard();
   carregarPosts();
   carregarComentarios();
 }
@@ -89,56 +91,205 @@ document.getElementById("logout-btn").addEventListener("click", () => {
   showLogin();
 });
 
-// ---- Tabs ----
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById(`tab-${btn.dataset.tab}`).classList.add("active");
-  });
+// ---- Navegação (sidebar) ----
+function goToTab(tab) {
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  const navBtn = document.querySelector(`.nav-btn[data-tab="${tab}"]`);
+  if (navBtn) navBtn.classList.add("active");
+  const panel = document.getElementById(`tab-${tab}`);
+  if (panel) panel.classList.add("active");
+}
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => goToTab(btn.dataset.tab));
 });
+document.querySelectorAll("[data-goto-tab]").forEach(btn => {
+  btn.addEventListener("click", () => goToTab(btn.dataset.gotoTab));
+});
+
+// ---- Editor WYSIWYG (Quill) ----
+const quill = new Quill("#editor-quill", {
+  theme: "snow",
+  placeholder: "Escreva o conteúdo do artigo…",
+  modules: {
+    toolbar: [
+      [{ header: [2, 3, false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote", "link"],
+      ["clean"],
+    ],
+  },
+});
+
+// Mantém o textarea hidden (post-corpo) sempre sincronizado com o HTML do editor
+const postCorpoEl = document.getElementById("post-corpo");
+quill.on("text-change", () => {
+  const html = quill.root.innerHTML;
+  postCorpoEl.value = html === "<p><br></p>" ? "" : html;
+});
+
+// ---- Dados em cache (para busca/filtro sem refetch) ----
+let todosPosts = [];
+let todosComentarios = [];
+
+// ---- Dashboard ----
+async function carregarDashboard() {
+  const container = document.getElementById("dashboard-content");
+
+  const [resPosts, resComentarios] = await Promise.all([
+    apiFetch("/api/admin/posts").catch(() => null),
+    apiFetch("/api/admin/comentarios").catch(() => null),
+  ]);
+
+  const posts = (resPosts && resPosts.ok && resPosts.data.posts) || [];
+  const comentarios = (resComentarios && resComentarios.ok && resComentarios.data.comentarios) || [];
+
+  const publicados = posts.filter(p => p.status === "publicado");
+  const rascunhos = posts.filter(p => p.status === "rascunho");
+  const pendentes = comentarios.filter(c => c.status === "pendente");
+  const aprovados = comentarios.filter(c => c.status === "aprovado");
+
+  const contagemPorTag = {};
+  publicados.forEach(p => { contagemPorTag[p.tag] = (contagemPorTag[p.tag] || 0) + 1; });
+  const tagMaisAtiva = Object.entries(contagemPorTag).sort((a, b) => b[1] - a[1])[0];
+
+  const recentes = [...posts].sort((a, b) => new Date(b.atualizado_em || 0) - new Date(a.atualizado_em || 0)).slice(0, 5);
+  const comentariosRecentes = [...comentarios].sort((a, b) => new Date(b.criado_em) - new Date(a.criado_em)).slice(0, 5);
+
+  container.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card stat-card--ok">
+        <div class="stat-card__label">Artigos publicados</div>
+        <div class="stat-card__value">${publicados.length}</div>
+        <div class="stat-card__sub">${rascunhos.length} em rascunho</div>
+      </div>
+      <div class="stat-card ${pendentes.length ? "stat-card--warn" : "stat-card--ok"}">
+        <div class="stat-card__label">Comentários pendentes</div>
+        <div class="stat-card__value">${pendentes.length}</div>
+        <div class="stat-card__sub">${aprovados.length} aprovados no total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Categoria mais ativa</div>
+        <div class="stat-card__value" style="font-size:1.3rem;">${tagMaisAtiva ? escapeHtml(tagMaisAtiva[0]) : "—"}</div>
+        <div class="stat-card__sub">${tagMaisAtiva ? `${tagMaisAtiva[1]} artigo(s)` : "Nenhum artigo publicado ainda"}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Total de artigos</div>
+        <div class="stat-card__value">${posts.length}</div>
+        <div class="stat-card__sub">Publicados + rascunhos</div>
+      </div>
+    </div>
+
+    <h2 class="dash-section-title">Artigos recentes</h2>
+    <div class="dash-list">
+      ${recentes.length ? recentes.map(p => `
+        <div class="dash-list-item">
+          <span class="dash-list-item__title">${escapeHtml(p.titulo)}</span>
+          <span class="dash-list-item__meta">
+            <span class="badge badge--${p.status}">${p.status === "publicado" ? "Publicado" : "Rascunho"}</span>
+            ${formatDate(p.atualizado_em)}
+          </span>
+        </div>
+      `).join("") : `<div class="dash-list-item"><span class="dash-list-item__meta">Nenhum artigo ainda.</span></div>`}
+    </div>
+
+    <h2 class="dash-section-title">Comentários recentes</h2>
+    <div class="dash-list">
+      ${comentariosRecentes.length ? comentariosRecentes.map(c => `
+        <div class="dash-list-item">
+          <span class="dash-list-item__title">${escapeHtml(c.nome)} <span style="font-weight:400; color:#999;">em "${escapeHtml(c.post_titulo)}"</span></span>
+          <span class="dash-list-item__meta">
+            <span class="badge badge--${c.status}">${c.status}</span>
+            ${formatDate(c.criado_em)}
+          </span>
+        </div>
+      `).join("") : `<div class="dash-list-item"><span class="dash-list-item__meta">Nenhum comentário ainda.</span></div>`}
+    </div>
+  `;
+
+  // Badge de pendentes na sidebar
+  const badge = document.getElementById("sidebar-pendentes-badge");
+  if (pendentes.length) {
+    badge.textContent = pendentes.length;
+    badge.hidden = false;
+  } else {
+    badge.hidden = true;
+  }
+}
 
 // ---- Lista de posts ----
 async function carregarPosts() {
   const container = document.getElementById("posts-list");
-  container.innerHTML = "<p class=\"empty-state\">Carregando...</p>";
+  container.innerHTML = "<p class=\"empty-state\">Carregando…</p>";
 
   const res = await apiFetch("/api/admin/posts").catch(() => null);
   if (!res || !res.ok) { container.innerHTML = "<p class=\"empty-state\">Erro ao carregar artigos.</p>"; return; }
 
-  const posts = res.data.posts || [];
-  if (!posts.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo ainda. Crie o primeiro na aba \"Novo Artigo\".</p>"; return; }
+  todosPosts = res.data.posts || [];
+  popularFiltroTags();
+  renderizarPosts();
+}
 
-  container.innerHTML = posts.map(p => `
+function popularFiltroTags() {
+  const select = document.getElementById("posts-filter-tag");
+  const atual = select.value;
+  const tags = [...new Set(todosPosts.map(p => p.tag).filter(Boolean))].sort();
+  select.innerHTML = `<option value="">Todas as categorias</option>` + tags.map(t => `<option value="${escapeAttr(t)}">${escapeHtml(t)}</option>`).join("");
+  select.value = atual;
+}
+
+function renderizarPosts() {
+  const container = document.getElementById("posts-list");
+  const busca = document.getElementById("posts-search").value.trim().toLowerCase();
+  const filtroStatus = document.getElementById("posts-filter-status").value;
+  const filtroTag = document.getElementById("posts-filter-tag").value;
+
+  const filtrados = todosPosts.filter(p => {
+    if (busca && !p.titulo.toLowerCase().includes(busca)) return false;
+    if (filtroStatus && p.status !== filtroStatus) return false;
+    if (filtroTag && p.tag !== filtroTag) return false;
+    return true;
+  });
+
+  if (!todosPosts.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo ainda. Crie o primeiro na aba \"Novo Artigo\".</p>"; return; }
+  if (!filtrados.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo encontrado com esses filtros.</p>"; return; }
+
+  container.innerHTML = filtrados.map(p => `
     <div class="post-row">
       <div class="post-row__info">
-        <strong>${p.titulo}</strong>
+        <strong>${escapeHtml(p.titulo)}</strong>
         <span class="post-row__meta">
           <span class="badge badge--${p.status}">${p.status === "publicado" ? "Publicado" : "Rascunho"}</span>
-          ${p.publicado_em ? " · " + formatDate(p.publicado_em) : ""}
+          <span class="post-row__tag">${escapeHtml(p.tag || "Sem categoria")}</span>
+          ${p.publicado_em ? formatDate(p.publicado_em) : "Não publicado"}
         </span>
       </div>
       <div class="post-row__actions">
-        <button class="btn btn--ghost" data-action="editar" data-id="${p.id}">Editar</button>
-        <button class="btn btn--danger" data-action="remover" data-id="${p.id}">Remover</button>
+        <button class="btn btn--ghost btn--sm" data-action="editar" data-id="${p.id}">Editar</button>
+        <button class="btn btn--danger btn--sm" data-action="remover" data-id="${p.id}">Remover</button>
       </div>
     </div>
   `).join("");
 
   container.querySelectorAll('[data-action="editar"]').forEach(btn => {
-    btn.addEventListener("click", () => editarPost(btn.dataset.id, posts));
+    btn.addEventListener("click", () => editarPost(btn.dataset.id));
   });
   container.querySelectorAll('[data-action="remover"]').forEach(btn => {
     btn.addEventListener("click", () => removerPost(btn.dataset.id));
   });
 }
 
-function editarPost(id, posts) {
-  const post = posts.find(p => String(p.id) === String(id));
+document.getElementById("posts-search").addEventListener("input", renderizarPosts);
+document.getElementById("posts-filter-status").addEventListener("change", renderizarPosts);
+document.getElementById("posts-filter-tag").addEventListener("change", renderizarPosts);
+
+function editarPost(id) {
+  const post = todosPosts.find(p => String(p.id) === String(id));
   if (!post) return;
 
-  document.querySelector('[data-tab="novo"]').click();
+  goToTab("novo");
   document.getElementById("editor-title").textContent = "Editar artigo";
   document.getElementById("post-id").value = post.id;
   document.getElementById("post-titulo").value = post.titulo;
@@ -146,7 +297,11 @@ function editarPost(id, posts) {
   document.getElementById("post-descricao").value = post.descricao || "";
   document.getElementById("post-tag").value = post.tag || "Saúde Mental e Emoções";
   document.getElementById("post-capa-url").value = post.capa_url || "";
-  document.getElementById("post-corpo").value = post.corpo_md || "";
+
+  const corpo = post.corpo_md || "";
+  const isHtml = /^\s*<(p|h[1-6]|ul|ol|blockquote|div)[\s>]/i.test(corpo);
+  quill.root.innerHTML = isHtml ? corpo : `<p>${escapeHtml(corpo).replace(/\n/g, "</p><p>")}</p>`;
+  postCorpoEl.value = quill.root.innerHTML;
 
   const preview = document.getElementById("image-preview");
   if (post.capa_url) { preview.src = post.capa_url; preview.style.display = "block"; }
@@ -158,7 +313,7 @@ function editarPost(id, posts) {
 async function removerPost(id) {
   if (!confirm("Remover este artigo definitivamente?")) return;
   const res = await apiFetch(`/api/admin/posts/${id}`, { method: "DELETE" }).catch(() => null);
-  if (res && res.ok) carregarPosts();
+  if (res && res.ok) { carregarPosts(); carregarDashboard(); }
 }
 
 document.getElementById("cancel-edit-btn").addEventListener("click", () => {
@@ -173,6 +328,8 @@ function resetPostForm() {
   document.getElementById("post-tag").value = "Saúde Mental e Emoções";
   document.getElementById("image-preview").style.display = "none";
   document.getElementById("cancel-edit-btn").hidden = true;
+  quill.setContents([]);
+  postCorpoEl.value = "";
 }
 
 // ---- Upload de imagem de capa ----
@@ -182,7 +339,7 @@ document.getElementById("post-capa").addEventListener("change", async (e) => {
 
   const feedback = document.getElementById("post-feedback");
   feedback.hidden = false;
-  feedback.textContent = "Enviando imagem...";
+  feedback.textContent = "Enviando imagem…";
 
   const form = new FormData();
   form.append("file", file);
@@ -202,6 +359,7 @@ document.getElementById("post-capa").addEventListener("change", async (e) => {
     preview.style.display = "block";
     feedback.hidden = true;
   } else {
+    feedback.hidden = false;
     feedback.textContent = "Erro ao enviar imagem.";
   }
 });
@@ -218,7 +376,7 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
   const descricao = document.getElementById("post-descricao").value.trim();
   const tag = document.getElementById("post-tag").value.trim() || "Saúde Mental e Emoções";
   const capaUrl = document.getElementById("post-capa-url").value;
-  const corpoMd = document.getElementById("post-corpo").value;
+  const corpoMd = postCorpoEl.value;
 
   if (!titulo || !corpoMd) return;
 
@@ -234,7 +392,7 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
 
   const feedback = document.getElementById("post-feedback");
   feedback.hidden = false;
-  feedback.textContent = "Salvando...";
+  feedback.textContent = "Salvando…";
 
   const res = id
     ? await apiFetch(`/api/admin/posts/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
@@ -243,9 +401,11 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
   if (res && res.ok) {
     feedback.hidden = true;
     resetPostForm();
-    document.querySelector('[data-tab="posts"]').click();
+    goToTab("posts");
     carregarPosts();
+    carregarDashboard();
   } else {
+    feedback.hidden = false;
     feedback.textContent = (res && res.data && res.data.error) || "Erro ao salvar artigo.";
   }
 });
@@ -253,22 +413,41 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
 // ---- Comentários (moderação) ----
 async function carregarComentarios() {
   const container = document.getElementById("comments-admin-list");
-  container.innerHTML = "<p class=\"empty-state\">Carregando...</p>";
+  container.innerHTML = "<p class=\"empty-state\">Carregando…</p>";
 
   const res = await apiFetch("/api/admin/comentarios").catch(() => null);
   if (!res || !res.ok) { container.innerHTML = "<p class=\"empty-state\">Erro ao carregar comentários.</p>"; return; }
 
-  const comentarios = res.data.comentarios || [];
-  if (!comentarios.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário ainda.</p>"; return; }
+  todosComentarios = res.data.comentarios || [];
+  renderizarComentarios();
+}
 
-  const porId = new Map(comentarios.map(c => [c.id, c]));
+function trechoCitado(texto, max) {
+  const limpo = String(texto || "").replace(/\s+/g, " ").trim();
+  return limpo.length > max ? `${limpo.slice(0, max)}…` : limpo;
+}
 
-  function trechoCitado(texto, max) {
-    const limpo = String(texto || "").replace(/\s+/g, " ").trim();
-    return limpo.length > max ? `${limpo.slice(0, max)}…` : limpo;
-  }
+function renderizarComentarios() {
+  const container = document.getElementById("comments-admin-list");
+  const busca = document.getElementById("comments-search").value.trim().toLowerCase();
+  const filtroStatus = document.getElementById("comments-filter-status").value;
 
-  container.innerHTML = comentarios.map(c => {
+  if (!todosComentarios.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário ainda.</p>"; return; }
+
+  const porId = new Map(todosComentarios.map(c => [c.id, c]));
+
+  const filtrados = todosComentarios.filter(c => {
+    if (filtroStatus && c.status !== filtroStatus) return false;
+    if (busca) {
+      const alvo = `${c.nome} ${c.email || ""} ${c.texto}`.toLowerCase();
+      if (!alvo.includes(busca)) return false;
+    }
+    return true;
+  });
+
+  if (!filtrados.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário encontrado com esses filtros.</p>"; return; }
+
+  container.innerHTML = filtrados.map(c => {
     const pai = c.parent_id ? porId.get(c.parent_id) : null;
     const replyQuoteHtml = c.parent_id
       ? (pai
@@ -282,7 +461,7 @@ async function carregarComentarios() {
     <div class="comment-row">
       <div class="comment-row__top">
         <span>em "<em>${escapeHtml(c.post_titulo)}</em>" · ${formatDate(c.criado_em)}</span>
-        <span class="badge badge--${c.status === 'aprovado' ? 'publicado' : 'rascunho'}">${escapeHtml(c.status)}</span>
+        <span class="badge badge--${c.status}">${escapeHtml(c.status)}</span>
       </div>
       ${replyQuoteHtml}
       <div class="comment-row__contato">
@@ -292,9 +471,9 @@ async function carregarComentarios() {
       </div>
       <p class="comment-row__texto">${escapeHtml(c.texto).replace(/\n/g, "<br>")}</p>
       <div class="comment-row__actions">
-        ${c.status !== "aprovado" ? `<button class="btn" data-action="aprovar" data-id="${c.id}">Aprovar</button>` : ""}
-        ${c.status !== "rejeitado" ? `<button class="btn btn--danger" data-action="rejeitar" data-id="${c.id}">Rejeitar</button>` : ""}
-        <button class="btn btn--danger" data-action="excluir" data-id="${c.id}">Excluir</button>
+        ${c.status !== "aprovado" ? `<button class="btn btn--sm" data-action="aprovar" data-id="${c.id}">Aprovar</button>` : ""}
+        ${c.status !== "rejeitado" ? `<button class="btn btn--ghost btn--sm" data-action="rejeitar" data-id="${c.id}">Rejeitar</button>` : ""}
+        <button class="btn btn--danger btn--sm" data-action="excluir" data-id="${c.id}">Excluir</button>
       </div>
     </div>
   `;
@@ -311,19 +490,22 @@ async function carregarComentarios() {
   });
 }
 
+document.getElementById("comments-search").addEventListener("input", renderizarComentarios);
+document.getElementById("comments-filter-status").addEventListener("change", renderizarComentarios);
+
 async function moderarComentario(id, status) {
   const res = await apiFetch(`/api/admin/comentarios/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
   }).catch(() => null);
-  if (res && res.ok) carregarComentarios();
+  if (res && res.ok) { carregarComentarios(); carregarDashboard(); }
 }
 
 async function excluirComentario(id) {
   if (!confirm("Excluir este comentário definitivamente? Se houver respostas a ele, também serão excluídas.")) return;
   const res = await apiFetch(`/api/admin/comentarios/${id}`, { method: "DELETE" }).catch(() => null);
-  if (res && res.ok) carregarComentarios();
+  if (res && res.ok) { carregarComentarios(); carregarDashboard(); }
 }
 
 // ---- Inicialização ----
