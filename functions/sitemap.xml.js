@@ -18,6 +18,8 @@ const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
   "quando-o-corpo-grita",
   "bets-e-a-dor-psiquica",
+  "quando-o-silencio-cansa",
+  "quando-a-angustia-fala",
 ]);
 
 function xmlEscape(str) {
