@@ -448,7 +448,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px 16px;
-  background: #eaf2fb;
+  background: #F4F5F7;
   padding: 24px;
   border-radius: 8px;
 }
@@ -479,6 +479,11 @@
   font-size: 0.95rem;
   resize: vertical;
   background: #fff;
+}
+
+.article-comments__form .field input::placeholder,
+.article-comments__form .field textarea::placeholder {
+  color: #b7bcc4;
 }
 
 .article-comments__form .btn {
@@ -548,7 +553,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px 14px;
-  background: #eaf2fb;
+  background: #F4F5F7;
   padding: 18px;
   border-radius: 8px;
   border: 1px solid rgba(27, 58, 92, 0.12);
@@ -571,6 +576,11 @@
 .comment-item__reply-form .article-comments__form--reply .field input,
 .comment-item__reply-form .article-comments__form--reply .field textarea {
   background: #fff;
+}
+
+.comment-item__reply-form .article-comments__form--reply .field input::placeholder,
+.comment-item__reply-form .article-comments__form--reply .field textarea::placeholder {
+  color: #b7bcc4;
 }
 
 .comment-item__reply-form .article-comments__form--reply .btn--ghost {

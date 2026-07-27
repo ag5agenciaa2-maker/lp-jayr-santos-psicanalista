@@ -333,19 +333,19 @@ function commentFormFields(idPrefix, saved) {
     <p class="article-comments__notice">O seu endereço de e-mail não será publicado. Campos obrigatórios são marcados com *</p>
     <div class="field">
       <label for="${idPrefix}-nome">Nome *</label>
-      <input type="text" id="${idPrefix}-nome" required maxlength="100" value="${nome}" />
+      <input type="text" id="${idPrefix}-nome" required maxlength="100" value="${nome}" placeholder="Seu nome" />
     </div>
     <div class="field">
       <label for="${idPrefix}-email">E-mail *</label>
-      <input type="email" id="${idPrefix}-email" required maxlength="200" value="${email}" />
+      <input type="email" id="${idPrefix}-email" required maxlength="200" value="${email}" placeholder="seu@email.com" />
     </div>
     <div class="field">
       <label for="${idPrefix}-site">Telefone (opcional)</label>
-      <input type="tel" id="${idPrefix}-site" maxlength="30" value="${site}" />
+      <input type="tel" id="${idPrefix}-site" maxlength="30" value="${site}" placeholder="(21) 90000-0000" />
     </div>
     <div class="field">
       <label for="${idPrefix}-texto">Comentário *</label>
-      <textarea id="${idPrefix}-texto" rows="3" required maxlength="2000"></textarea>
+      <textarea id="${idPrefix}-texto" rows="3" required maxlength="2000" placeholder="Escreva seu comentário..."></textarea>
     </div>
     <label class="article-comments__save-check">
       <input type="checkbox" id="${idPrefix}-salvar" ${saved ? "checked" : ""} />
@@ -387,7 +387,7 @@ function renderCommentNode(comment, childrenByParent, slug, depth) {
         <span class="comment-item__data">${formatDate(comment.criado_em)}</span>
       </div>
       <p class="comment-item__texto">${escapeHtml(comment.texto)}</p>
-      <button type="button" class="comment-item__reply-btn" data-reply-to="${comment.id}">Responder</button>
+      <button type="button" class="comment-item__reply-btn" data-reply-to="${comment.id}">Comentar</button>
       <div class="comment-item__reply-form" id="reply-form-${comment.id}" hidden></div>
       ${filhos.map(f => renderCommentNode(f, childrenByParent, slug, depth + 1)).join("")}
     </div>
