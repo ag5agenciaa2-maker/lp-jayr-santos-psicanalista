@@ -280,7 +280,7 @@ function renderPage({ post, siteOrigin, requestUrl, relacionados = [], tagSlug =
   <!-- ===== COMENTÁRIOS ===== -->
   <div class="wrap" style="max-width: 760px; margin-bottom: 80px; padding: 0 var(--pad-x);">
     <section class="article-comments" aria-label="Comentários do artigo">
-      <h3 class="article-comments__title">Comentários</h3>
+      <h3 class="article-comments__title">Comentários <span id="comments-count" class="article-comments__count"></span></h3>
 
       <div id="comments-list" class="article-comments__list">
         <p class="article-comments__empty">Carregando comentários...</p>

@@ -130,13 +130,21 @@ export default {
       // ---- POSTS PÚBLICOS ----
       if (path === "/api/posts" && method === "GET") {
         const tag = url.searchParams.get("tag");
-        const stmt = tag
-          ? env.DB.prepare(
-              "SELECT id, slug, titulo, descricao, capa_url, autor, tag, publicado_em FROM posts WHERE status = 'publicado' AND tag = ? ORDER BY publicado_em DESC"
-            ).bind(tag)
-          : env.DB.prepare(
-              "SELECT id, slug, titulo, descricao, capa_url, autor, tag, publicado_em FROM posts WHERE status = 'publicado' ORDER BY publicado_em DESC"
-            );
+        const ordenar = url.searchParams.get("ordenar");
+        const orderBy = ordenar === "comentados"
+          ? "total_comentarios DESC, p.publicado_em DESC"
+          : ordenar === "antigos"
+            ? "p.publicado_em ASC"
+            : "p.publicado_em DESC";
+
+        const baseSql = `
+          SELECT p.id, p.slug, p.titulo, p.descricao, p.capa_url, p.autor, p.tag, p.publicado_em,
+                 (SELECT COUNT(*) FROM comentarios c WHERE c.post_id = p.id AND c.status = 'aprovado') AS total_comentarios
+          FROM posts p
+          WHERE p.status = 'publicado' ${tag ? "AND p.tag = ?" : ""}
+          ORDER BY ${orderBy}
+        `;
+        const stmt = tag ? env.DB.prepare(baseSql).bind(tag) : env.DB.prepare(baseSql);
         const { results } = await stmt.all();
         return json({ posts: results }, 200, request);
       }

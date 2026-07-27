@@ -126,15 +126,23 @@ async function renderBlogList() {
   const container = document.getElementById("blog-grid-container");
   if (!container) return;
 
-  container.innerHTML = '<p class="blog-loading">Carregando artigos...</p>';
-  const data = await apiGet("/api/posts");
+  const sortSelect = document.getElementById("blog-sort-select");
 
-  if (!data || !data.posts || !data.posts.length) {
-    container.innerHTML = "<p>Nenhum artigo publicado no momento.</p>";
-    return;
+  async function carregar() {
+    const ordenar = sortSelect ? sortSelect.value : "recentes";
+    container.innerHTML = '<p class="blog-loading">Carregando artigos...</p>';
+    const data = await apiGet(`/api/posts?ordenar=${encodeURIComponent(ordenar)}`);
+
+    if (!data || !data.posts || !data.posts.length) {
+      container.innerHTML = "<p>Nenhum artigo publicado no momento.</p>";
+      return;
+    }
+
+    container.innerHTML = data.posts.map(renderBlogCard).join("");
   }
 
-  container.innerHTML = data.posts.map(renderBlogCard).join("");
+  if (sortSelect) sortSelect.addEventListener("change", carregar);
+  await carregar();
 }
 
 // ---- blog/index.html: grid "Explore por tema" — categorias vêm do banco (admin cria dinamicamente) ----
@@ -178,10 +186,15 @@ function renderBlogCard(post) {
         <p class="blog-card__excerpt">${post.descricao || ""}</p>
         <div class="blog-card__footer">
           <a href="${href}" class="blog-card__link">Ler artigo completo <span>→</span></a>
+          <span class="blog-card__comments">${comentariosIconHtml()} ${Number(post.total_comentarios) || 0}</span>
         </div>
       </div>
     </article>
   `;
+}
+
+function comentariosIconHtml() {
+  return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
 }
 
 // ---- blog/[categoria]/index.html: lista de posts filtrados por categoria ----
@@ -190,15 +203,23 @@ async function renderCategoryList() {
   if (!container) return;
 
   const tag = container.dataset.tag;
-  container.innerHTML = '<p class="blog-loading">Carregando artigos...</p>';
-  const data = await apiGet(`/api/posts?tag=${encodeURIComponent(tag)}`);
+  const sortSelect = document.getElementById("blog-sort-select");
 
-  if (!data || !data.posts || !data.posts.length) {
-    container.innerHTML = '<p class="blog-empty">Ainda não há artigos publicados nesta categoria. Volte em breve.</p>';
-    return;
+  async function carregar() {
+    const ordenar = sortSelect ? sortSelect.value : "recentes";
+    container.innerHTML = '<p class="blog-loading">Carregando artigos...</p>';
+    const data = await apiGet(`/api/posts?tag=${encodeURIComponent(tag)}&ordenar=${encodeURIComponent(ordenar)}`);
+
+    if (!data || !data.posts || !data.posts.length) {
+      container.innerHTML = '<p class="blog-empty">Ainda não há artigos publicados nesta categoria. Volte em breve.</p>';
+      return;
+    }
+
+    container.innerHTML = data.posts.map(renderBlogCard).join("");
   }
 
-  container.innerHTML = data.posts.map(renderBlogCard).join("");
+  if (sortSelect) sortSelect.addEventListener("change", carregar);
+  await carregar();
 }
 
 // ---- artigo.html: post individual + comentários ----
@@ -403,6 +424,13 @@ async function initComments(slug) {
   async function carregarComentarios() {
     const data = await apiGet(`/api/posts/${encodeURIComponent(slug)}/comentarios`);
     const comentarios = (data && data.comentarios) || [];
+
+    const countEl = document.getElementById("comments-count");
+    if (countEl) {
+      countEl.textContent = comentarios.length
+        ? `(${comentarios.length})`
+        : "";
+    }
 
     if (!comentarios.length) {
       listEl.innerHTML = '<p class="article-comments__empty">Seja o primeiro a comentar.</p>';

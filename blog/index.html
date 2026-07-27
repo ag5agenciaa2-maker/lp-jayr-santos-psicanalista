@@ -76,7 +76,17 @@
   <!-- ===== ARTIGOS MAIS RECENTES ===== -->
   <main class="blog-section">
     <div class="wrap">
-      <p class="eyebrow" style="margin-bottom: 12px;"><span class="eyebrow__line"></span>Publicados recentemente</p>
+      <div class="blog-list-header">
+        <p class="eyebrow" style="margin-bottom: 0;"><span class="eyebrow__line"></span>Publicados recentemente</p>
+        <div class="blog-sort" data-blog-sort>
+          <label for="blog-sort-select">Ordenar por</label>
+          <select id="blog-sort-select">
+            <option value="recentes">Mais recentes</option>
+            <option value="antigos">Mais antigos</option>
+            <option value="comentados">Mais comentados</option>
+          </select>
+        </div>
+      </div>
       <div id="blog-grid-container" class="blog-grid">
         <!-- Renderizado dinamicamente via blog.js -->
       </div>

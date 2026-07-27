@@ -106,6 +106,52 @@
   margin-top: 40px;
 }
 
+.blog-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.blog-sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blog-sort label {
+  font-size: 0.85rem;
+  color: var(--salvia);
+  font-weight: 500;
+}
+
+.blog-sort select {
+  padding: 8px 32px 8px 14px;
+  border: 1px solid rgba(27, 58, 92, 0.18);
+  border-radius: 20px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--noturno);
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231B3A5C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.blog-sort select:hover {
+  border-color: rgba(27, 58, 92, 0.35);
+}
+
+@media (max-width: 480px) {
+  .blog-list-header {
+    justify-content: flex-start;
+  }
+}
+
 .blog-card {
   background: #ffffff;
   border: 1px solid rgba(27, 58, 92, 0.08);
@@ -198,6 +244,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.blog-card__comments {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--salvia);
+  flex-shrink: 0;
 }
 
 .blog-card__link {
@@ -397,6 +452,13 @@
   font-size: 1.5rem;
   color: var(--noturno);
   margin: 0 0 24px;
+}
+
+.article-comments__count {
+  font-family: var(--ff-body, inherit);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--salvia);
 }
 
 .article-comments__list {

@@ -420,6 +420,17 @@ function renderCategoriaPage({ categoria, siteOrigin, requestUrl }) {
   <!-- ===== ARTIGOS DA CATEGORIA ===== -->
   <main class="blog-section">
     <div class="wrap">
+      <div class="blog-list-header">
+        <p class="eyebrow" style="margin-bottom: 0;"><span class="eyebrow__line"></span>Artigos da categoria</p>
+        <div class="blog-sort" data-blog-sort>
+          <label for="blog-sort-select">Ordenar por</label>
+          <select id="blog-sort-select">
+            <option value="recentes">Mais recentes</option>
+            <option value="antigos">Mais antigos</option>
+            <option value="comentados">Mais comentados</option>
+          </select>
+        </div>
+      </div>
       <div id="category-grid-container" class="blog-grid" data-tag="${nomeEsc}">
         <!-- Renderizado dinamicamente via blog.js -->
       </div>
@@ -596,7 +607,7 @@ function renderPostPage({ post, siteOrigin, requestUrl, relacionados = [], tagSl
   <!-- ===== COMENTÁRIOS ===== -->
   <div class="wrap" style="max-width: 760px; margin-bottom: 80px; padding: 0 var(--pad-x);">
     <section class="article-comments" aria-label="Comentários do artigo">
-      <h3 class="article-comments__title">Comentários</h3>
+      <h3 class="article-comments__title">Comentários <span id="comments-count" class="article-comments__count"></span></h3>
 
       <div id="comments-list" class="article-comments__list">
         <p class="article-comments__empty">Carregando comentários...</p>
