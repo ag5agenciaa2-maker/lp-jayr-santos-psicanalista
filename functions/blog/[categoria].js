@@ -661,6 +661,8 @@ const OLD_SLUGS = new Set([
   "quando-a-angustia-fala-a-escuta-psicanalitica-do-sofrimento",
   "porque-repetimos-erros-que-nos-mesmos-reprovamos",
   "alem-do-vicio-e-do-controle-redescobrindo-o-nos",
+  "transtorno-disformico-corporal-sob-o-olhar-da-psicanalise",
+  "os-transtornos-alimentares-sob-o-olhar-da-psicanalise",
 ]);
 
 function urlDoPost(slug) {
