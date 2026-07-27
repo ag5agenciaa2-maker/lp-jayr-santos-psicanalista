@@ -12,9 +12,9 @@ const BLOG_API_BASE = "https://jayr-blog-api.ag5agenciaa2.workers.dev";
 const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
   "quando-o-corpo-grita",
-  "bets-e-a-dor-psiquica",
-  "quando-o-silencio-cansa",
-  "quando-a-angustia-fala",
+  "as-bets-e-a-dor-psiquica-uma-leitura-do-inconsciente-sobre-as-apostas-online",
+  "quando-o-silencio-cansa-ansiedade-feminina-na-meia-idade",
+  "quando-a-angustia-fala-a-escuta-psicanalitica-do-sofrimento",
 ]);
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
