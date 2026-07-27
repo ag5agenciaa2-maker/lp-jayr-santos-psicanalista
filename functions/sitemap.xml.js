@@ -16,6 +16,7 @@ const PAGINAS_FIXAS = [
 // functions/[slug].js — sincronizado manualmente com OLD_SLUGS de lá.
 const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
+  "quando-o-corpo-grita",
 ]);
 
 function xmlEscape(str) {

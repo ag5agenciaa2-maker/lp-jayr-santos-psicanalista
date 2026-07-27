@@ -5,6 +5,7 @@
 
 const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
+  "quando-o-corpo-grita",
 ]);
 
 function formatDate(dateStr) {

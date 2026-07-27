@@ -655,6 +655,7 @@ function renderPostPage({ post, siteOrigin, requestUrl, relacionados = [], tagSl
 // dois arquivos sempre que um post antigo específico for migrado.
 const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
+  "quando-o-corpo-grita",
 ]);
 
 function urlDoPost(slug) {

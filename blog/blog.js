@@ -11,6 +11,7 @@ const BLOG_API_BASE = "https://jayr-blog-api.ag5agenciaa2.workers.dev";
 // quando um post antigo específico é migrado, não é o caminho padrão.
 const OLD_SLUGS = new Set([
   "prossiga-a-vida-nao-terminou",
+  "quando-o-corpo-grita",
 ]);
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
