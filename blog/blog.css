@@ -415,6 +415,7 @@
   border: 1px solid rgba(27, 58, 92, 0.08);
   border-radius: 8px;
   padding: 18px 20px;
+  margin-bottom: 14px;
 }
 
 .comment-item__head {
@@ -478,4 +479,77 @@
   font-size: 0.9rem;
   color: var(--azul);
   margin: 0;
+}
+
+.article-comments__form-title {
+  font-family: var(--ff-title);
+  font-size: 1.15rem;
+  color: var(--noturno);
+  margin: 8px 0 16px;
+}
+
+.article-comments__notice {
+  font-size: 0.82rem;
+  color: var(--salvia);
+  margin: 0 0 4px;
+}
+
+.article-comments__save-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--grafite);
+  cursor: pointer;
+}
+
+.article-comments__save-check input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+/* Árvore de respostas */
+.comment-item__reply-btn {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--azul);
+  cursor: pointer;
+}
+
+.comment-item__reply-btn:hover {
+  text-decoration: underline;
+}
+
+.comment-item__reply-form {
+  margin-top: 14px;
+}
+
+.comment-item__reply-form .article-comments__form--reply {
+  display: grid;
+  gap: 14px;
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(27, 58, 92, 0.12);
+}
+
+.comment-item__reply-form .article-comments__form--reply .btn--ghost {
+  background: none;
+  color: var(--salvia);
+  border: 1px solid rgba(27, 58, 92, 0.18);
+}
+
+.comment-item__site {
+  color: var(--noturno);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.comment-item__site:hover {
+  color: var(--azul);
+  text-decoration: underline;
 }

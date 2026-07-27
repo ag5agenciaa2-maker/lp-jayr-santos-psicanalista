@@ -143,8 +143,9 @@ export default {
         const slug = matchComentarios[1];
         const post = await env.DB.prepare("SELECT id FROM posts WHERE slug = ?").bind(slug).first();
         if (!post) return json({ error: "não encontrado" }, 404, request);
+        // email nunca é retornado ao público — só nome, texto, site e vínculo de resposta (parent_id)
         const { results } = await env.DB.prepare(
-          "SELECT id, nome, texto, criado_em FROM comentarios WHERE post_id = ? AND status = 'aprovado' ORDER BY criado_em ASC"
+          "SELECT id, nome, site, texto, parent_id, criado_em FROM comentarios WHERE post_id = ? AND status = 'aprovado' ORDER BY criado_em ASC"
         ).bind(post.id).all();
         return json({ comentarios: results }, 200, request);
       }
@@ -154,13 +155,27 @@ export default {
         const post = await env.DB.prepare("SELECT id FROM posts WHERE slug = ?").bind(slug).first();
         if (!post) return json({ error: "não encontrado" }, 404, request);
 
-        const { nome, texto } = await request.json();
-        if (!nome || !texto || nome.length > 100 || texto.length > 2000) {
+        const { nome, email, site, texto, parent_id } = await request.json();
+        const emailValido = typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if (!nome || !emailValido || !texto || nome.length > 100 || email.length > 200 || texto.length > 2000) {
           return json({ error: "dados inválidos" }, 400, request);
         }
+        if (site && (typeof site !== "string" || site.length > 200)) {
+          return json({ error: "site inválido" }, 400, request);
+        }
+
+        let parentIdValido = null;
+        if (parent_id !== undefined && parent_id !== null) {
+          const parentComentario = await env.DB.prepare(
+            "SELECT id FROM comentarios WHERE id = ? AND post_id = ?"
+          ).bind(parent_id, post.id).first();
+          if (!parentComentario) return json({ error: "comentário pai inválido" }, 400, request);
+          parentIdValido = parentComentario.id;
+        }
+
         await env.DB.prepare(
-          "INSERT INTO comentarios (post_id, nome, texto, status) VALUES (?, ?, ?, 'pendente')"
-        ).bind(post.id, nome.trim(), texto.trim()).run();
+          "INSERT INTO comentarios (post_id, nome, email, site, texto, parent_id, status) VALUES (?, ?, ?, ?, ?, ?, 'pendente')"
+        ).bind(post.id, nome.trim(), email.trim(), (site || "").trim() || null, texto.trim(), parentIdValido).run();
         return json({ ok: true, mensagem: "Comentário enviado para moderação" }, 201, request);
       }
 
@@ -243,7 +258,7 @@ export default {
 
         if (path === "/api/admin/comentarios" && method === "GET") {
           const { results } = await env.DB.prepare(
-            `SELECT c.id, c.nome, c.texto, c.status, c.criado_em, p.titulo AS post_titulo, p.slug AS post_slug
+            `SELECT c.id, c.nome, c.email, c.site, c.texto, c.parent_id, c.status, c.criado_em, p.titulo AS post_titulo, p.slug AS post_slug
              FROM comentarios c JOIN posts p ON p.id = c.post_id
              ORDER BY c.criado_em DESC`
           ).all();

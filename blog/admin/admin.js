@@ -251,11 +251,14 @@ async function carregarComentarios() {
   const comentarios = res.data.comentarios || [];
   if (!comentarios.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário ainda.</p>"; return; }
 
+  const porId = new Map(comentarios.map(c => [c.id, c]));
+
   container.innerHTML = comentarios.map(c => `
     <div class="comment-row">
       <div class="comment-row__meta">
-        <strong>${c.nome}</strong> em "<em>${c.post_titulo}</em>" · ${formatDate(c.criado_em)} ·
+        <strong>${c.nome}</strong>${c.email ? ` (${c.email})` : ""} em "<em>${c.post_titulo}</em>" · ${formatDate(c.criado_em)} ·
         <span class="badge badge--${c.status === 'aprovado' ? 'publicado' : 'rascunho'}">${c.status}</span>
+        ${c.parent_id ? `<span class="comment-row__reply-tag">↳ resposta a ${porId.has(c.parent_id) ? porId.get(c.parent_id).nome : `#${c.parent_id}`}</span>` : ""}
       </div>
       <p class="comment-row__texto">${c.texto}</p>
       <div class="comment-row__actions">

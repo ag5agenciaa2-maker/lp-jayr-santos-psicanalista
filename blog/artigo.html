@@ -93,15 +93,29 @@
         <p class="article-comments__empty">Carregando comentários...</p>
       </div>
 
+      <h4 class="article-comments__form-title">Deixe um comentário</h4>
       <form id="comment-form" class="article-comments__form" novalidate>
+        <p class="article-comments__notice">O seu endereço de e-mail não será publicado. Campos obrigatórios são marcados com *</p>
         <div class="field">
-          <label for="c-nome">Seu nome</label>
-          <input type="text" id="c-nome" name="nome" required maxlength="100" placeholder="Como você se chama?" />
+          <label for="c-nome">Nome *</label>
+          <input type="text" id="c-nome" name="nome" required maxlength="100" />
         </div>
         <div class="field">
-          <label for="c-texto">Seu comentário</label>
-          <textarea id="c-texto" name="texto" rows="3" required maxlength="2000" placeholder="Compartilhe sua reflexão sobre o artigo..."></textarea>
+          <label for="c-email">E-mail *</label>
+          <input type="email" id="c-email" name="email" required maxlength="200" />
         </div>
+        <div class="field">
+          <label for="c-site">Site</label>
+          <input type="url" id="c-site" name="site" maxlength="200" />
+        </div>
+        <div class="field">
+          <label for="c-texto">Comentário *</label>
+          <textarea id="c-texto" name="texto" rows="3" required maxlength="2000"></textarea>
+        </div>
+        <label class="article-comments__save-check">
+          <input type="checkbox" id="c-salvar" />
+          Salvar meus dados neste navegador para a próxima vez que eu comentar.
+        </label>
         <button type="submit" class="btn btn--solid">Enviar comentário</button>
         <p id="comment-feedback" class="article-comments__feedback" hidden></p>
       </form>

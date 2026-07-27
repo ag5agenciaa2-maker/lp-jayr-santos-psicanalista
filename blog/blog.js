@@ -246,7 +246,106 @@ function injectSchemaOrg(post, slug) {
   document.head.appendChild(script);
 }
 
-// ---- Comentários ----
+// ---- Comentários (árvore de respostas, estilo WordPress) ----
+const COMMENT_STORAGE_KEY = "jayr-blog-comment-author";
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str || "";
+  return div.innerHTML;
+}
+
+function loadSavedAuthor() {
+  try {
+    const raw = localStorage.getItem(COMMENT_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveAuthor(nome, email, site) {
+  try {
+    localStorage.setItem(COMMENT_STORAGE_KEY, JSON.stringify({ nome, email, site }));
+  } catch (e) { /* localStorage indisponível — ignora silenciosamente */ }
+}
+
+function clearSavedAuthor() {
+  try { localStorage.removeItem(COMMENT_STORAGE_KEY); } catch (e) { /* ignora */ }
+}
+
+function commentFormFields(idPrefix, saved) {
+  const nome = saved ? escapeHtml(saved.nome) : "";
+  const email = saved ? escapeHtml(saved.email) : "";
+  const site = saved ? escapeHtml(saved.site) : "";
+  return `
+    <p class="article-comments__notice">O seu endereço de e-mail não será publicado. Campos obrigatórios são marcados com *</p>
+    <div class="field">
+      <label for="${idPrefix}-nome">Nome *</label>
+      <input type="text" id="${idPrefix}-nome" required maxlength="100" value="${nome}" />
+    </div>
+    <div class="field">
+      <label for="${idPrefix}-email">E-mail *</label>
+      <input type="email" id="${idPrefix}-email" required maxlength="200" value="${email}" />
+    </div>
+    <div class="field">
+      <label for="${idPrefix}-site">Site</label>
+      <input type="url" id="${idPrefix}-site" maxlength="200" value="${site}" />
+    </div>
+    <div class="field">
+      <label for="${idPrefix}-texto">Comentário *</label>
+      <textarea id="${idPrefix}-texto" rows="3" required maxlength="2000"></textarea>
+    </div>
+    <label class="article-comments__save-check">
+      <input type="checkbox" id="${idPrefix}-salvar" ${saved ? "checked" : ""} />
+      Salvar meus dados neste navegador para a próxima vez que eu comentar.
+    </label>
+  `;
+}
+
+async function submitComment({ slug, parentId, idPrefix, container, onSuccess }) {
+  const nome = document.getElementById(`${idPrefix}-nome`).value.trim();
+  const email = document.getElementById(`${idPrefix}-email`).value.trim();
+  const site = document.getElementById(`${idPrefix}-site`).value.trim();
+  const texto = document.getElementById(`${idPrefix}-texto`).value.trim();
+  const salvar = document.getElementById(`${idPrefix}-salvar`).checked;
+
+  if (!nome || !email || !texto) return { ok: false, mensagem: "Preencha os campos obrigatórios." };
+
+  const body = { nome, email, texto };
+  if (site) body.site = site;
+  if (parentId) body.parent_id = parentId;
+
+  const result = await apiPost(`/api/posts/${encodeURIComponent(slug)}/comentarios`, body);
+
+  if (result.ok) {
+    if (salvar) saveAuthor(nome, email, site);
+    else clearSavedAuthor();
+  }
+
+  return result;
+}
+
+function renderCommentNode(comment, childrenByParent, slug, depth) {
+  const filhos = childrenByParent.get(comment.id) || [];
+  const siteLink = comment.site
+    ? `<a href="${escapeHtml(comment.site)}" target="_blank" rel="noopener noreferrer nofollow" class="comment-item__site">${escapeHtml(comment.nome)}</a>`
+    : escapeHtml(comment.nome);
+
+  return `
+    <div class="comment-item" data-comment-id="${comment.id}" style="margin-left: ${Math.min(depth, 4) * 28}px;">
+      <div class="comment-item__head">
+        <span class="comment-item__nome">${siteLink}</span>
+        <span class="comment-item__data">${formatDate(comment.criado_em)}</span>
+      </div>
+      <p class="comment-item__texto">${escapeHtml(comment.texto)}</p>
+      <button type="button" class="comment-item__reply-btn" data-reply-to="${comment.id}">Responder</button>
+      <div class="comment-item__reply-form" id="reply-form-${comment.id}" hidden></div>
+      ${filhos.map(f => renderCommentNode(f, childrenByParent, slug, depth + 1)).join("")}
+    </div>
+  `;
+}
+
 async function initComments(slug) {
   const listEl = document.getElementById("comments-list");
   const form = document.getElementById("comment-form");
@@ -262,44 +361,96 @@ async function initComments(slug) {
       return;
     }
 
-    listEl.innerHTML = comentarios.map(c => `
-      <div class="comment-item">
-        <div class="comment-item__head">
-          <span class="comment-item__nome">${escapeHtml(c.nome)}</span>
-          <span class="comment-item__data">${formatDate(c.criado_em)}</span>
-        </div>
-        <p class="comment-item__texto">${escapeHtml(c.texto)}</p>
-      </div>
-    `).join("");
+    const childrenByParent = new Map();
+    const raizes = [];
+    comentarios.forEach(c => {
+      if (c.parent_id) {
+        if (!childrenByParent.has(c.parent_id)) childrenByParent.set(c.parent_id, []);
+        childrenByParent.get(c.parent_id).push(c);
+      } else {
+        raizes.push(c);
+      }
+    });
+
+    listEl.innerHTML = raizes.map(c => renderCommentNode(c, childrenByParent, slug, 0)).join("");
+    listEl.querySelectorAll("[data-reply-to]").forEach(btn => {
+      btn.addEventListener("click", () => toggleReplyForm(btn.dataset.replyTo));
+    });
   }
 
-  function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
+  function toggleReplyForm(parentId) {
+    const box = document.getElementById(`reply-form-${parentId}`);
+    if (!box) return;
+
+    if (!box.hidden) { box.hidden = true; box.innerHTML = ""; return; }
+
+    // Fecha qualquer outro formulário de resposta aberto
+    listEl.querySelectorAll(".comment-item__reply-form").forEach(el => { el.hidden = true; el.innerHTML = ""; });
+
+    const idPrefix = `reply-${parentId}`;
+    const saved = loadSavedAuthor();
+    box.hidden = false;
+    box.innerHTML = `
+      <form class="article-comments__form article-comments__form--reply" data-parent-id="${parentId}">
+        ${commentFormFields(idPrefix, saved)}
+        <button type="submit" class="btn btn--solid">Responder</button>
+        <button type="button" class="btn btn--ghost" data-cancel-reply>Cancelar</button>
+        <p class="article-comments__feedback" hidden></p>
+      </form>
+    `;
+
+    const replyForm = box.querySelector("form");
+    box.querySelector("[data-cancel-reply]").addEventListener("click", () => { box.hidden = true; box.innerHTML = ""; });
+    replyForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = replyForm.querySelector('button[type="submit"]');
+      const replyFeedback = replyForm.querySelector(".article-comments__feedback");
+      if (submitBtn) submitBtn.disabled = true;
+
+      const result = await submitComment({ slug, parentId: Number(parentId), idPrefix });
+
+      replyFeedback.hidden = false;
+      replyFeedback.textContent = result.ok
+        ? "Resposta enviada! Ela aparecerá após moderação."
+        : "Não foi possível enviar sua resposta. Tente novamente.";
+      if (result.ok) replyForm.reset();
+      if (submitBtn) submitBtn.disabled = false;
+    });
   }
 
   await carregarComentarios();
 
+  // Pré-preenche o formulário principal com dados salvos, se houver
   if (form) {
+    const saved = loadSavedAuthor();
+    if (saved) {
+      const nomeEl = document.getElementById("c-nome");
+      const emailEl = document.getElementById("c-email");
+      const siteEl = document.getElementById("c-site");
+      const salvarEl = document.getElementById("c-salvar");
+      if (nomeEl) nomeEl.value = saved.nome || "";
+      if (emailEl) emailEl.value = saved.email || "";
+      if (siteEl) siteEl.value = saved.site || "";
+      if (salvarEl) salvarEl.checked = true;
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const nome = document.getElementById("c-nome").value.trim();
-      const texto = document.getElementById("c-texto").value.trim();
-      if (!nome || !texto) return;
-
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
 
-      const result = await apiPost(`/api/posts/${encodeURIComponent(slug)}/comentarios`, { nome, texto });
+      const result = await submitComment({ slug, parentId: null, idPrefix: "c" });
 
       if (feedbackEl) {
         feedbackEl.hidden = false;
         feedbackEl.textContent = result.ok
           ? "Comentário enviado! Ele aparecerá após moderação."
-          : "Não foi possível enviar seu comentário. Tente novamente.";
+          : (result.data && result.data.error) || "Não foi possível enviar seu comentário. Tente novamente.";
       }
-      if (result.ok) form.reset();
+      if (result.ok) {
+        const texto = document.getElementById("c-texto");
+        if (texto) texto.value = "";
+      }
       if (submitBtn) submitBtn.disabled = false;
     });
   }
