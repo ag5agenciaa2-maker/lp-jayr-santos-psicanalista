@@ -26,6 +26,16 @@ async function apiFetch(path, opts = {}) {
   return { ok: res.ok, status: res.status, data };
 }
 
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str == null ? "" : String(str);
+  return div.innerHTML;
+}
+
+function escapeAttr(str) {
+  return escapeHtml(str).replace(/"/g, "&quot;");
+}
+
 function slugify(str) {
   return str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
@@ -253,20 +263,28 @@ async function carregarComentarios() {
 
   const porId = new Map(comentarios.map(c => [c.id, c]));
 
-  container.innerHTML = comentarios.map(c => `
+  container.innerHTML = comentarios.map(c => {
+    const respostaNome = c.parent_id ? (porId.has(c.parent_id) ? porId.get(c.parent_id).nome : `#${c.parent_id}`) : "";
+    return `
     <div class="comment-row">
-      <div class="comment-row__meta">
-        <strong>${c.nome}</strong>${c.email ? ` (${c.email})` : ""} em "<em>${c.post_titulo}</em>" · ${formatDate(c.criado_em)} ·
-        <span class="badge badge--${c.status === 'aprovado' ? 'publicado' : 'rascunho'}">${c.status}</span>
-        ${c.parent_id ? `<span class="comment-row__reply-tag">↳ resposta a ${porId.has(c.parent_id) ? porId.get(c.parent_id).nome : `#${c.parent_id}`}</span>` : ""}
+      <div class="comment-row__top">
+        <span>em "<em>${escapeHtml(c.post_titulo)}</em>" · ${formatDate(c.criado_em)}</span>
+        <span class="badge badge--${c.status === 'aprovado' ? 'publicado' : 'rascunho'}">${escapeHtml(c.status)}</span>
+        ${c.parent_id ? `<span class="comment-row__reply-tag">↳ resposta a ${escapeHtml(respostaNome)}</span>` : ""}
       </div>
-      <p class="comment-row__texto">${c.texto}</p>
+      <div class="comment-row__contato">
+        <span class="comment-row__contato-item"><strong>Nome:</strong> ${escapeHtml(c.nome)}</span>
+        <span class="comment-row__contato-item"><strong>E-mail:</strong> ${c.email ? `<a href="mailto:${escapeAttr(c.email)}">${escapeHtml(c.email)}</a>` : "—"}</span>
+        <span class="comment-row__contato-item"><strong>Site:</strong> ${c.site ? `<a href="${escapeAttr(c.site)}" target="_blank" rel="noopener noreferrer">${escapeHtml(c.site)}</a>` : "—"}</span>
+      </div>
+      <p class="comment-row__texto">${escapeHtml(c.texto).replace(/\n/g, "<br>")}</p>
       <div class="comment-row__actions">
         ${c.status !== "aprovado" ? `<button class="btn" data-action="aprovar" data-id="${c.id}">Aprovar</button>` : ""}
         ${c.status !== "rejeitado" ? `<button class="btn btn--danger" data-action="rejeitar" data-id="${c.id}">Rejeitar</button>` : ""}
       </div>
     </div>
-  `).join("");
+  `;
+  }).join("");
 
   container.querySelectorAll('[data-action="aprovar"]').forEach(btn => {
     btn.addEventListener("click", () => moderarComentario(btn.dataset.id, "aprovado"));
