@@ -9,6 +9,8 @@ const OLD_SLUGS = new Set([
   "as-bets-e-a-dor-psiquica-uma-leitura-do-inconsciente-sobre-as-apostas-online",
   "quando-o-silencio-cansa-ansiedade-feminina-na-meia-idade",
   "quando-a-angustia-fala-a-escuta-psicanalitica-do-sofrimento",
+  "porque-repetimos-erros-que-nos-mesmos-reprovamos",
+  "alem-do-vicio-e-do-controle-redescobrindo-o-nos",
 ]);
 
 function formatDate(dateStr) {
