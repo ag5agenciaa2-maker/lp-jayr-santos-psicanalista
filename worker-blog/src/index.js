@@ -275,6 +275,13 @@ export default {
           await env.DB.prepare("UPDATE comentarios SET status = ? WHERE id = ?").bind(status, id).run();
           return json({ ok: true }, 200, request);
         }
+
+        if (matchComentarioAdmin && method === "DELETE") {
+          const id = matchComentarioAdmin[1];
+          // ON DELETE CASCADE na coluna parent_id remove junto as respostas deste comentário
+          await env.DB.prepare("DELETE FROM comentarios WHERE id = ?").bind(id).run();
+          return json({ ok: true }, 200, request);
+        }
       }
 
       return json({ error: "rota não encontrada" }, 404, request);

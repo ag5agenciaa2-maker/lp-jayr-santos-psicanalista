@@ -263,15 +263,28 @@ async function carregarComentarios() {
 
   const porId = new Map(comentarios.map(c => [c.id, c]));
 
+  function trechoCitado(texto, max) {
+    const limpo = String(texto || "").replace(/\s+/g, " ").trim();
+    return limpo.length > max ? `${limpo.slice(0, max)}…` : limpo;
+  }
+
   container.innerHTML = comentarios.map(c => {
-    const respostaNome = c.parent_id ? (porId.has(c.parent_id) ? porId.get(c.parent_id).nome : `#${c.parent_id}`) : "";
+    const pai = c.parent_id ? porId.get(c.parent_id) : null;
+    const replyQuoteHtml = c.parent_id
+      ? (pai
+          ? `<div class="comment-row__reply-quote">
+               <span class="comment-row__reply-quote-label">↳ em resposta a <strong>${escapeHtml(pai.nome)}</strong>:</span>
+               <p class="comment-row__reply-quote-texto">"${escapeHtml(trechoCitado(pai.texto, 160))}"</p>
+             </div>`
+          : `<div class="comment-row__reply-quote comment-row__reply-quote--orfao">↳ resposta a um comentário removido (#${c.parent_id})</div>`)
+      : "";
     return `
     <div class="comment-row">
       <div class="comment-row__top">
         <span>em "<em>${escapeHtml(c.post_titulo)}</em>" · ${formatDate(c.criado_em)}</span>
         <span class="badge badge--${c.status === 'aprovado' ? 'publicado' : 'rascunho'}">${escapeHtml(c.status)}</span>
-        ${c.parent_id ? `<span class="comment-row__reply-tag">↳ resposta a ${escapeHtml(respostaNome)}</span>` : ""}
       </div>
+      ${replyQuoteHtml}
       <div class="comment-row__contato">
         <span class="comment-row__contato-item"><strong>Nome:</strong> ${escapeHtml(c.nome)}</span>
         <span class="comment-row__contato-item"><strong>E-mail:</strong> ${c.email ? `<a href="mailto:${escapeAttr(c.email)}">${escapeHtml(c.email)}</a>` : "—"}</span>
@@ -281,6 +294,7 @@ async function carregarComentarios() {
       <div class="comment-row__actions">
         ${c.status !== "aprovado" ? `<button class="btn" data-action="aprovar" data-id="${c.id}">Aprovar</button>` : ""}
         ${c.status !== "rejeitado" ? `<button class="btn btn--danger" data-action="rejeitar" data-id="${c.id}">Rejeitar</button>` : ""}
+        <button class="btn btn--danger" data-action="excluir" data-id="${c.id}">Excluir</button>
       </div>
     </div>
   `;
@@ -292,6 +306,9 @@ async function carregarComentarios() {
   container.querySelectorAll('[data-action="rejeitar"]').forEach(btn => {
     btn.addEventListener("click", () => moderarComentario(btn.dataset.id, "rejeitado"));
   });
+  container.querySelectorAll('[data-action="excluir"]').forEach(btn => {
+    btn.addEventListener("click", () => excluirComentario(btn.dataset.id));
+  });
 }
 
 async function moderarComentario(id, status) {
@@ -300,6 +317,12 @@ async function moderarComentario(id, status) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
   }).catch(() => null);
+  if (res && res.ok) carregarComentarios();
+}
+
+async function excluirComentario(id) {
+  if (!confirm("Excluir este comentário definitivamente? Se houver respostas a ele, também serão excluídas.")) return;
+  const res = await apiFetch(`/api/admin/comentarios/${id}`, { method: "DELETE" }).catch(() => null);
   if (res && res.ok) carregarComentarios();
 }
 
