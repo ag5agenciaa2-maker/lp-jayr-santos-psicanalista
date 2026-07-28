@@ -37,6 +37,8 @@ function pageShell({ headContent, headerContent, mainContent }) {
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/responsive-fixes.css" />
   <link rel="stylesheet" href="/blog/blog.css" />
+  <!-- Critical CSS: evita FOUC do banner de cookies antes do CSS assincrono carregar -->
+  <style>#ck-banner{transform:translateY(140%) !important;}#ck-banner.ck-banner--visible{transform:translateY(0) !important;}</style>
   <link rel="preload" href="/cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link rel="stylesheet" href="/cookie-banner.css" /></noscript>
 </head>
