@@ -15,6 +15,7 @@ const OLD_SLUGS = new Set([
   "os-transtornos-alimentares-sob-o-olhar-da-psicanalise",
   "o-panico-sob-o-olhar-da-psicanalise",
   "o-amor-depois-da-tempestade-quando-a-crise-fortalece-o-casamento",
+  "a-escolha-de-andar-a-dois",
 ]);
 
 function formatDate(dateStr) {
