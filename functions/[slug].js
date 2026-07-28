@@ -19,6 +19,7 @@ const OLD_SLUGS = new Set([
   "o-desafio-de-olhar-com-o-olhar-do-outro",
   "endividamento-financeiro-quando-as-dividas-pesam-mais-do-que-o-bolso",
   "quando-o-amor-machuca-de-novo-uma-leitura-psicanalitica-da-repeticao-deescolhas-amorosas",
+  "o-que-o-cada-um-traz-para-dentro-do-casamento-uma-reflexao-a-partir-da-psicanalise-vincular",
 ]);
 
 function formatDate(dateStr) {
