@@ -322,13 +322,15 @@ export default {
         if (matchAdminPost && method === "PUT") {
           const id = matchAdminPost[1];
           const body = await request.json();
-          const existente = await env.DB.prepare("SELECT status FROM posts WHERE id = ?").bind(id).first();
+          const existente = await env.DB.prepare("SELECT status, publicado_em FROM posts WHERE id = ?").bind(id).first();
           if (!existente) return json({ error: "não encontrado" }, 404, request);
 
           const novoStatus = body.status === "publicado" ? "publicado" : "rascunho";
-          const publicadoEm = novoStatus === "publicado" && existente.status !== "publicado"
-            ? new Date().toISOString()
-            : body.publicado_em || null;
+          // O admin não reenvia publicado_em no payload — se já estava publicado,
+          // preserva a data original em vez de apagar (bug histórico corrigido).
+          const publicadoEm = novoStatus === "publicado"
+            ? (existente.status === "publicado" ? existente.publicado_em : new Date().toISOString())
+            : null;
 
           await env.DB.prepare(
             `UPDATE posts SET titulo=?, descricao=?, capa_url=?, autor=?, tag=?, tags=?, categorias_extra=?, corpo_md=?, status=?, publicado_em=?, atualizado_em=datetime('now')

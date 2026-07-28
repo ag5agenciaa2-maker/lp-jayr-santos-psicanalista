@@ -209,13 +209,11 @@ function renderBlogCard(post) {
         </a>
       </div>
       <div class="blog-card__content">
-        <div class="blog-card__meta">
-          <span class="blog-card__tag">${post.tag || "Psicanálise"}</span>
-          <time>${formatDate(post.publicado_em)}</time>
-        </div>
+        <time class="blog-card__date">${formatDate(post.publicado_em)}</time>
         <h2 class="blog-card__title">
           <a href="${href}">${post.titulo}</a>
         </h2>
+        <span class="blog-card__tag">${post.tag || "Psicanálise"}</span>
         <p class="blog-card__excerpt">${post.descricao || ""}</p>
         <div class="blog-card__footer">
           <a href="${href}" class="blog-card__link">Ler artigo completo <span>→</span></a>
