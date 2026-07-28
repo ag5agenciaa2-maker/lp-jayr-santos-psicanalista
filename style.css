@@ -1699,7 +1699,7 @@ a { color: inherit; }
 .sobre { padding: var(--pad-y) var(--pad-x); }
 .sobre__grid { display: grid; grid-template-columns: .85fr 1fr; gap: clamp(36px, 5vw, 80px); align-items: center; }
 .sobre__photo { position: relative; }
-.sobre__cta-link { display: inline-flex; margin-top: 24px; position: relative; z-index: 1; }
+.sobre__cta-link-text { display: inline-flex; margin-top: 8px; }
 .sobre__plate {
   position: absolute;
   inset: 16px -16px -16px 16px;
