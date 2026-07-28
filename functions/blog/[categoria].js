@@ -696,6 +696,7 @@ const OLD_SLUGS = new Set([
   "o-que-o-cada-um-traz-para-dentro-do-casamento-uma-reflexao-a-partir-da-psicanalise-vincular",
   "quando-a-fe-se-torna-intolerancia-um-olhar-psicanalitico",
   "entre-o-inconsciente-e-o-sagrado-dialogos-possiveis-entre-psicanalise-e-religiao",
+  "na-sombra-do-lider-a-lideranca-centralizadora-e-seus-efeitos-no-inconsciente-organizacional",
 ]);
 
 function urlDoPost(slug) {
