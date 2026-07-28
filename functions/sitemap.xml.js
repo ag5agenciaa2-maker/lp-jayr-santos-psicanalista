@@ -37,6 +37,15 @@ function xmlEscape(str) {
     .replace(/>/g, "&gt;");
 }
 
+function slugifyMarcacao(str) {
+  return String(str || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function toDateOnly(isoStr, fallback) {
   if (!isoStr) return fallback;
   const d = new Date(isoStr);
@@ -63,6 +72,31 @@ export async function onRequestGet(context) {
       changefreq: "weekly",
       priority: "0.6",
       lastmod: toDateOnly(c.ultima_publicacao, hoje),
+    });
+  });
+
+  // Marcações (#hashtag): mesma lógica de categoria, mas o valor não vive
+  // numa tabela própria — é texto livre em posts.tags, separado por vírgula.
+  // Só entra no sitemap se pelo menos 1 post publicado usar aquela marcação.
+  const { results: postsComTags } = await env.DB.prepare(
+    "SELECT tags, publicado_em FROM posts WHERE status = 'publicado' AND tags IS NOT NULL AND tags != ''"
+  ).all();
+
+  const marcacoesMap = new Map();
+  postsComTags.forEach(p => {
+    (p.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => {
+      const slug = slugifyMarcacao(t);
+      const atual = marcacoesMap.get(slug);
+      if (!atual || p.publicado_em > atual) marcacoesMap.set(slug, p.publicado_em);
+    });
+  });
+
+  marcacoesMap.forEach((ultimaPublicacao, slug) => {
+    urls.push({
+      loc: `/blog/tag/${slug}`,
+      changefreq: "weekly",
+      priority: "0.5",
+      lastmod: toDateOnly(ultimaPublicacao, hoje),
     });
   });
 
