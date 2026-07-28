@@ -205,11 +205,12 @@
 
     /* ---------- Editor ---------- */
     .editor-box { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(27,58,92,0.06); }
-    .editor-grid { display: grid; gap: 18px; }
+    .editor-grid { display: grid; gap: 18px; grid-auto-rows: min-content; }
+    .editor-grid .field { align-self: start; }
     .editor-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
     .editor-actions__saved { font-size: 0.82rem; color: var(--salvia); }
 
-    #editor-quill { background: #fff; border-radius: 0 0 8px 8px; }
+    #editor-quill { background: #fff; border-radius: 0 0 8px 8px; display: flex; flex-direction: column; }
     #editor-quill .ql-editor { min-height: 340px; font-size: 1rem; line-height: 1.7; font-family: 'Inter', sans-serif; }
     .ql-toolbar.ql-snow { border-radius: 8px 8px 0 0; border-color: #D8D2C4 !important; background: var(--offwhite); }
     .ql-container.ql-snow { border-color: #D8D2C4 !important; border-radius: 0 0 8px 8px; }
