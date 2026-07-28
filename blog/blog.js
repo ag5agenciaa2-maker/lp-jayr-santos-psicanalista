@@ -22,6 +22,7 @@ const OLD_SLUGS = new Set([
   "o-panico-sob-o-olhar-da-psicanalise",
   "o-amor-depois-da-tempestade-quando-a-crise-fortalece-o-casamento",
   "a-escolha-de-andar-a-dois",
+  "o-desafio-de-olhar-com-o-olhar-do-outro",
 ]);
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
