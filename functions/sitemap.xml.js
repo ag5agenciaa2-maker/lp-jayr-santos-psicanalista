@@ -28,6 +28,7 @@ const OLD_SLUGS = new Set([
   "o-amor-depois-da-tempestade-quando-a-crise-fortalece-o-casamento",
   "a-escolha-de-andar-a-dois",
   "o-desafio-de-olhar-com-o-olhar-do-outro",
+  "endividamento-financeiro-quando-as-dividas-pesam-mais-do-que-o-bolso",
 ]);
 
 function xmlEscape(str) {
