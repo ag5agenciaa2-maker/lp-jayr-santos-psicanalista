@@ -45,6 +45,7 @@
   <!-- CSS principal -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="responsive-fixes.css" />
+  <link rel="stylesheet" href="/blog/blog.css" />
 
   <!-- CSS não crítico (cookie banner): Async-load -->
   <link rel="preload" href="cookie-banner.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -747,6 +748,26 @@
   <!-- ===== SEPARADOR ===== -->
   <div class="section-divider" aria-hidden="true"></div>
 
+  <!-- ===== BLOG (artigos recentes) ===== -->
+  <section class="home-blog" id="blog">
+    <div class="wrap">
+      <div class="home-blog__head reveal">
+        <p class="eyebrow eyebrow--salvia eyebrow--center">reflexões e artigos</p>
+        <h2 class="section-title section-title--center">Escrita que também <em>cuida</em>.</h2>
+        <p class="home-blog__lead">Textos sobre psicanálise, relacionamentos e saúde emocional, escritos para ajudar você a compreender melhor sua própria história.</p>
+      </div>
+      <div class="home-blog__grid reveal" data-delay="1" id="home-blog-grid">
+        <p class="blog-loading">Carregando artigos...</p>
+      </div>
+      <div class="home-blog__footer reveal" data-delay="2">
+        <a href="/blog" class="btn btn--solid btn--lg">Conhecer todos os artigos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEPARADOR ===== -->
+  <div class="section-divider" aria-hidden="true"></div>
+
   <section class="local" id="localizacao">
     <div class="wrap">
       <div class="local__header reveal">
@@ -1118,6 +1139,7 @@
 
   <script src="cookie-banner.js" defer></script>
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js" defer></script>
+  <script src="/blog/blog.js" defer></script>
   <script src="https://control-blog.ag5agencia.site/r.js" data-c="jayr-santos-psicanalista" defer></script>
 </body>
 </html>

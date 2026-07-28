@@ -157,6 +157,21 @@ async function renderBlogList() {
   await carregar();
 }
 
+// ---- index.html: seção "Blog" na home — 3 artigos mais recentes ----
+async function renderHomeBlog() {
+  const container = document.getElementById("home-blog-grid");
+  if (!container) return;
+
+  const data = await apiGet("/api/posts?ordenar=recentes");
+
+  if (!data || !data.posts || !data.posts.length) {
+    container.closest(".home-blog")?.remove();
+    return;
+  }
+
+  container.innerHTML = data.posts.slice(0, 3).map(renderBlogCard).join("");
+}
+
 // ---- blog/index.html: grid "Explore por tema" — categorias vêm do banco (admin cria dinamicamente) ----
 async function renderBlogCategorias() {
   const container = document.getElementById("blog-categories-container");
@@ -555,4 +570,5 @@ document.addEventListener("DOMContentLoaded", () => {
   renderBlogCategorias();
   renderCategoryList();
   renderSingleArticle();
+  renderHomeBlog();
 });
