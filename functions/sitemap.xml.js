@@ -7,6 +7,7 @@ const SITE = "http://www.jayrsantospsicanalista.ag5agencia.site";
 
 const PAGINAS_FIXAS = [
   { loc: "/", changefreq: "monthly", priority: "1.0" },
+  { loc: "/sobre-mim", changefreq: "monthly", priority: "0.6" },
   { loc: "/blog", changefreq: "weekly", priority: "0.7" },
   { loc: "/termos-e-condicoes", changefreq: "yearly", priority: "0.3" },
   { loc: "/politica-de-privacidade", changefreq: "yearly", priority: "0.3" },
