@@ -20,6 +20,7 @@ const OLD_SLUGS = new Set([
   "transtorno-disformico-corporal-sob-o-olhar-da-psicanalise",
   "os-transtornos-alimentares-sob-o-olhar-da-psicanalise",
   "o-panico-sob-o-olhar-da-psicanalise",
+  "o-amor-depois-da-tempestade-quando-a-crise-fortalece-o-casamento",
 ]);
 
 // Posts novos (publicados pelo painel a partir de agora) ganham URL limpa
