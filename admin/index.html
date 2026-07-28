@@ -73,6 +73,10 @@
     }
     .field textarea { min-height: 200px; resize: vertical; font-family: monospace; font-size: 0.9rem; }
     .field-hint { font-size: 0.78rem; color: var(--salvia); margin-top: 5px; }
+    .categorias-extra-list { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 10px 0; }
+    .categorias-extra-list label { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 400; color: var(--noturno); cursor: pointer; }
+    .categorias-extra-list input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
+    .categorias-extra-list .categorias-extra-empty { font-size: 0.82rem; color: var(--salvia); }
     .field-hint span[id$="-count"] { display: inline-block; margin-left: 4px; font-weight: 600; }
     .field-hint span[id$="-count"].is-warning { color: #d98b3f; }
     .field-hint span[id$="-count"].is-over { color: var(--perigo); }
@@ -410,6 +414,14 @@
                 <label for="nova-categoria-nome">Nome da nova categoria</label>
                 <input type="text" id="nova-categoria-nome" maxlength="80" placeholder="Ex.: Luto e Perdas" />
                 <p class="field-hint">Aparece automaticamente em "Explore por tema" na página inicial do blog.</p>
+              </div>
+
+              <div class="field">
+                <label>Categorias adicionais (opcional)</label>
+                <div id="post-categorias-extra" class="categorias-extra-list"></div>
+                <p class="field-hint">
+                  Marque outras categorias em que esse artigo também deve aparecer, além da categoria principal escolhida acima.
+                </p>
               </div>
 
               <div class="field">

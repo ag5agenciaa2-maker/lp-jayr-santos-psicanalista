@@ -143,7 +143,35 @@ async function carregarCategorias() {
   const res = await apiFetch("/api/admin/categorias").catch(() => null);
   todasCategorias = (res && res.ok && res.data.categorias) || [];
   popularSelectCategorias();
+  renderizarCategoriasExtra();
   renderizarCategoriasAdmin();
+}
+
+// Checkboxes de categorias adicionais — todas exceto a principal já selecionada.
+function renderizarCategoriasExtra(selecionadas) {
+  const container = document.getElementById("post-categorias-extra");
+  if (!container) return;
+  const principal = document.getElementById("post-tag").value;
+  const jaSelecionadas = selecionadas || [];
+  const opcoes = todasCategorias.filter(c => c.nome !== principal);
+
+  if (!opcoes.length) {
+    container.innerHTML = '<span class="categorias-extra-empty">Crie mais categorias para poder marcar aqui.</span>';
+    return;
+  }
+
+  container.innerHTML = opcoes.map(c => `
+    <label>
+      <input type="checkbox" value="${escapeAttr(c.nome)}" ${jaSelecionadas.includes(c.nome) ? "checked" : ""} />
+      ${escapeHtml(c.nome)}
+    </label>
+  `).join("");
+}
+
+function categoriasExtraSelecionadas() {
+  const container = document.getElementById("post-categorias-extra");
+  if (!container) return [];
+  return [...container.querySelectorAll('input[type="checkbox"]:checked')].map(cb => cb.value);
 }
 
 function popularSelectCategorias(selecionar) {
@@ -178,6 +206,8 @@ document.getElementById("post-tag").addEventListener("change", (e) => {
     campoNova.hidden = true;
     inputNova.value = "";
   }
+  const selecionadasAntes = categoriasExtraSelecionadas();
+  renderizarCategoriasExtra(selecionadasAntes.filter(c => c !== e.target.value));
 });
 
 // Contador de caracteres do resumo/meta description — ideal 120-160, o Google
@@ -471,6 +501,8 @@ function editarPost(id) {
   document.getElementById("post-descricao").value = post.descricao || "";
   atualizarContadorDescricao();
   selecionarCategoriaNoForm(post.tag);
+  const extras = (post.categorias_extra || "").split(",").map(s => s.trim()).filter(Boolean);
+  renderizarCategoriasExtra(extras);
   document.getElementById("post-tags").value = post.tags || "";
   document.getElementById("post-capa-url").value = post.capa_url || "";
 
@@ -503,6 +535,7 @@ function resetPostForm() {
   document.getElementById("post-tags").value = "";
   document.getElementById("post-capa-url").value = "";
   popularSelectCategorias();
+  renderizarCategoriasExtra();
   document.getElementById("nova-categoria-field").hidden = true;
   document.getElementById("nova-categoria-nome").value = "";
   document.getElementById("image-preview").style.display = "none";
@@ -572,12 +605,15 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
     return;
   }
 
+  const categoriasExtra = categoriasExtraSelecionadas().join(",");
+
   const payload = {
     titulo,
     slug: slugInput || slugify(titulo),
     descricao,
     tag,
     tags,
+    categorias_extra: categoriasExtra,
     capa_url: capaUrl,
     corpo_md: corpoMd,
     status,

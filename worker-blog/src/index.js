@@ -140,7 +140,12 @@ export default {
 
         const filtros = [];
         const params = [];
-        if (tag) { filtros.push("p.tag = ?"); params.push(tag); }
+        if (tag) {
+          // categoria principal (p.tag) OU listada em categorias_extra (texto livre,
+          // separado por vírgula, mesmo padrão de tags) — post aparece nas duas páginas
+          filtros.push("(p.tag = ? OR (',' || COALESCE(p.categorias_extra, '') || ',') LIKE ?)");
+          params.push(tag, `%,${tag},%`);
+        }
         if (marcacao) {
           // tags fica salvo como "Ansiedade,Autoimagem" — casa qualquer posição na lista
           filtros.push("(',' || p.tags || ',') LIKE ?");
@@ -148,7 +153,7 @@ export default {
         }
 
         const baseSql = `
-          SELECT p.id, p.slug, p.titulo, p.descricao, p.capa_url, p.autor, p.tag, p.tags, p.publicado_em,
+          SELECT p.id, p.slug, p.titulo, p.descricao, p.capa_url, p.autor, p.tag, p.tags, p.categorias_extra, p.publicado_em,
                  (SELECT COUNT(*) FROM comentarios c WHERE c.post_id = p.id AND c.status = 'aprovado') AS total_comentarios
           FROM posts p
           WHERE p.status = 'publicado' ${filtros.length ? "AND " + filtros.join(" AND ") : ""}
@@ -300,12 +305,13 @@ export default {
           const publicadoEm = status === "publicado" ? new Date().toISOString() : null;
 
           const r = await env.DB.prepare(
-            `INSERT INTO posts (slug, titulo, descricao, capa_url, autor, tag, tags, corpo_md, status, publicado_em)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            `INSERT INTO posts (slug, titulo, descricao, capa_url, autor, tag, tags, categorias_extra, corpo_md, status, publicado_em)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
           ).bind(
             slug, body.titulo, body.descricao || "", body.capa_url || "",
             body.autor || "Jayr Santos", body.tag || "Saúde Mental e Emoções",
             (body.tags || "").trim() || null,
+            (body.categorias_extra || "").trim() || null,
             body.corpo_md || "", status, publicadoEm
           ).run();
 
@@ -325,12 +331,13 @@ export default {
             : body.publicado_em || null;
 
           await env.DB.prepare(
-            `UPDATE posts SET titulo=?, descricao=?, capa_url=?, autor=?, tag=?, tags=?, corpo_md=?, status=?, publicado_em=?, atualizado_em=datetime('now')
+            `UPDATE posts SET titulo=?, descricao=?, capa_url=?, autor=?, tag=?, tags=?, categorias_extra=?, corpo_md=?, status=?, publicado_em=?, atualizado_em=datetime('now')
              WHERE id=?`
           ).bind(
             body.titulo, body.descricao || "", body.capa_url || "",
             body.autor || "Jayr Santos", body.tag || "Saúde Mental e Emoções",
             (body.tags || "").trim() || null,
+            (body.categorias_extra || "").trim() || null,
             body.corpo_md || "", novoStatus, publicadoEm, id
           ).run();
 
