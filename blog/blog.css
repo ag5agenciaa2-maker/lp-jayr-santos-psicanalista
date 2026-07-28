@@ -701,14 +701,28 @@ a.article-topics__badge:hover {
 .article-hashtags {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   margin-top: 12px;
+}
+
+.article-hashtags__label {
+  font-size: 0.82rem;
+  color: var(--noturno);
+  font-weight: 600;
 }
 
 .article-hashtags__item {
   font-size: 0.82rem;
   color: var(--salvia);
   font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+
+a.article-hashtags__item:hover {
+  color: var(--azul);
+  text-decoration: underline;
 }
 
 /* ---------- Compartilhar (artigo) ---------- */

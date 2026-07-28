@@ -147,13 +147,23 @@ function urlDoPost(slug) {
   return OLD_SLUGS.has(slug) ? `/${slug}/` : `/blog/${slug}`;
 }
 
+function slugifyMarcacao(str) {
+  return String(str || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function hashtagsHtml(tagsRaw) {
   if (!tagsRaw) return "";
   const tags = tagsRaw.split(",").map(t => t.trim()).filter(Boolean);
   if (!tags.length) return "";
   return `
   <div class="article-hashtags">
-    ${tags.map(t => `<span class="article-hashtags__item">#${escapeHtml(t)}</span>`).join("")}
+    <span class="article-hashtags__label">Marcações:</span>
+    ${tags.map(t => `<a href="/blog/tag/${slugifyMarcacao(t)}" class="article-hashtags__item">#${escapeHtml(t)}</a>`).join("")}
   </div>`;
 }
 

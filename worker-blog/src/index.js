@@ -130,6 +130,7 @@ export default {
       // ---- POSTS PÚBLICOS ----
       if (path === "/api/posts" && method === "GET") {
         const tag = url.searchParams.get("tag");
+        const marcacao = url.searchParams.get("marcacao");
         const ordenar = url.searchParams.get("ordenar");
         const orderBy = ordenar === "comentados"
           ? "total_comentarios DESC, p.publicado_em DESC"
@@ -137,14 +138,23 @@ export default {
             ? "p.publicado_em ASC"
             : "p.publicado_em DESC";
 
+        const filtros = [];
+        const params = [];
+        if (tag) { filtros.push("p.tag = ?"); params.push(tag); }
+        if (marcacao) {
+          // tags fica salvo como "Ansiedade,Autoimagem" — casa qualquer posição na lista
+          filtros.push("(',' || p.tags || ',') LIKE ?");
+          params.push(`%,${marcacao},%`);
+        }
+
         const baseSql = `
           SELECT p.id, p.slug, p.titulo, p.descricao, p.capa_url, p.autor, p.tag, p.tags, p.publicado_em,
                  (SELECT COUNT(*) FROM comentarios c WHERE c.post_id = p.id AND c.status = 'aprovado') AS total_comentarios
           FROM posts p
-          WHERE p.status = 'publicado' ${tag ? "AND p.tag = ?" : ""}
+          WHERE p.status = 'publicado' ${filtros.length ? "AND " + filtros.join(" AND ") : ""}
           ORDER BY ${orderBy}
         `;
-        const stmt = tag ? env.DB.prepare(baseSql).bind(tag) : env.DB.prepare(baseSql);
+        const stmt = params.length ? env.DB.prepare(baseSql).bind(...params) : env.DB.prepare(baseSql);
         const { results } = await stmt.all();
         return json({ posts: results }, 200, request);
       }

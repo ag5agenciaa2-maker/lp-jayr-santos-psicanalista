@@ -212,15 +212,19 @@ async function renderCategoryList() {
   if (!container) return;
 
   const tag = container.dataset.tag;
+  const marcacao = container.dataset.marcacao;
   const sortSelect = document.getElementById("blog-sort-select");
 
   async function carregar() {
     const ordenar = sortSelect ? sortSelect.value : "recentes";
     container.innerHTML = '<p class="blog-loading">Carregando artigos...</p>';
-    const data = await apiGet(`/api/posts?tag=${encodeURIComponent(tag)}&ordenar=${encodeURIComponent(ordenar)}`);
+    const filtro = marcacao
+      ? `marcacao=${encodeURIComponent(marcacao)}`
+      : `tag=${encodeURIComponent(tag)}`;
+    const data = await apiGet(`/api/posts?${filtro}&ordenar=${encodeURIComponent(ordenar)}`);
 
     if (!data || !data.posts || !data.posts.length) {
-      container.innerHTML = '<p class="blog-empty">Ainda não há artigos publicados nesta categoria. Volte em breve.</p>';
+      container.innerHTML = '<p class="blog-empty">Ainda não há artigos publicados com essa marcação. Volte em breve.</p>';
       return;
     }
 
