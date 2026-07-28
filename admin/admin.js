@@ -444,23 +444,40 @@ function popularFiltroTags() {
   select.value = atual;
 }
 
+const POSTS_POR_PAGINA = 10;
+let postsPaginaAtual = 1;
+
+function dataParaOrdenar(p) {
+  return p.publicado_em || p.criado_em || "";
+}
+
 function renderizarPosts() {
   const container = document.getElementById("posts-list");
   const busca = document.getElementById("posts-search").value.trim().toLowerCase();
   const filtroStatus = document.getElementById("posts-filter-status").value;
   const filtroTag = document.getElementById("posts-filter-tag").value;
+  const ordenar = document.getElementById("posts-sort").value;
 
   const filtrados = todosPosts.filter(p => {
     if (busca && !p.titulo.toLowerCase().includes(busca)) return false;
     if (filtroStatus && p.status !== filtroStatus) return false;
     if (filtroTag && p.tag !== filtroTag) return false;
     return true;
+  }).sort((a, b) => {
+    const diff = new Date(dataParaOrdenar(a)) - new Date(dataParaOrdenar(b));
+    return ordenar === "antigos" ? diff : -diff;
   });
 
-  if (!todosPosts.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo ainda. Crie o primeiro na aba \"Novo Artigo\".</p>"; return; }
-  if (!filtrados.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo encontrado com esses filtros.</p>"; return; }
+  if (!todosPosts.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo ainda. Crie o primeiro na aba \"Novo Artigo\".</p>"; document.getElementById("posts-pagination").hidden = true; return; }
+  if (!filtrados.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum artigo encontrado com esses filtros.</p>"; document.getElementById("posts-pagination").hidden = true; return; }
 
-  container.innerHTML = filtrados.map(p => `
+  const totalPaginas = Math.ceil(filtrados.length / POSTS_POR_PAGINA);
+  if (postsPaginaAtual > totalPaginas) postsPaginaAtual = totalPaginas;
+  if (postsPaginaAtual < 1) postsPaginaAtual = 1;
+  const inicio = (postsPaginaAtual - 1) * POSTS_POR_PAGINA;
+  const pagina = filtrados.slice(inicio, inicio + POSTS_POR_PAGINA);
+
+  container.innerHTML = pagina.map(p => `
     <div class="post-row">
       <div class="post-row__info">
         <strong>${escapeHtml(p.titulo)}</strong>
@@ -483,11 +500,24 @@ function renderizarPosts() {
   container.querySelectorAll('[data-action="remover"]').forEach(btn => {
     btn.addEventListener("click", () => removerPost(btn.dataset.id));
   });
+
+  const paginacao = document.getElementById("posts-pagination");
+  if (totalPaginas <= 1) {
+    paginacao.hidden = true;
+  } else {
+    paginacao.hidden = false;
+    document.getElementById("posts-page-info").textContent = `Página ${postsPaginaAtual} de ${totalPaginas}`;
+    document.getElementById("posts-prev").disabled = postsPaginaAtual <= 1;
+    document.getElementById("posts-next").disabled = postsPaginaAtual >= totalPaginas;
+  }
 }
 
-document.getElementById("posts-search").addEventListener("input", renderizarPosts);
-document.getElementById("posts-filter-status").addEventListener("change", renderizarPosts);
-document.getElementById("posts-filter-tag").addEventListener("change", renderizarPosts);
+document.getElementById("posts-search").addEventListener("input", () => { postsPaginaAtual = 1; renderizarPosts(); });
+document.getElementById("posts-filter-status").addEventListener("change", () => { postsPaginaAtual = 1; renderizarPosts(); });
+document.getElementById("posts-sort").addEventListener("change", () => { postsPaginaAtual = 1; renderizarPosts(); });
+document.getElementById("posts-prev").addEventListener("click", () => { postsPaginaAtual--; renderizarPosts(); });
+document.getElementById("posts-next").addEventListener("click", () => { postsPaginaAtual++; renderizarPosts(); });
+document.getElementById("posts-filter-tag").addEventListener("change", () => { postsPaginaAtual = 1; renderizarPosts(); });
 
 function editarPost(id) {
   const post = todosPosts.find(p => String(p.id) === String(id));
@@ -655,12 +685,16 @@ function trechoCitado(texto, max) {
   return limpo.length > max ? `${limpo.slice(0, max)}…` : limpo;
 }
 
+const COMENTARIOS_POR_PAGINA = 10;
+let comentariosPaginaAtual = 1;
+
 function renderizarComentarios() {
   const container = document.getElementById("comments-admin-list");
   const busca = document.getElementById("comments-search").value.trim().toLowerCase();
   const filtroStatus = document.getElementById("comments-filter-status").value;
+  const ordenar = document.getElementById("comments-sort").value;
 
-  if (!todosComentarios.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário ainda.</p>"; return; }
+  if (!todosComentarios.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário ainda.</p>"; document.getElementById("comments-pagination").hidden = true; return; }
 
   const porId = new Map(todosComentarios.map(c => [c.id, c]));
 
@@ -671,11 +705,20 @@ function renderizarComentarios() {
       if (!alvo.includes(busca)) return false;
     }
     return true;
+  }).sort((a, b) => {
+    const diff = new Date(a.criado_em) - new Date(b.criado_em);
+    return ordenar === "antigos" ? diff : -diff;
   });
 
-  if (!filtrados.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário encontrado com esses filtros.</p>"; return; }
+  if (!filtrados.length) { container.innerHTML = "<p class=\"empty-state\">Nenhum comentário encontrado com esses filtros.</p>"; document.getElementById("comments-pagination").hidden = true; return; }
 
-  container.innerHTML = filtrados.map(c => {
+  const totalPaginas = Math.ceil(filtrados.length / COMENTARIOS_POR_PAGINA);
+  if (comentariosPaginaAtual > totalPaginas) comentariosPaginaAtual = totalPaginas;
+  if (comentariosPaginaAtual < 1) comentariosPaginaAtual = 1;
+  const inicio = (comentariosPaginaAtual - 1) * COMENTARIOS_POR_PAGINA;
+  const pagina = filtrados.slice(inicio, inicio + COMENTARIOS_POR_PAGINA);
+
+  container.innerHTML = pagina.map(c => {
     const pai = c.parent_id ? porId.get(c.parent_id) : null;
     const replyQuoteHtml = c.parent_id
       ? (pai
@@ -716,10 +759,23 @@ function renderizarComentarios() {
   container.querySelectorAll('[data-action="excluir"]').forEach(btn => {
     btn.addEventListener("click", () => excluirComentario(btn.dataset.id));
   });
+
+  const paginacao = document.getElementById("comments-pagination");
+  if (totalPaginas <= 1) {
+    paginacao.hidden = true;
+  } else {
+    paginacao.hidden = false;
+    document.getElementById("comments-page-info").textContent = `Página ${comentariosPaginaAtual} de ${totalPaginas}`;
+    document.getElementById("comments-prev").disabled = comentariosPaginaAtual <= 1;
+    document.getElementById("comments-next").disabled = comentariosPaginaAtual >= totalPaginas;
+  }
 }
 
-document.getElementById("comments-search").addEventListener("input", renderizarComentarios);
-document.getElementById("comments-filter-status").addEventListener("change", renderizarComentarios);
+document.getElementById("comments-search").addEventListener("input", () => { comentariosPaginaAtual = 1; renderizarComentarios(); });
+document.getElementById("comments-filter-status").addEventListener("change", () => { comentariosPaginaAtual = 1; renderizarComentarios(); });
+document.getElementById("comments-sort").addEventListener("change", () => { comentariosPaginaAtual = 1; renderizarComentarios(); });
+document.getElementById("comments-prev").addEventListener("click", () => { comentariosPaginaAtual--; renderizarComentarios(); });
+document.getElementById("comments-next").addEventListener("click", () => { comentariosPaginaAtual++; renderizarComentarios(); });
 
 async function moderarComentario(id, status) {
   const res = await apiFetch(`/api/admin/comentarios/${id}`, {

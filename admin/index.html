@@ -184,6 +184,15 @@
       font-size: 0.88rem; background: #fff; color: var(--grafite); cursor: pointer;
     }
 
+    /* ---------- Paginação ---------- */
+    .pagination {
+      display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px;
+    }
+    .pagination #comments-page-info, .pagination #posts-page-info {
+      font-size: 0.85rem; color: var(--salvia); font-weight: 500;
+    }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
     /* ---------- Listas ---------- */
     .post-list { display: grid; gap: 12px; }
     .post-row {
@@ -377,8 +386,17 @@
             <select id="posts-filter-tag">
               <option value="">Todas as categorias</option>
             </select>
+            <select id="posts-sort">
+              <option value="recentes">Mais recentes</option>
+              <option value="antigos">Mais antigos</option>
+            </select>
           </div>
           <div id="posts-list" class="post-list"><p class="empty-state">Carregando…</p></div>
+          <div class="pagination" id="posts-pagination" hidden>
+            <button type="button" class="btn btn--ghost btn--sm" id="posts-prev">← Anterior</button>
+            <span id="posts-page-info"></span>
+            <button type="button" class="btn btn--ghost btn--sm" id="posts-next">Próxima →</button>
+          </div>
         </div>
 
         <!-- Aba: novo/editar post -->
@@ -483,8 +501,17 @@
               <option value="aprovado">Aprovados</option>
               <option value="rejeitado">Rejeitados</option>
             </select>
+            <select id="comments-sort">
+              <option value="recentes">Mais recentes</option>
+              <option value="antigos">Mais antigos</option>
+            </select>
           </div>
           <div id="comments-admin-list"><p class="empty-state">Carregando…</p></div>
+          <div class="pagination" id="comments-pagination" hidden>
+            <button type="button" class="btn btn--ghost btn--sm" id="comments-prev">← Anterior</button>
+            <span id="comments-page-info"></span>
+            <button type="button" class="btn btn--ghost btn--sm" id="comments-next">Próxima →</button>
+          </div>
         </div>
 
         <!-- Aba: categorias -->

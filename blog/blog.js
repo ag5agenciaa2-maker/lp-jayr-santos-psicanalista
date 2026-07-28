@@ -139,6 +139,40 @@ async function apiPost(path, body) {
   return { ok: res.ok, status: res.status, data: await res.json().catch(() => null) };
 }
 
+const POSTS_POR_PAGINA = 10;
+
+// Paginação client-side reaproveitável: monta os controles (anterior/próxima)
+// dentro de #<gridId>-pagination, que precisa existir logo após o grid no HTML.
+function montarPaginacao(gridId, posts, pagina, aoMudarPagina) {
+  const container = document.getElementById(`${gridId}-pagination`);
+  if (!container) return;
+
+  const totalPaginas = Math.ceil(posts.length / POSTS_POR_PAGINA);
+  if (totalPaginas <= 1) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = `
+    <button type="button" class="blog-pagination__btn" id="${gridId}-prev" ${pagina <= 1 ? "disabled" : ""}>← Anterior</button>
+    <span class="blog-pagination__info">Página ${pagina} de ${totalPaginas}</span>
+    <button type="button" class="blog-pagination__btn" id="${gridId}-next" ${pagina >= totalPaginas ? "disabled" : ""}>Próxima →</button>
+  `;
+
+  document.getElementById(`${gridId}-prev`)?.addEventListener("click", () => aoMudarPagina(pagina - 1));
+  document.getElementById(`${gridId}-next`)?.addEventListener("click", () => aoMudarPagina(pagina + 1));
+}
+
+function renderPaginaDePosts(gridId, container, posts, pagina) {
+  const inicio = (pagina - 1) * POSTS_POR_PAGINA;
+  const fatia = posts.slice(inicio, inicio + POSTS_POR_PAGINA);
+  container.innerHTML = fatia.map(renderBlogCard).join("");
+  montarPaginacao(gridId, posts, pagina, (novaPagina) => {
+    renderPaginaDePosts(gridId, container, posts, novaPagina);
+    container.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 // ---- blog/index.html: lista de posts publicados (recentes, todas as categorias) ----
 async function renderBlogList() {
   const container = document.getElementById("blog-grid-container");
@@ -153,10 +187,11 @@ async function renderBlogList() {
 
     if (!data || !data.posts || !data.posts.length) {
       container.innerHTML = "<p>Nenhum artigo publicado no momento.</p>";
+      document.getElementById("blog-grid-container-pagination")?.replaceChildren();
       return;
     }
 
-    container.innerHTML = data.posts.map(renderBlogCard).join("");
+    renderPaginaDePosts("blog-grid-container", container, data.posts, 1);
   }
 
   if (sortSelect) sortSelect.addEventListener("change", carregar);
@@ -247,10 +282,11 @@ async function renderCategoryList() {
 
     if (!data || !data.posts || !data.posts.length) {
       container.innerHTML = '<p class="blog-empty">Ainda não há artigos publicados com essa marcação. Volte em breve.</p>';
+      document.getElementById("category-grid-container-pagination")?.replaceChildren();
       return;
     }
 
-    container.innerHTML = data.posts.map(renderBlogCard).join("");
+    renderPaginaDePosts("category-grid-container", container, data.posts, 1);
   }
 
   if (sortSelect) sortSelect.addEventListener("change", carregar);

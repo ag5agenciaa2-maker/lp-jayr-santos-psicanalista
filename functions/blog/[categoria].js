@@ -445,6 +445,7 @@ function renderCategoriaPage({ categoria, siteOrigin, requestUrl }) {
       <div id="category-grid-container" class="blog-grid" data-tag="${nomeEsc}">
         <!-- Renderizado dinamicamente via blog.js -->
       </div>
+      <div id="category-grid-container-pagination" class="blog-pagination"></div>
     </div>
   </main>
 

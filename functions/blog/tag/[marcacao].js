@@ -382,6 +382,7 @@ function renderTagPage({ marcacao, siteOrigin, requestUrl, titulosPosts = [] }) 
       <div id="category-grid-container" class="blog-grid" data-marcacao="${nomeEsc}">
         <!-- Renderizado dinamicamente via blog.js -->
       </div>
+      <div id="category-grid-container-pagination" class="blog-pagination"></div>
     </div>
   </main>
 
