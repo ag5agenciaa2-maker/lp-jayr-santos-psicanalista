@@ -393,6 +393,16 @@ function renderCategoriaPage({ categoria, siteOrigin, requestUrl }) {
   const descEsc = escapeHtml(descricao);
   const imagemAbs = `${siteOrigin}/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp`;
 
+  const breadcrumbJson = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Início", "item": siteOrigin },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${siteOrigin}/blog` },
+      { "@type": "ListItem", "position": 3, "name": categoria.nome, "item": requestUrl },
+    ],
+  };
+
   const headContent = `
   <title>${nomeEsc} | Blog Jayr Santos Psicanalista</title>
   <meta name="description" content="${descEsc}" />
@@ -403,7 +413,8 @@ function renderCategoriaPage({ categoria, siteOrigin, requestUrl }) {
   <meta property="og:url" content="${requestUrl}" />
   <meta property="og:title" content="${nomeEsc} | Blog Jayr Santos Psicanalista" />
   <meta property="og:description" content="${descEsc}" />
-  <meta property="og:image" content="${imagemAbs}" />`;
+  <meta property="og:image" content="${imagemAbs}" />
+  <script type="application/ld+json">${JSON.stringify(breadcrumbJson)}</script>`;
 
   const headerContent = `
   <!-- ===== HERO DO BLOG ===== -->
@@ -530,6 +541,17 @@ function renderPostPage({ post, siteOrigin, requestUrl, relacionados = [], tagSl
     },
   };
 
+  const breadcrumbJson = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Início", "item": siteOrigin },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${siteOrigin}/blog` },
+      { "@type": "ListItem", "position": 3, "name": post.tag || "Psicanálise", "item": `${siteOrigin}/blog/${tagSlug || ""}` },
+      { "@type": "ListItem", "position": 4, "name": post.titulo, "item": requestUrl },
+    ],
+  };
+
   const headContent = `
   <title>${tituloEsc} | Blog Jayr Santos Psicanalista</title>
   <meta name="description" content="${descEsc}" />
@@ -545,7 +567,8 @@ function renderPostPage({ post, siteOrigin, requestUrl, relacionados = [], tagSl
   <meta property="article:author" content="${escapeHtml(post.autor || "Jayr Santos")}" />
   <meta property="article:section" content="${tagEsc}" />
   ${post.publicado_em ? `<meta property="article:published_time" content="${post.publicado_em}" />` : ""}
-  <script type="application/ld+json">${JSON.stringify(schemaJson)}</script>`;
+  <script type="application/ld+json">${JSON.stringify(schemaJson)}</script>
+  <script type="application/ld+json">${JSON.stringify(breadcrumbJson)}</script>`;
 
   const headerContent = `
   <!-- ===== HEADER DO ARTIGO ===== -->

@@ -201,6 +201,17 @@ function renderPage({ post, siteOrigin, requestUrl, relacionados = [], tagSlug =
     },
   };
 
+  const breadcrumbJson = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Início", "item": siteOrigin },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${siteOrigin}/blog` },
+      { "@type": "ListItem", "position": 3, "name": post.tag || "Psicanálise", "item": `${siteOrigin}/blog/${tagSlug || ""}` },
+      { "@type": "ListItem", "position": 4, "name": post.titulo, "item": requestUrl },
+    ],
+  };
+
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -216,6 +227,7 @@ function renderPage({ post, siteOrigin, requestUrl, relacionados = [], tagSlug =
   <meta property="og:title" content="${tituloEsc} | Blog Jayr Santos Psicanalista" />
   <meta property="og:description" content="${descEsc}" />
   <meta property="og:image" content="${capaAbs}" />
+  <script type="application/ld+json">${JSON.stringify(breadcrumbJson)}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

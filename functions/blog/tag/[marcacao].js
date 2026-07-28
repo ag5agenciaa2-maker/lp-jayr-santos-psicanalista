@@ -322,11 +322,23 @@ function pageShell({ headContent, headerContent, mainContent }) {
 </html>`;
 }
 
-function renderTagPage({ marcacao, siteOrigin, requestUrl }) {
+function renderTagPage({ marcacao, siteOrigin, requestUrl, titulosPosts = [] }) {
   const nomeEsc = escapeHtml(marcacao);
-  const descricao = `Artigos marcados com #${marcacao} por Jayr Santos Psicanalista em Campo Grande, RJ.`;
-  const descEsc = escapeHtml(descricao);
+  const descricao = titulosPosts.length
+    ? `Artigos sobre #${marcacao} por Jayr Santos Psicanalista: ${titulosPosts.slice(0, 3).join("; ")}${titulosPosts.length > 3 ? "; entre outros" : ""}.`
+    : `Artigos marcados com #${marcacao} por Jayr Santos Psicanalista em Campo Grande, RJ.`;
+  const descEsc = escapeHtml(descricao.length > 300 ? descricao.slice(0, 297) + "…" : descricao);
   const imagemAbs = `${siteOrigin}/assets/jayr-santos-psicanalista-campo-grande-rj-hero.webp`;
+
+  const breadcrumbJson = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Início", "item": siteOrigin },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${siteOrigin}/blog` },
+      { "@type": "ListItem", "position": 3, "name": `#${marcacao}`, "item": requestUrl },
+    ],
+  };
 
   const headContent = `
   <title>#${nomeEsc} | Blog Jayr Santos Psicanalista</title>
@@ -338,7 +350,8 @@ function renderTagPage({ marcacao, siteOrigin, requestUrl }) {
   <meta property="og:url" content="${requestUrl}" />
   <meta property="og:title" content="#${nomeEsc} | Blog Jayr Santos Psicanalista" />
   <meta property="og:description" content="${descEsc}" />
-  <meta property="og:image" content="${imagemAbs}" />`;
+  <meta property="og:image" content="${imagemAbs}" />
+  <script type="application/ld+json">${JSON.stringify(breadcrumbJson)}</script>`;
 
   const headerContent = `
   <!-- ===== HERO DO BLOG ===== -->
@@ -347,7 +360,7 @@ function renderTagPage({ marcacao, siteOrigin, requestUrl }) {
     <div class="wrap">
       <p class="eyebrow" style="color: var(--areia); margin-bottom: 12px;"><span class="eyebrow__line" style="background: var(--areia);"></span><a href="/blog/" style="color: var(--areia); text-decoration: none;">Blog</a> · Marcação</p>
       <h1 class="blog-hero__title">#${nomeEsc}</h1>
-      <p class="blog-hero__subtitle">Artigos que dialogam com o tema #${nomeEsc.toLowerCase()}, cruzando categorias diferentes do blog.</p>
+      <p class="blog-hero__subtitle">${descEsc}</p>
     </div>
   </header>`;
 
@@ -405,11 +418,19 @@ export async function onRequestGet(context) {
     return context.next();
   }
 
+  const { results: postsDaMarcacao } = await env.DB.prepare(
+    `SELECT titulo, tags FROM posts WHERE status = 'publicado' AND tags IS NOT NULL AND tags != ''
+     ORDER BY publicado_em DESC`
+  ).all();
+  const titulosPosts = postsDaMarcacao
+    .filter(p => (p.tags || "").split(",").map(t => t.trim()).includes(marcacaoReal))
+    .map(p => p.titulo);
+
   const url = new URL(request.url);
   const siteOrigin = url.origin;
   const requestUrl = `${siteOrigin}/blog/tag/${slugParam}`;
 
-  return new Response(renderTagPage({ marcacao: marcacaoReal, siteOrigin, requestUrl }), {
+  return new Response(renderTagPage({ marcacao: marcacaoReal, siteOrigin, requestUrl, titulosPosts }), {
     headers: { "Content-Type": "text/html; charset=UTF-8" },
   });
 }
