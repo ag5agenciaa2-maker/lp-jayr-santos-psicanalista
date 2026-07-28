@@ -471,6 +471,7 @@ function editarPost(id) {
   document.getElementById("post-descricao").value = post.descricao || "";
   atualizarContadorDescricao();
   selecionarCategoriaNoForm(post.tag);
+  document.getElementById("post-tags").value = post.tags || "";
   document.getElementById("post-capa-url").value = post.capa_url || "";
 
   const corpo = post.corpo_md || "";
@@ -499,6 +500,7 @@ function resetPostForm() {
   document.getElementById("editor-title").textContent = "Novo artigo";
   document.getElementById("post-form").reset();
   document.getElementById("post-id").value = "";
+  document.getElementById("post-tags").value = "";
   document.getElementById("post-capa-url").value = "";
   popularSelectCategorias();
   document.getElementById("nova-categoria-field").hidden = true;
@@ -554,6 +556,10 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
   const descricao = document.getElementById("post-descricao").value.trim();
   const capaUrl = document.getElementById("post-capa-url").value;
   const corpoMd = postCorpoEl.value;
+  const tagsInput = document.getElementById("post-tags").value.trim();
+  const tags = tagsInput
+    ? tagsInput.split(",").map(t => t.trim()).filter(Boolean).join(",")
+    : "";
 
   if (!titulo || !corpoMd) return;
 
@@ -571,6 +577,7 @@ document.getElementById("post-form").addEventListener("submit", async (e) => {
     slug: slugInput || slugify(titulo),
     descricao,
     tag,
+    tags,
     capa_url: capaUrl,
     corpo_md: corpoMd,
     status,

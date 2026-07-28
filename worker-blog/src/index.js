@@ -138,7 +138,7 @@ export default {
             : "p.publicado_em DESC";
 
         const baseSql = `
-          SELECT p.id, p.slug, p.titulo, p.descricao, p.capa_url, p.autor, p.tag, p.publicado_em,
+          SELECT p.id, p.slug, p.titulo, p.descricao, p.capa_url, p.autor, p.tag, p.tags, p.publicado_em,
                  (SELECT COUNT(*) FROM comentarios c WHERE c.post_id = p.id AND c.status = 'aprovado') AS total_comentarios
           FROM posts p
           WHERE p.status = 'publicado' ${tag ? "AND p.tag = ?" : ""}
@@ -290,11 +290,12 @@ export default {
           const publicadoEm = status === "publicado" ? new Date().toISOString() : null;
 
           const r = await env.DB.prepare(
-            `INSERT INTO posts (slug, titulo, descricao, capa_url, autor, tag, corpo_md, status, publicado_em)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            `INSERT INTO posts (slug, titulo, descricao, capa_url, autor, tag, tags, corpo_md, status, publicado_em)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
           ).bind(
             slug, body.titulo, body.descricao || "", body.capa_url || "",
             body.autor || "Jayr Santos", body.tag || "Saúde Mental e Emoções",
+            (body.tags || "").trim() || null,
             body.corpo_md || "", status, publicadoEm
           ).run();
 
@@ -314,11 +315,12 @@ export default {
             : body.publicado_em || null;
 
           await env.DB.prepare(
-            `UPDATE posts SET titulo=?, descricao=?, capa_url=?, autor=?, tag=?, corpo_md=?, status=?, publicado_em=?, atualizado_em=datetime('now')
+            `UPDATE posts SET titulo=?, descricao=?, capa_url=?, autor=?, tag=?, tags=?, corpo_md=?, status=?, publicado_em=?, atualizado_em=datetime('now')
              WHERE id=?`
           ).bind(
             body.titulo, body.descricao || "", body.capa_url || "",
             body.autor || "Jayr Santos", body.tag || "Saúde Mental e Emoções",
+            (body.tags || "").trim() || null,
             body.corpo_md || "", novoStatus, publicadoEm, id
           ).run();
 

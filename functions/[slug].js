@@ -147,6 +147,16 @@ function urlDoPost(slug) {
   return OLD_SLUGS.has(slug) ? `/${slug}/` : `/blog/${slug}`;
 }
 
+function hashtagsHtml(tagsRaw) {
+  if (!tagsRaw) return "";
+  const tags = tagsRaw.split(",").map(t => t.trim()).filter(Boolean);
+  if (!tags.length) return "";
+  return `
+  <div class="article-hashtags">
+    ${tags.map(t => `<span class="article-hashtags__item">#${escapeHtml(t)}</span>`).join("")}
+  </div>`;
+}
+
 function renderPage({ post, siteOrigin, requestUrl, relacionados = [], tagSlug = "" }) {
   const capaUrl = (post.capa_url || "/assets/jayr-santos-psicanalista-atendimento-sobre.webp");
   const capaAbs = capaUrl.startsWith("http") ? capaUrl : `${siteOrigin}${capaUrl}`;
@@ -268,6 +278,7 @@ function renderPage({ post, siteOrigin, requestUrl, relacionados = [], tagSlug =
       <span class="article-topics__label">Tópicos:</span>
       ${tagSlug ? `<a href="/blog/${escapeHtml(tagSlug)}" class="article-topics__badge">${tagEsc}</a>` : `<span class="article-topics__badge">${tagEsc}</span>`}
     </div>
+    ${hashtagsHtml(post.tags)}
   </div>
 
   <!-- ===== COMPARTILHAR ===== -->

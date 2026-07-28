@@ -698,6 +698,19 @@ a.article-topics__badge:hover {
   color: var(--azul);
 }
 
+.article-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.article-hashtags__item {
+  font-size: 0.82rem;
+  color: var(--salvia);
+  font-weight: 500;
+}
+
 /* ---------- Compartilhar (artigo) ---------- */
 .article-share {
   text-align: center;
