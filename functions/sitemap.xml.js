@@ -3,7 +3,7 @@
    nova; agora todo post publicado e toda categoria com posts entram
    automaticamente, sem precisar lembrar de mexer aqui. */
 
-const SITE = "http://www.jayrsantospsicanalista.ag5agencia.site";
+const SITE = "https://www.jayrsantospsicanalista.com";
 
 const PAGINAS_FIXAS = [
   { loc: "/", changefreq: "monthly", priority: "1.0" },
