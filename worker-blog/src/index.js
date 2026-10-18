@@ -12,6 +12,8 @@ const ALLOWED_ORIGINS = [
   "https://lp-jayr-santos-psicanalista.pages.dev",
   "https://www.jayrsantospsicanalista.com",
   "https://jayrsantospsicanalista.com",
+  "https://www.jayrsantospsicanalista.com.br",
+  "https://jayrsantospsicanalista.com.br",
 ];
 
 function corsHeaders(request) {
